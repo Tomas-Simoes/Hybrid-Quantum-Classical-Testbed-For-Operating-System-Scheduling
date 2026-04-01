@@ -179,7 +179,9 @@ class SolverResult:
     solver_backend: str                        # "brute_force" | "simulated_annealing" | "qaoa" | …
     solve_time_ms: float
     solver_params: Dict = field(default_factory=dict)
-
+    probs: np.ndarray = None
+    convergence_curve: list = None
+    
     def to_dict(self) -> dict:
         return {
             "bitstring": self.bitstring.tolist(),

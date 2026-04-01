@@ -3,7 +3,7 @@ from itertools import product
 from typing import Dict
 
 from abstract.abstract import BaseBuilder
-from contracts import QUBOInstance, SystemSnapshot
+from data_contracts import QUBOInstance, SystemSnapshot
 
 class TimeAssignmentBuilder(BaseBuilder):
     def __init__(self, penalty: float, core_assignments: Dict[int, int], time_slots: int):

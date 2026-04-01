@@ -3,7 +3,11 @@ name = "hybrid-quantum-classical-testbed-for-operating-system-scheduling"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "matplotlib>=3.10.8",
     "numpy>=2.4.3",
+    "pennylane>=0.44.1",
+    "pennylane-lightning-gpu>=0.44.0",
     "psutil>=7.2.2",
+    "py-spy>=0.4.1",
     "qiskit-ibm-runtime>=0.46.1",
 ]

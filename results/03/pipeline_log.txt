@@ -1,0 +1,234 @@
+
+--- Run Started at Wed Apr  1 18:37:07 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 8.130073547363281e-05
+QUBO solved in 11.915700197219849
+
+Core Assignment - Energy: -8.2741
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0, 1002: 1, 1003: 1, 1004: 0}
+Core Assignment - Solve time: 11915.7ms
+Validated in 0.004644155502319336
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -8.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 0
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 0
+
+Total solve time: 11915.691ms
+[8.18519145e-08 1.67641785e-08 1.67641785e-08 ... 4.87675317e-08
+ 4.87675317e-08 1.74507908e-08]
+
+--- Run Started at Wed Apr  1 18:37:21 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 8.273124694824219e-05
+QUBO solved in 11.857758045196533
+
+Core Assignment - Energy: -16.5553
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 0, 1002: 0, 1003: 0, 1004: 0}
+Core Assignment - Solve time: 11857.3ms
+Validated in 0.004493236541748047
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -18.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 0
+  PID 1001 (w=0.580) → core 0
+  PID 1002 (w=0.480) → core 0
+  PID 1003 (w=0.116) → core 0
+  PID 1004 (w=0.390) → core 0
+
+Total solve time: 11857.270ms
+[8.33951578e-06 2.38367482e-06 2.38367482e-06 ... 6.54330737e-07
+ 6.54330737e-07 1.04433499e-08]
+
+--- Run Started at Wed Apr  1 18:37:34 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 5.91278076171875e-05
+QUBO solved in 11.284136772155762
+
+Core Assignment - Energy: -26.5553
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 1, 1003: 1, 1004: 1}
+Core Assignment - Solve time: 11283.7ms
+Validated in 0.004502058029174805
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -28.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 1
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 1
+
+Total solve time: 11283.721ms
+[1.07185772e-06 4.64941206e-07 4.64941206e-07 ... 9.05190641e-08
+ 9.05190641e-08 2.42516983e-09]
+
+--- Run Started at Wed Apr  1 18:37:47 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 5.555152893066406e-05
+QUBO solved in 11.533481121063232
+
+Core Assignment - Energy: -36.5553
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 1, 1003: 1, 1004: 1}
+Core Assignment - Solve time: 11532.9ms
+Validated in 0.004519462585449219
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -38.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 1
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 1
+
+Total solve time: 11532.934ms
+[1.61875159e-07 2.46585646e-07 2.46585646e-07 ... 7.55509545e-07
+ 7.55509545e-07 1.01239530e-06]
+
+--- Run Started at Wed Apr  1 18:38:00 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 0.00010132789611816406
+QUBO solved in 11.270929098129272
+
+Core Assignment - Energy: -48.2741
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0, 1002: 1, 1003: 1, 1004: 0}
+Core Assignment - Solve time: 11270.4ms
+Validated in 0.0046176910400390625
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -48.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 0
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 0
+
+Total solve time: 11270.382ms
+[2.00137206e-08 6.11683403e-08 6.11683403e-08 ... 1.19466069e-07
+ 1.19466069e-07 7.09126584e-08]
+
+--- Run Started at Wed Apr  1 18:38:14 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 0.00011157989501953125
+QUBO solved in 11.22433352470398
+
+Core Assignment - Energy: -58.0354
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0, 1002: 1, 1003: 1, 1004: 1}
+Core Assignment - Solve time: 11223.8ms
+Validated in 0.004659414291381836
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -58.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 0
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 1
+
+Total solve time: 11223.816ms
+[3.37406540e-09 1.13459807e-08 1.13459807e-08 ... 5.12622048e-08
+ 5.12622048e-08 2.78156982e-08]
+
+--- Run Started at Wed Apr  1 18:38:27 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 9.393692016601562e-05
+QUBO solved in 11.694859027862549
+
+Core Assignment - Energy: -68.2741
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0, 1002: 1, 1003: 1, 1004: 0}
+Core Assignment - Solve time: 11694.3ms
+Validated in 0.004481792449951172
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -68.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 0
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 0
+
+Total solve time: 11694.334ms
+[4.64995311e-07 3.88816205e-07 3.88816205e-07 ... 4.57171296e-07
+ 4.57171296e-07 7.54942600e-08]
+
+--- Run Started at Wed Apr  1 18:38:41 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 0.0001304149627685547
+QUBO solved in 11.468037366867065
+
+Core Assignment - Energy: -76.5553
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 1, 1003: 1, 1004: 1}
+Core Assignment - Solve time: 11467.5ms
+Validated in 0.0044934749603271484
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -78.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 1
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 1
+
+Total solve time: 11467.471ms
+[6.45789549e-07 9.21236407e-07 9.21236407e-07 ... 6.88726189e-09
+ 6.88726189e-09 2.54701131e-09]
+
+--- Run Started at Wed Apr  1 18:38:55 2026 ---
+Snapshot ID: fe878066-d9f8-47db-b36e-14fc46b18fcd
+Processes: [(1000, 0.29), (1001, 0.58), (1002, 0.48), (1003, 0.116), (1004, 0.39)]
+Building QUBO...
+QUBO Matrix completed in 6.747245788574219e-05
+QUBO solved in 11.507436990737915
+
+Core Assignment - Energy: -86.5553
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 1, 1003: 1, 1004: 1}
+Core Assignment - Solve time: 11506.7ms
+Validated in 0.004487037658691406
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -88.2741
+
+--- Final Schedule ---
+  PID 1000 (w=0.290) → core 1
+  PID 1001 (w=0.580) → core 1
+  PID 1002 (w=0.480) → core 1
+  PID 1003 (w=0.116) → core 1
+  PID 1004 (w=0.390) → core 1
+
+Total solve time: 11506.745ms
+[3.01512481e-07 5.60491630e-07 5.60491630e-07 ... 3.18664938e-09
+ 3.18664938e-09 6.89226855e-10]

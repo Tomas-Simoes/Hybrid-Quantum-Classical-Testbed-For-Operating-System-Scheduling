@@ -2,7 +2,7 @@ import numpy as np
 from itertools import product
 
 from abstract.abstract import BaseBuilder
-from contracts import QUBOInstance, SystemSnapshot
+from data_contracts import QUBOInstance, SystemSnapshot
 
 class CoreAssignmentBuilder(BaseBuilder):
     def __init__(self, penalty: float):

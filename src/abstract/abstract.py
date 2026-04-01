@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from contracts import QUBOInstance, SolverResult, SystemSnapshot
+from data_contracts import QUBOInstance, SolverResult, SystemSnapshot
 
 class BaseSolver(ABC):
     @abstractmethod

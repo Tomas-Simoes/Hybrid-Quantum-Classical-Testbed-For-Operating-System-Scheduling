@@ -29,3 +29,7 @@ activate: ## Mostra o comando para ativar o .venv
 	@echo ""
 	@echo "    source .venv/bin/activate"
 	@echo ""
+
+spy:
+	uv run py-spy record -o profile.svg -- python src/main.py
+	

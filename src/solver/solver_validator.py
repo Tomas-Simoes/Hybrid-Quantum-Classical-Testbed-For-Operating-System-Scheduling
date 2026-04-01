@@ -1,5 +1,5 @@
 import numpy as np
-from contracts import QUBOInstance, SolverResult
+from data_contracts import QUBOInstance, SolverResult
 from solver.brute_force_solver import BruteForceSolver
 
 class SolverValidator:

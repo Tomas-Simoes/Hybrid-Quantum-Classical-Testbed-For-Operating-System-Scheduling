@@ -1,6 +1,6 @@
 import time
 import psutil
-from contracts import ProcessInfo, SystemSnapshot
+from data_contracts import ProcessInfo, SystemSnapshot
 
 
 class ProcessTracer:
@@ -48,7 +48,10 @@ class ProcessTracer:
                     continue
         
         cpu_weights = {pid: max(vals) for pid, vals in samples.items()}
+        cpu_avg_weights = {pid: sum(vals) / len(vals) for pid, vals in samples.items()}
 
+        cpu_weights = cpu_avg_weights
+        
         processes = []
         for pid, weight in cpu_weights.items():
             if weight < self.min_cpu_weight:

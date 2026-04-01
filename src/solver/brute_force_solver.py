@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 
 from abstract.abstract import BaseSolver
-from contracts import QUBOInstance, SolverResult
+from data_contracts import QUBOInstance, SolverResult
 
 BRUTE_FORCE_VAR_LIMIT = 22
 
