@@ -3,36 +3,41 @@ QAOA Scheduling Testbed — Streamlit Interface
 Run with: streamlit run app.py
 """
 
+import os
 import time
 import numpy as np
 import streamlit as st
-
-# ── Page config ────────────────────────────────────────────────────────────────
-st.set_page_config(
-    page_title="QAOA Scheduling Testbed",
-    page_icon="⚛️",
-    layout="wide",
-)
-
+from PIL import Image
 # ── Local imports ──────────────────────────────────────────────────────────────
 try:
-    from config_contracts import QAOAConfig, QUBOConfig
-    from data_contracts import SystemSnapshot, ProcessInfo
-    from builder.qubo_core import CoreAssignmentBuilder
-    from solver.pennylane_solver import PennylaneSolver
-    from solver.solver_validator import SolverValidator
+    from data_contracts import QAOAConfig, QUBOConfig, TracerConfig
+    from data_contracts import SystemSnapshot, ProcessInfo, SolverResult
+    from main import SchedulingEngine
     from visualization.visualization import Visualization
     IMPORTS_OK = True
 except ImportError as e:
     IMPORTS_OK = False
     IMPORT_ERROR = str(e)
 
+# ── Pre-Algorithm Config ───────────────────────────────────────────────────────────
+proc_preset = {
+    "five_proc":  [0.29, 0.58, 0.48, 0.116, 0.39],
+    "equal":      [0.2,  0.2,  0.2,  0.2,   0.2 ],
+    "asymmetric": [0.2,  0.4,  0.1,  0.2,   0.99],
+    "seven_proc": [0.029, 0.058, 0.048, 0.116, 0.029, 0.048, 0.039],
+}
+
+num_cores_preset = [2,3,4]
+weights = []
+
+qaoa_cfg = QAOAConfig(layers=3, steps=1, learning_rate=0.05, top_k=10)
+qubo_cfg = QUBOConfig(penalty=1, num_cores=2, snapshot=None)
+tracer_cfg = TracerConfig(min_rss=70, min_cpu=0.02, cpu_interval=1, num_samples=3, live_mode=False)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  HELPERS
 # ══════════════════════════════════════════════════════════════════════════════
-
-def build_snapshot(weights: list, num_cores: int) -> SystemSnapshot:
+def build_preset_snapshot(weights: list, num_cores: int) -> SystemSnapshot:
     return SystemSnapshot(
         timestamp=time.time(),
         num_cores=num_cores,
@@ -49,74 +54,77 @@ def build_snapshot(weights: list, num_cores: int) -> SystemSnapshot:
         ],
     )
 
-
-def run_single(snapshot, penalty, layers, steps, lr):
-    qubo_cfg   = QUBOConfig(penalty=penalty, num_cores=snapshot.num_cores, snapshot=snapshot)
-    qaoa_cfg   = QAOAConfig(layers=layers, steps=steps, optimizer_step=lr)
-    builder    = CoreAssignmentBuilder(penalty=penalty)
-    solver     = PennylaneSolver(p_layers=layers, steps=steps, optimizer_step=lr)
-    qubo       = builder.build(snapshot)
-    result     = solver.solve(qubo)
-    validation = SolverValidator().validate(qubo, result)
-    return result, validation, qubo, qaoa_cfg, qubo_cfg
-
-
 def p_critical(weights: list, num_cores: int) -> float:
     return 2 * max(weights) * (sum(weights) / num_cores)
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  SIDEBAR
 # ══════════════════════════════════════════════════════════════════════════════
-
 with st.sidebar:
-    st.title("⚛️ QAOA Testbed")
+    st.title("QAOA Testbed")
     st.caption("Hybrid Classical-Quantum OS Scheduling")
-    st.divider()
 
+    # --------------------------------
+    # Workload Configuration
+    # --------------------------------
     st.subheader("Workload")
-    preset = st.selectbox(
-        "Preset",
-        ["five_proc", "equal", "asymmetric", "seven_proc", "custom"],
-    )
-    preset_map = {
-        "five_proc":  [0.29, 0.58, 0.48, 0.116, 0.39],
-        "equal":      [0.2,  0.2,  0.2,  0.2,   0.2 ],
-        "asymmetric": [0.2,  0.4,  0.1,  0.2,   0.99],
-        "seven_proc": [0.029, 0.058, 0.048, 0.116, 0.029, 0.048, 0.039],
-    }
-    if preset == "custom":
-        raw = st.text_input("Weights (comma-separated)", value="0.29, 0.58, 0.48, 0.116, 0.39")
-        try:
-            weights = [float(x.strip()) for x in raw.split(",")]
-        except ValueError:
-            st.error("Invalid weights — use comma-separated floats.")
-            weights = [0.29, 0.58, 0.48, 0.116, 0.39]
+    
+    tracer_cfg.live_mode = st.toggle("Live System Snapshot", value=False, help="Toggle between hardcoded presets and real system snapshot.")
+   
+    if tracer_cfg.live_mode:
+        tracer_cfg.min_rss = st.number_input("Min RSS (MB)", value=tracer_cfg.min_rss)
+        tracer_cfg.min_cpu = st.number_input("Min CPU Load", value=tracer_cfg.min_cpu)
+        tracer_cfg.cpu_interval = st.number_input("Min CPU Load", value=tracer_cfg.cpu_interval)
+        tracer_cfg.num_samples = st.number_input("Trace Samples", value=tracer_cfg.num_samples)
+
+        st.info(f"P_critical ≈ **NA**\nNeed system snapshot in order to get P_critical.")
     else:
-        weights = preset_map[preset]
+        preset = st.selectbox("Preset", list(proc_preset.keys()) + ["custom"])
+        if preset == "custom":
+            raw = st.text_input("Weights (comma-separated)", value="0.29, 0.58, 0.48, 0.116, 0.39")
+            try:
+                weights = [float(x.strip()) for x in raw.split(",")]
+            except ValueError:
+                st.error("Invalid weights — use comma-separated floats.")
+        else:
+            weights = proc_preset[preset]
 
-    st.caption(f"{len(weights)} processes: {[round(w, 3) for w in weights]}")
-    num_cores = st.selectbox("Number of cores (K)", [2, 3, 4], index=0)
-
-    p_crit = p_critical(weights, num_cores)
-    st.info(f"P_critical ≈ **{p_crit:.3f}**\nRecommended P ≥ {1.5 * p_crit:.3f}")
+        st.caption(f"{len(weights)} processes: {[round(w, 3) for w in weights]}")
+        
+        
+        p_crit = p_critical(weights, qubo_cfg.num_cores)
+        st.info(f"P_critical ≈ **{p_crit:.3f}**\nRecommended P ≥ {1.5 * p_crit:.3f}")
 
     st.divider()
+
+    # --------------------------------
+    # QUBO Configuration
+    # --------------------------------
     st.subheader("QUBO")
-    penalty = st.slider("Penalty weight (P)", 0.5, 5.0, 1.6, 0.05)
-    if penalty < p_crit:
-        st.warning("⚠️ P is below P_critical — QUBO global minimum may be infeasible.")
+
+    qubo_cfg.num_cores = st.selectbox("Number of cores (K)", num_cores_preset, index=0)
+    qubo_cfg.penalty = st.slider("Penalty weight (P)", 0.5, 5.0, 1.6, 0.05)
+    
+    if tracer_cfg.live_mode: st.warning("Can't check if P is below P_critical — QUBO global minimum may be infeasible.")
+    else:
+        if qubo_cfg.penalty < p_crit:
+            st.warning("⚠️ P <= P_critical. QUBO global minimum may be infeasible.")
 
     st.divider()
+
+    # --------------------------------
+    # QAOA Configuration
+    # --------------------------------
     st.subheader("QAOA")
-    layers = st.slider("Circuit depth (p)", 1, 15, 3)
-    steps  = st.slider("Optimizer steps", 10, 500, 100, 10)
-    lr     = st.select_slider(
+
+    qaoa_cfg.layers = st.slider("Circuit depth (p)", 1, 15, 3)
+    qaoa_cfg.steps  = st.slider("Optimizer steps", 10, 500, 100, 10)
+    qaoa_cfg.learning_rate = st.select_slider(
         "Learning rate (η)",
         options=[0.001, 0.005, 0.01, 0.02, 0.05, 0.1],
         value=0.01,
     )
-    top_k = st.slider("Top-k bitstrings shown", 5, 30, 20)
+    qaoa_cfg.top_k = st.slider("Top-k bitstrings shown", 5, 30, 20)
 
     st.divider()
     st.caption("Solver: PennyLane · lightning.gpu")
@@ -134,32 +142,34 @@ if not IMPORTS_OK:
 tab_single, tab_sweep, tab_about = st.tabs(["🔬 Single Run", "📊 Sweep", "📖 About"])
 
 
-# ── TAB 1: Single Run ─────────────────────────────────────────────────────────
+# ── Single Run ─────────────────────────────────────────────────────────
 with tab_single:
     st.header("Single Run")
 
     col_params, col_run = st.columns([3, 1])
     with col_params:
         st.markdown(
-            f"**Config:** P={penalty} · p={layers} · steps={steps} · "
-            f"η={lr} · K={num_cores} · N={len(weights)}"
+            f"**Config:** P={qubo_cfg.penalty} · p={qaoa_cfg.layers} · steps={qaoa_cfg.steps} · "
+            f"η={qaoa_cfg.learning_rate} · K={qubo_cfg.num_cores if not tracer_cfg.live_mode else "Need system snapshot"} · N={len(weights)}"
         )
     with col_run:
-        run_btn = st.button("▶ Run QAOA", type="primary", use_container_width=True)
+        run_btn = st.button("▶ Run QAOA", type="primary", width="stretch")
 
     if run_btn:
-        snapshot = build_snapshot(weights, num_cores)
-
-        with st.spinner(f"Running QAOA (p={layers}, steps={steps})…"):
+        current_snapshot = None if tracer_cfg.live_mode else build_preset_snapshot(weights, qubo_cfg.num_cores)
+        
+        with st.spinner(f"Running QAOA (p={qaoa_cfg.layers}, steps={qaoa_cfg.steps})…"):
             t0 = time.time()
-            result, validation, qubo, qaoa_cfg, qubo_cfg = run_single(
-                snapshot, penalty, layers, steps, lr
-            )
+
+            result: SolverResult 
+            used_snapshot: SystemSnapshot
+            result, validation, used_snapshot, alpha, qubo, qaoa_cfg, qubo_cfg = SchedulingEngine.run_job(qaoa_cfg, qubo_cfg, tracer_cfg, current_snapshot)
+            
             elapsed = time.time() - t0
 
         # Metrics row
         st.divider()
-        alpha = result.energy / validation["global_energy"] if validation["global_energy"] != 0 else 0.0
+
         m1, m2, m3, m4, m5 = st.columns(5)
         m1.metric("Energy",         f"{result.energy:.4f}")
         m2.metric("Global optimum", f"{validation['global_energy']:.4f}")
@@ -171,7 +181,7 @@ with tab_single:
         # Assignment table
         with st.expander("Core assignments", expanded=True):
             rows = []
-            for proc in snapshot.processes:
+            for proc in used_snapshot.processes:
                 core     = result.decoded_assignments.get(proc.pid, "?")
                 opt_core = validation["global_assignments"].get(proc.pid, "?")
                 rows.append({
@@ -181,7 +191,7 @@ with tab_single:
                     "Optimal → core": opt_core,
                     "Match":          "✅" if core == opt_core else "❌",
                 })
-            st.dataframe(rows, use_container_width=True, hide_index=True)
+            st.dataframe(rows, width="stretch", hide_index=True)
 
         # Build Visualization once — reuse across all four panels
         viz = Visualization(
@@ -191,26 +201,26 @@ with tab_single:
             probs=result.probs,
             energies_over_time=result.convergence_curve,
             global_optimum=validation["global_energy"],
-            top_k=top_k,
+            top_k=qaoa_cfg.top_k,
         )
 
         st.divider()
         c1, c2 = st.columns(2)
         with c1:
-            st.pyplot(viz.panel_landscape(), use_container_width=True)
+            st.pyplot(viz.panel_landscape(), width="stretch")
         with c2:
-            st.pyplot(viz.panel_qubo_matrix(), use_container_width=True)
+            st.pyplot(viz.panel_qubo_matrix(), width="stretch")
 
         c3, c4 = st.columns(2)
         with c3:
             if result.convergence_curve:
-                st.pyplot(viz.panel_convergence(), use_container_width=True)
+                st.pyplot(viz.panel_convergence(), width="stretch")
         with c4:
             if result.probs is not None:
-                st.pyplot(viz.panel_probabilities(), use_container_width=True)
+                st.pyplot(viz.panel_probabilities(), width="stretch")
 
         # Also save composite to disk (same as the old pipeline behaviour)
-        composite_path = f"results/run_P{penalty}_p{layers}.png"
+        composite_path = f"results/run_P{qubo_cfg.penalty}_p{qaoa_cfg.layers}.png"
         viz.composite(save_path=composite_path)
         st.caption(f"Composite saved → `{composite_path}`")
 
@@ -225,8 +235,7 @@ with tab_single:
     else:
         st.info("Configure parameters in the sidebar, then hit **▶ Run QAOA**.")
 
-
-# ── TAB 2: Sweep ──────────────────────────────────────────────────────────────
+# ── Sweep ──────────────────────────────────────────────────────────────
 with tab_sweep:
     st.header("Parameter Sweep")
 
@@ -244,7 +253,7 @@ with tab_sweep:
             p_max  = st.number_input("P max",  value=2.9, step=0.1, format="%.2f")
             p_step = st.number_input("P step", value=0.1, step=0.05, format="%.2f")
     else:
-        p_min = p_max = penalty; p_step = 1.0
+        p_min = p_max = qubo_cfg.penalty; p_step = 1.0
 
     if sweep_mode in ("Circuit depth (p)", "Both (grid)"):
         with col_b:
@@ -254,11 +263,11 @@ with tab_sweep:
             except ValueError:
                 p_layers_list = [3]
     else:
-        p_layers_list = [layers]
+        p_layers_list = [qaoa_cfg.layers]
 
     with col_c:
-        sweep_steps = st.number_input("Steps per run", value=steps, step=10)
-        sweep_lr    = st.number_input("Learning rate", value=lr, step=0.005, format="%.4f")
+        sweep_steps = st.number_input("Steps per run", value=qaoa_cfg.steps, step=10)
+        sweep_lr    = st.number_input("Learning rate", value=qaoa_cfg.learning_rate, step=0.005, format="%.4f")
         shots       = st.number_input("Shots per config", value=1, min_value=1, max_value=10,
                                       help="Repeats each config N times — gives mean ± std.")
 
@@ -270,7 +279,7 @@ with tab_sweep:
         if total_runs > 100:
             st.warning(f"⚠️ {total_runs} runs may take a long time.")
 
-        snapshot      = build_snapshot(weights, num_cores)
+        snapshot      = build_preset_snapshot(weights, num_cores)
         sweep_results = []
         progress      = st.progress(0, text="Starting sweep…")
         run_index     = 0
@@ -285,7 +294,7 @@ with tab_sweep:
                         text=f"P={pen:.2f} · p={layer_val} · shot {shot + 1}/{shots}",
                     )
                     try:
-                        res, val, _, _, _ = run_single(
+                        res, val, _, _, _ = SchedulingEngine.run_job(
                             snapshot, float(pen), layer_val,
                             int(sweep_steps), float(sweep_lr),
                         )
@@ -328,12 +337,12 @@ with tab_sweep:
             df.style.background_gradient(
                 subset=["alpha_mean", "optimal_rate", "feasible_rate"], cmap="RdYlGn"
             ),
-            use_container_width=True, hide_index=True,
+            width="stretch", hide_index=True,
         )
 
         # Single p_layers: use Visualization.plot_sweep directly
         if len(set(r["p_layers"] for r in sr)) == 1:
-            st.pyplot(Visualization.plot_sweep(sr), use_container_width=True)
+            st.pyplot(Visualization.plot_sweep(sr), width="stretch")
         else:
             import matplotlib.pyplot as plt
             fig, ax = plt.subplots(figsize=(10, 5))
@@ -347,7 +356,7 @@ with tab_sweep:
             ax.set_title("Alpha vs P — multi-depth comparison")
             ax.legend(); ax.grid(True, alpha=0.3)
             fig.tight_layout()
-            st.pyplot(fig, use_container_width=True)
+            st.pyplot(fig, width="stretch")
 
         csv = pd.DataFrame(sr).to_csv(index=False).encode()
         st.download_button("⬇ Download CSV", data=csv,
@@ -398,3 +407,15 @@ $$P_{\\text{critical}} = 2 \\cdot w_{\\max} \\cdot \\bar{L}, \\quad \\bar{L} = W
 Recommended: $P = 1.5 \\times P_{\\text{critical}}$ for deep circuits (p ≥ 5),
 $2 \\times P_{\\text{critical}}$ for shallow (p ≤ 3).
     """)
+
+# ── Page config ────────────────────────────────────────────────────────────────
+current_dir = os.path.dirname(__file__)
+icon_path = os.path.join(current_dir, "..", "assets", "image", "icon.png")
+
+img = Image.open(icon_path)
+
+st.set_page_config(
+    page_title="QAOA Scheduling Testbed",
+    page_icon=img,
+    layout="wide",
+)

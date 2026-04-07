@@ -1,26 +1,27 @@
 import time
 import psutil
-from data_contracts import ProcessInfo, SystemSnapshot
+from data_contracts import ProcessInfo, SystemSnapshot, TracerConfig
 
 
 class ProcessTracer:
-    def __init__(self, min_rss_mb: float = 10.0, min_cpu_weight: float = 10.0, cpu_interval: float = 1.0):
-        self.min_rss_mb = min_rss_mb
-        self.min_cpu_weight = min_cpu_weight
-        self.cpu_interval = cpu_interval
+    def __init__(self, tracer_cfg: TracerConfig):
+        self.min_rss = tracer_cfg.min_rss
+        self.min_cpu = tracer_cfg.min_cpu
+        self.cpu_interval = tracer_cfg.cpu_interval
+        self.num_samples = tracer_cfg.num_samples
 
-    def trace(self, num_samples: int = 3) -> SystemSnapshot:
+    def trace(self) -> SystemSnapshot:
         samples = {}
         rss_cache = {}
         info_cache = {}
         
-        for _ in range(num_samples):
+        for _ in range(self.num_samples):
             for proc in psutil.process_iter(["pid", "name", "cmdline", "cpu_num", "nice", "memory_info"]):
                 try:
                     mem = proc.info["memory_info"]
                     rss_mb = mem.rss / (1024 * 1024) if mem else 0.0
 
-                    if rss_mb < self.min_rss_mb:
+                    if rss_mb < self.min_rss:
                         continue
 
                     # first call to cpu_percent initializes measurement
@@ -54,7 +55,7 @@ class ProcessTracer:
         
         processes = []
         for pid, weight in cpu_weights.items():
-            if weight < self.min_cpu_weight:
+            if weight < self.min_cpu:
                 continue
             info = info_cache.get(pid)
             if not info:

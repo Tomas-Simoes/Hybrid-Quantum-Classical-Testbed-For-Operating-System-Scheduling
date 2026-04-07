@@ -40,7 +40,6 @@ class ProcessInfo:
             priority=d["priority"],
         )
 
-
 @dataclass
 class SystemSnapshot:
     timestamp: float
@@ -65,7 +64,14 @@ class SystemSnapshot:
             snapshot_id=d["snapshot_id"],
         )
 
-
+@dataclass
+class SnapshotObject:
+    snapshot: SystemSnapshot | None
+    min_rss: float 
+    min_weight: float 
+    cpu_interval: float 
+    num_samples: int
+    
 # ---------------------------------------------------------------------------
 #  Decomposition Engine output
 # ---------------------------------------------------------------------------
@@ -95,8 +101,6 @@ class ClusterGroup:
             aggregate_rss_mb=d["aggregate_rss_mb"],
             contention_score=d["contention_score"],
         )
-
-
 @dataclass
 class DecomposedSubproblem:
     clusters: List[ClusterGroup]
@@ -124,7 +128,6 @@ class DecomposedSubproblem:
             iteration_index=d["iteration_index"],
             source_snapshot_id=d["source_snapshot_id"],
         )
-
 
 # ---------------------------------------------------------------------------
 # Translator output
@@ -206,9 +209,7 @@ class SolverResult:
         )
 
 
-# ---------------------------------------------------------------------------
-# Evaluation / pipeline output
-# ---------------------------------------------------------------------------
+
 @dataclass
 class PipelineResult:
     iterations: List[SolverResult]
@@ -236,6 +237,50 @@ class PipelineResult:
             source_snapshot_id=d["source_snapshot_id"],
         )
 
+@dataclass
+class SchedulingOutput:
+    result: SolverResult
+    validation: dict
+    used_snapshot: SystemSnapshot
+    alpha: float
+    qubo_instance: QUBOInstance
+    qaoa_cfg: QAOAConfig
+    qubo_cfg: QUBOConfig
+
+    def __iter__(self):
+        return iter((
+            self.result, 
+            self.validation, 
+            self.used_snapshot,
+            self.alpha,
+            self.qubo_instance, 
+            self.qaoa_cfg, 
+            self.qubo_cfg
+        ))
+    
+# ---------------------------------------------------------------------------
+# Configurations
+# ---------------------------------------------------------------------------
+@dataclass
+class QUBOConfig:
+    penalty: float
+    num_cores: int
+    snapshot: SystemSnapshot | None
+
+@dataclass
+class QAOAConfig:
+    layers: int
+    steps: int
+    learning_rate: float
+    top_k: int
+
+@dataclass 
+class TracerConfig:
+    min_rss: float
+    min_cpu: float
+    cpu_interval: int 
+    num_samples: int
+    live_mode: bool
 
 # ---------------------------------------------------------------------------
 # Round-trip test

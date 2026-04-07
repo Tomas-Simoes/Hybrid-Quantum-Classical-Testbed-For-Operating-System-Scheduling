@@ -2,11 +2,12 @@ import numpy as np
 from itertools import product
 
 from abstract.abstract import BaseBuilder
-from data_contracts import QUBOInstance, SystemSnapshot
+from data_contracts import QUBOConfig, QUBOInstance, SystemSnapshot
 
 class CoreAssignmentBuilder(BaseBuilder):
-    def __init__(self, penalty: float):
-        self.P = penalty
+    def __init__(self, qubo_cfg: QUBOConfig):
+        self.qubo_cfg = qubo_cfg
+        self.P = qubo_cfg.penalty
 
     def build(self, snapshot: SystemSnapshot) -> QUBOInstance:
         weights = [p.cpu_weight for p in snapshot.processes]

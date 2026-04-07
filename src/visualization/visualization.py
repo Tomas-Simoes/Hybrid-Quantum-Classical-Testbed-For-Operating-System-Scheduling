@@ -20,7 +20,7 @@ from itertools import product
 
 import numpy as np
 
-from config_contracts import QAOAConfig, QUBOConfig
+from data_contracts import QAOAConfig, QUBOConfig
 
 
 class Visualization:
@@ -194,7 +194,7 @@ class Visualization:
             "=== QAOA CONFIG ===",
             f"Layers (p): {self.qaoa_cfg.layers}",
             f"Max Steps: {self.qaoa_cfg.steps}",
-            f"Learning Rate: {self.qaoa_cfg.optimizer_step}",
+            f"Learning Rate: {self.qaoa_cfg.learning_rate}",
         ]
 
         if self.energies_over_time:
@@ -410,7 +410,7 @@ class Visualization:
             "=== QAOA CONFIG ===",
             f"Layers (p): {self.qaoa_cfg.layers}",
             f"Max Steps: {self.qaoa_cfg.steps}",
-            f"Learning Rate: {self.qaoa_cfg.optimizer_step}",
+            f"Learning Rate: {self.qaoa_cfg.learning_rate}",
         ]
         if self.energies_over_time:
             lines.append(f"Actual Iterations: {len(self.energies_over_time)}")

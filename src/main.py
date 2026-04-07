@@ -1,73 +1,67 @@
-from dataclasses import asdict
-from matplotlib import pyplot as plt
+# main.py
+import streamlit as st
 import numpy as np
-from config_contracts import QAOAConfig, QUBOConfig
-from data_contracts import SystemSnapshot, ProcessInfo
+from data_contracts import QAOAConfig, QUBOConfig, SystemSnapshot, TracerConfig
 from builder.qubo_core import CoreAssignmentBuilder
+from data_contracts import SchedulingOutput
 from solver.pennylane_solver import PennylaneSolver
 from solver.solver_validator import SolverValidator
-from tracer.process_tracer import ProcessTracer
 from pipeline.default_pipeline import DefaultPipeline
-from visualization.visualization import Visualization
+from tracer.process_tracer import ProcessTracer
+class SchedulingEngine:
+    @staticmethod
+    def run_job(qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig, tracer_cfg: TracerConfig, preset_snapshot: SystemSnapshot | None) -> SchedulingOutput:
+        snapshot = preset_snapshot
+        
+        if not snapshot: # then we are using live tracing
+            print(f"\n{'-'*40}")
+            print(f"INITIATING LIVE SYSTEM TRACER")
+            proc_tracer = ProcessTracer(tracer_cfg)
+            snapshot = proc_tracer.trace()
+            print(snapshot)
+            st.stop()
 
-# config
-assymetric_weights = [0.2, 0.4, 0.1, 0.2, 0.99]
-equal_weights = [0.2, 0.2, 0.2, 0.2, 0.2]
-non_squared_weights = [0.2, 0.2, 0.2]
-three_cores = [0.3, 0.5, 0.2, 0.8]
-seven_proc = [0.029, 0.058, 0.048, 0.116, 0.029, 0.048, 0.039]
-five_proc = [0.29, 0.58, 0.48, 0.116, 0.39]
-simulated_weights = five_proc
+        print(f"\n{'-'*40}")
+        print(f"INITIATING QAOA SCHEDULING JOB")
+        print(f"{'-'*40}")
+        print(f"WORKLOAD:   {len(snapshot.processes)} processes on {snapshot.num_cores} cores")
+        print(f"WEIGHTS:    {sum(p.cpu_weight for p in snapshot.processes):.3f} total CPU load")
+        print(f"QUBO CFG:   Penalty (P) = {qubo_cfg.penalty}")
+        print(f"QAOA CFG:   Layers (p) = {qaoa_cfg.layers} | Steps = {qaoa_cfg.steps} | η = {qaoa_cfg.learning_rate}")
+        print(f"{'-'*40}\n")
 
-qubo_cfg = QUBOConfig(penalty=1.8, num_cores=2, snapshot=None)
-qaoa_cfg = QAOAConfig(layers=3, steps=200, optimizer_step=0.01);
-
-min_rss_mb = 10.0
-cpu_internal = 1.0  # time between 
-
-# build snapshot
-tracer = ProcessTracer(min_rss_mb=70.0, min_cpu_weight=0.02, cpu_interval=1.0)
-system_snapshot = tracer.trace(num_samples=3)
-system_snapshot.num_cores = qubo_cfg.num_cores; 
-
-hardcoded_snapshot = SystemSnapshot(
-    timestamp=1719500000.0,
-    num_cores=qubo_cfg.num_cores,
-    processes=[
-        ProcessInfo(
-            pid=1000 + i,
-            command=f"proc_{i}",
-            cpu_weight=w,
-            current_core=0,
-            rss_mb=w * 1024,
-            priority=20,
+       
+        # 1. Component Initialization
+        builder = CoreAssignmentBuilder(qubo_cfg)
+        solver = PennylaneSolver(qaoa_cfg)
+        validator = SolverValidator()
+        
+        # 2. Pipeline Execution
+        # Note: We pass None to tracer if we already have a hardcoded snapshot
+        pipeline = DefaultPipeline(None, builder, solver, validator)
+        
+        result, validation = pipeline.run(
+            filename="decompositor_test",
+            snapshot=snapshot, 
+            qaoa_cfg=qaoa_cfg, 
+            qubo_cfg=qubo_cfg
         )
-        for i, w in enumerate(simulated_weights)
-    ],
-)
 
-penalties = np.around(np.arange(1, 3, 0.1), decimals=1)
-penalty_results = []
+        # Calculate derived metrics
+        alpha = result.energy / validation['global_energy'] if validation['global_energy'] != 0 else 0
+        
+        return SchedulingOutput(
+            result=result,
+            validation=validation,
+            used_snapshot=snapshot,
+            alpha=alpha,
+            qubo_instance=builder.build(snapshot), 
+            qaoa_cfg=qaoa_cfg,
+            qubo_cfg=qubo_cfg
+        )
 
-for p in penalties:
-    qubo_cfg.penalty = p
-    qubo_cfg.snapshot = hardcoded_snapshot
-
-    builder = CoreAssignmentBuilder(penalty=p)
-    solver = PennylaneSolver(qaoa_cfg.layers, qaoa_cfg.steps, qaoa_cfg.optimizer_step)
-    solver_validator = SolverValidator()
-
-    pipeline = DefaultPipeline(tracer, builder, solver, solver_validator)
-    result, validation = pipeline.run( filename=f"dash_pen_{p}", snapshot=qubo_cfg.snapshot, qaoa_cfg=qaoa_cfg, qubo_cfg=qubo_cfg)
-
-    alpha = result.energy / validation['global_energy'] if validation['global_energy'] != 0 else 0
-
-    penalty_results.append({
-        "p": p,
-        "alpha": alpha,
-        "max_p": np.max(result.probs),
-        "feasible": result.is_feasible
-    })
-
-Visualization._plot_run_results(penalty_results)
-plt.show() 
+if __name__ == "__main__":
+    # Your existing CLI testing logic remains here
+    print("Running in CLI mode (not done yet)...")
+    #engine = SchedulingEngine()
+    #engine.run_job(...)

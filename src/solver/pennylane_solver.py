@@ -7,14 +7,14 @@ from matplotlib import pyplot as plt
 import networkx as nx
 
 from abstract.abstract import BaseSolver
-from data_contracts import QUBOInstance, SolverResult
+from data_contracts import QAOAConfig, QUBOInstance, SolverResult
 import time
 
 class PennylaneSolver(BaseSolver):
-    def __init__(self, p_layers: int = 2, steps: int = 40, optimizer_step=0.05):
-        self.p = p_layers
-        self.steps = steps
-        self.optimizer_step=optimizer_step
+    def __init__(self, qaoa_cfg: QAOAConfig):
+        self.p = qaoa_cfg.layers
+        self.steps = qaoa_cfg.steps
+        self.learning_rate= qaoa_cfg.learning_rate
 
     def solve(self, qubo: QUBOInstance) -> SolverResult:
         start_time = time.perf_counter()
@@ -37,7 +37,7 @@ class PennylaneSolver(BaseSolver):
 
         # 2. Optimization Loop
         params = pnp.array([[0.5] * self.p, [0.5] * self.p], requires_grad=True)
-        optimizer = qml.AdamOptimizer(stepsize=self.optimizer_step)      
+        optimizer = qml.AdamOptimizer(stepsize=self.learning_rate)      
 
         energies_over_time = []
         for _ in range(self.steps):
