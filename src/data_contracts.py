@@ -14,9 +14,10 @@ import numpy as np
 class ProcessInfo:
     pid: int
     command: str
-    cpu_weight: float
     current_core: int
+    cpu_weight: float
     rss_mb: float
+    io_wait_ratio: float
     priority: int
 
     def to_dict(self) -> dict:
@@ -39,7 +40,6 @@ class ProcessInfo:
             rss_mb=d["rss_mb"],
             priority=d["priority"],
         )
-
 @dataclass
 class SystemSnapshot:
     timestamp: float
@@ -63,7 +63,6 @@ class SystemSnapshot:
             processes=[ProcessInfo.from_dict(p) for p in d["processes"]],
             snapshot_id=d["snapshot_id"],
         )
-
 @dataclass
 class SnapshotObject:
     snapshot: SystemSnapshot | None
@@ -75,60 +74,62 @@ class SnapshotObject:
 # ---------------------------------------------------------------------------
 #  Decomposition Engine output
 # ---------------------------------------------------------------------------
+@dataclass 
+class FeatureMatrix:
+    F_norm: np.ndarray # The z-score normalized values
+    pids: list         # PID mapping for index reference
+    F: np.ndarray      # The original (corrected) weights
+@dataclass 
+class AffinityMatrix:
+    A: np.ndarray
+
 @dataclass
-class ClusterGroup:
-    cluster_id: int
+class Bundle:
+    bundle_id: int
     member_pids: List[int]
     aggregate_cpu_weight: float
     aggregate_rss_mb: float
-    contention_score: float
+    representative_cmd: str 
 
     def to_dict(self) -> dict:
         return {
-            "cluster_id": self.cluster_id,
+            "bundle_id": self.bundle_id,
             "member_pids": self.member_pids,
             "aggregate_cpu_weight": self.aggregate_cpu_weight,
             "aggregate_rss_mb": self.aggregate_rss_mb,
-            "contention_score": self.contention_score,
+            "representative_cmd": self.representative_cmd,
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> ClusterGroup:
+    def from_dict(cls, d: dict) -> Bundle:
         return cls(
-            cluster_id=d["cluster_id"],
+            bundle_id=d["bundle_id"],
             member_pids=d["member_pids"],
             aggregate_cpu_weight=d["aggregate_cpu_weight"],
             aggregate_rss_mb=d["aggregate_rss_mb"],
-            contention_score=d["contention_score"],
+            representative_cmd=d.get("representative_cmd", "mixed"),
         )
+    
 @dataclass
-class DecomposedSubproblem:
-    clusters: List[ClusterGroup]
-    candidate_cores: List[int]
-    fixed_load_per_core: Dict[int, float]
-    iteration_index: int
+class ClusteredSnapshot:
+    bundles: List[Bundle]
+    num_cores: int
     source_snapshot_id: str
 
     def to_dict(self) -> dict:
         return {
-            "clusters": [c.to_dict() for c in self.clusters],
-            "candidate_cores": self.candidate_cores,
-            # JSON requires string keys
-            "fixed_load_per_core": {str(k): v for k, v in self.fixed_load_per_core.items()},
-            "iteration_index": self.iteration_index,
+            "bundles": [c.to_dict() for c in self.bundles],
+            "num_cores": self.num_cores,
             "source_snapshot_id": self.source_snapshot_id,
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> DecomposedSubproblem:
+    def from_dict(cls, d: dict) -> ClusteredSnapshot:
         return cls(
-            clusters=[ClusterGroup.from_dict(c) for c in d["clusters"]],
-            candidate_cores=d["candidate_cores"],
-            fixed_load_per_core={int(k): v for k, v in d["fixed_load_per_core"].items()},
-            iteration_index=d["iteration_index"],
+            bundles=[Bundle.from_dict(c) for c in d["bundles"]],
+            num_cores=d["num_cores"],
             source_snapshot_id=d["source_snapshot_id"],
         )
-
 # ---------------------------------------------------------------------------
 # Translator output
 # ---------------------------------------------------------------------------
@@ -168,8 +169,6 @@ class QUBOInstance:
             iteration_index=d["iteration_index"],
             source_snapshot_id=d["source_snapshot_id"],
         )
-
-
 # ---------------------------------------------------------------------------
 # Solver output
 # ---------------------------------------------------------------------------
@@ -207,9 +206,6 @@ class SolverResult:
             solve_time_ms=d["solve_time_ms"],
             solver_params=d.get("solver_params", {}),
         )
-
-
-
 @dataclass
 class PipelineResult:
     iterations: List[SolverResult]
@@ -236,7 +232,6 @@ class PipelineResult:
             num_iterations=d["num_iterations"],
             source_snapshot_id=d["source_snapshot_id"],
         )
-
 @dataclass
 class SchedulingOutput:
     result: SolverResult
@@ -281,6 +276,14 @@ class TracerConfig:
     cpu_interval: int 
     num_samples: int
     live_mode: bool
+
+@dataclass
+class DecompositorConfig:
+    num_bundles: int
+    io_alpha: float
+    affinity_alpha: float
+    affinity_sigma: float
+    homogeneity_threshold:  float
 
 # ---------------------------------------------------------------------------
 # Round-trip test

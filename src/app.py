@@ -8,6 +8,8 @@ import time
 import numpy as np
 import streamlit as st
 from PIL import Image
+
+from data_contracts import DecompositorConfig
 # ── Local imports ──────────────────────────────────────────────────────────────
 try:
     from data_contracts import QAOAConfig, QUBOConfig, TracerConfig
@@ -32,7 +34,8 @@ weights = []
 
 qaoa_cfg = QAOAConfig(layers=3, steps=1, learning_rate=0.05, top_k=10)
 qubo_cfg = QUBOConfig(penalty=1, num_cores=2, snapshot=None)
-tracer_cfg = TracerConfig(min_rss=70, min_cpu=0.02, cpu_interval=1, num_samples=3, live_mode=False)
+tracer_cfg = TracerConfig(min_rss=20, min_cpu=0.005, cpu_interval=1, num_samples=3, live_mode=False)
+decompositor_cfg = DecompositorConfig(num_bundles=8, io_alpha=0.5, affinity_alpha=0.8, affinity_sigma=1.0, homogeneity_threshold=0.3)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  HELPERS
@@ -163,7 +166,7 @@ with tab_single:
 
             result: SolverResult 
             used_snapshot: SystemSnapshot
-            result, validation, used_snapshot, alpha, qubo, qaoa_cfg, qubo_cfg = SchedulingEngine.run_job(qaoa_cfg, qubo_cfg, tracer_cfg, current_snapshot)
+            result, validation, used_snapshot, alpha, qubo, qaoa_cfg, qubo_cfg = SchedulingEngine.run_job(qaoa_cfg, qubo_cfg, tracer_cfg, decompositor_cfg, current_snapshot)
             
             elapsed = time.time() - t0
 
