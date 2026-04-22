@@ -92,9 +92,25 @@ class PennylaneSolver(BaseSolver):
             
         # Check One-Hot: Every process must be assigned to exactly one core
         # num_entities is the number of processes
-        is_feasible = len(decoded) == qubo.num_entities
+        is_feasible = (
+            len(decoded) == qubo.num_entities and 
+            all(isinstance(v, int) for v in decoded.values())
+        )
         return decoded, is_feasible
 
+    """ 
+    TODO
+    
+    The matrix_to_hamiltonian function correctly computes the Ising equivalent of the QUBO including the constant offset c=∑iQii/2+∑i<jQij/4c = \sum_i Q_{ii}/2 + \sum_{i<j} Q_{ij}/4
+    c=∑i​Qii​/2+∑i<j​Qij​/4. The QAOA optimizer minimizes ⟨HIsing⟩=⟨HQUBO⟩+c\langle H_{\text{Ising}} \rangle = \langle H_{\text{QUBO}} \rangle + c
+    ⟨HIsing​⟩=⟨HQUBO​⟩+c.
+
+    However, the convergence curve stores:
+    pythonenergies_over_time.append(float(energy))  # expval(cost_h) — includes offset c
+    And the final result reports:
+    pythonfinal_energy = float(bitstring_array.T @ qubo.Q @ bitstring_array)  # pure QUBO, no offset
+    These two numbers are on different scales. Any convergence analysis comparing the QAOA's tracked energy to final_energy will see an apparent jump at the last step. Document this clearly or subtract c from the convergence curve.
+    """
     def matrix_to_hamiltonian(self, Q):
         n = len(Q)
         linear = np.zeros(n) 

@@ -1,5 +1,5 @@
 """
-visualization.py — Unified visualization for the QAOA scheduling testbed.
+visualizer.py — Unified visualizer for the QAOA scheduling testbed.
 
 Key change from the original:
   - No plt.show(), no plt.pause(), no TkAgg backend dependency.
@@ -23,20 +23,20 @@ import numpy as np
 from data_contracts import QAOAConfig, QUBOConfig
 
 
-class Visualization:
+class Visualizer:
     """
     All panel methods are instance methods that return a plt.Figure.
     They never call plt.show() or plt.pause() — the caller decides
     how to display or save the result.
 
     Usage — standalone script:
-        viz = Visualization(qubo, qaoa_cfg, qubo_cfg, probs=..., energies_over_time=...)
+        viz = Visualizer(qubo, qaoa_cfg, qubo_cfg, probs=..., energies_over_time=...)
         fig = viz.composite(save_path="results/run.png")
         plt.show()          # open a window if a GUI backend is available
         # or: fig.savefig("results/run.png")
 
     Usage — Streamlit:
-        viz = Visualization(qubo, qaoa_cfg, qubo_cfg, probs=..., energies_over_time=...)
+        viz = Visualizer(qubo, qaoa_cfg, qubo_cfg, probs=..., energies_over_time=...)
         st.pyplot(viz.panel_landscape())
         st.pyplot(viz.panel_qubo_matrix())
         st.pyplot(viz.panel_convergence())

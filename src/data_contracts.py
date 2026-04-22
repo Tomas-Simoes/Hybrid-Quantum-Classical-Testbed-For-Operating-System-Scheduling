@@ -1,11 +1,48 @@
 from __future__ import annotations
 
 import json
+import math
 import uuid
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple
 
 import numpy as np
+
+from decomposition.subqubo_heuristics import Heuristic
+
+@dataclass 
+class WorkloadEntity:
+    entity_id: int 
+    cpu_weight: float 
+    rss_mb: float 
+    label: str 
+    def __str__(self) -> str:
+        return f"[{self.entity_id}] {self.label[:15]:<15} | CPU: {self.cpu_weight:>6.2%} | RAM: {self.rss_mb:>8.1f}MB"
+    __repr__ = __str__
+
+@dataclass 
+class Workload:
+    entities: List[WorkloadEntity]
+    num_cores: int 
+    snapshot_id: str
+
+    @property
+    def total_weight(self) -> float:
+        return sum(e.cpu_weight for e in self.entities)
+    
+    @property
+    def entity_map(self) -> Dict[int, WorkloadEntity]:
+        return {e.entity_id: e for e in self.entities}
+
+    def get_entity(self, entity_id: int) -> WorkloadEntity:
+        return self.entity_map.get(entity_id)
+    
+    def __str__(self) -> str:
+        return (f"Workload Snapshot: {self.snapshot_id}\n"
+                f"Entities: {len(self.entities)} | Cores: {self.num_cores} | "
+                f"Total CPU: {self.total_weight:.2%}")
+    __repr__ = __str__
+
 
 # ---------------------------------------------------------------------------
 # Tracer output
@@ -19,6 +56,7 @@ class ProcessInfo:
     rss_mb: float
     io_wait_ratio: float
     priority: int
+    priority_class: str
 
     def to_dict(self) -> dict:
         return {
@@ -40,12 +78,27 @@ class ProcessInfo:
             rss_mb=d["rss_mb"],
             priority=d["priority"],
         )
+    
 @dataclass
 class SystemSnapshot:
-    timestamp: float
-    num_cores: int
     processes: List[ProcessInfo]
-    snapshot_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    num_cores: int 
+    total_ram_mb: int
+    snapshot_id: str 
+    timestamp: float 
+
+    def to_workload(self) -> Workload:
+        return Workload(
+            entities=[WorkloadEntity(
+                entity_id=p.pid,
+                cpu_weight=p.cpu_weight,
+                rss_mb=p.rss_mb,
+                label=f"pid_{p.pid}"
+            ) for p in self.processes
+            ],
+            num_cores=self.num_cores,
+            snapshot_id=self.snapshot_id
+        )
 
     def to_dict(self) -> dict:
         return {
@@ -63,6 +116,7 @@ class SystemSnapshot:
             processes=[ProcessInfo.from_dict(p) for p in d["processes"]],
             snapshot_id=d["snapshot_id"],
         )
+    
 @dataclass
 class SnapshotObject:
     snapshot: SystemSnapshot | None
@@ -79,6 +133,7 @@ class FeatureMatrix:
     F_norm: np.ndarray # The z-score normalized values
     pids: list         # PID mapping for index reference
     F: np.ndarray      # The original (corrected) weights
+    w_eff: np.ndarray
 @dataclass 
 class AffinityMatrix:
     A: np.ndarray
@@ -110,12 +165,33 @@ class Bundle:
             representative_cmd=d.get("representative_cmd", "mixed"),
         )
     
+    def __str__(self) -> str:
+        return (f"Bundle_{self.bundle_id:<2} | "
+                f"Members: {len(self.member_pids):>2} | "
+                f"CPU: {self.aggregate_cpu_weight:>6.2%} | "
+                f"MEM: {self.aggregate_rss_mb:>8.1f}MB | "
+                f"CMD: {self.representative_cmd}")
+    
 @dataclass
 class ClusteredSnapshot:
     bundles: List[Bundle]
     num_cores: int
     source_snapshot_id: str
 
+    def to_workload(self) -> Workload:
+        return Workload(
+            entities=[
+                WorkloadEntity(
+                    entity_id=b.bundle_id,  # negative to distinguish from real PIDs
+                    cpu_weight=b.aggregate_cpu_weight,
+                    rss_mb=b.aggregate_rss_mb,
+                    label=f"Bundle_{b.bundle_id}"
+                )
+                for b in self.bundles
+            ],
+            num_cores=self.num_cores,
+            snapshot_id=self.source_snapshot_id
+        )
     def to_dict(self) -> dict:
         return {
             "bundles": [c.to_dict() for c in self.bundles],
@@ -261,6 +337,7 @@ class QUBOConfig:
     penalty: float
     num_cores: int
     snapshot: SystemSnapshot | None
+    target_load: float | None
 
 @dataclass
 class QAOAConfig:
@@ -268,6 +345,7 @@ class QAOAConfig:
     steps: int
     learning_rate: float
     top_k: int
+    mixer_type: str # TODO check this "dealing with one-hot constraints, an XY Mixer is often more efficient than a standard X mixer because it stays within the feasible subspace"
 
 @dataclass 
 class TracerConfig:
@@ -278,13 +356,19 @@ class TracerConfig:
     live_mode: bool
 
 @dataclass
+@dataclass
 class DecompositorConfig:
-    num_bundles: int
+    qubit_max: int
+    num_cores: int         
     io_alpha: float
     affinity_alpha: float
-    affinity_sigma: float
-    homogeneity_threshold:  float
+    homogeneity_threshold: float
+    zscore_threshold: float
+    sorting_strategy: Heuristic = Heuristic.WEIGHT_DESCENDING
 
+    def num_bundles(self, n_processes: int) -> int:
+        max_per_bundle = self.qubit_max // self.num_cores   
+        return min(math.ceil(n_processes / max_per_bundle), n_processes)
 # ---------------------------------------------------------------------------
 # Round-trip test
 # ---------------------------------------------------------------------------

@@ -15,7 +15,7 @@ try:
     from data_contracts import QAOAConfig, QUBOConfig, TracerConfig
     from data_contracts import SystemSnapshot, ProcessInfo, SolverResult
     from main import SchedulingEngine
-    from visualization.visualization import Visualization
+    from visualizer.graph_visualizer import Visualizer
     IMPORTS_OK = True
 except ImportError as e:
     IMPORTS_OK = False
@@ -196,8 +196,8 @@ with tab_single:
                 })
             st.dataframe(rows, width="stretch", hide_index=True)
 
-        # Build Visualization once — reuse across all four panels
-        viz = Visualization(
+        # Build Visualizer once — reuse across all four panels
+        viz = Visualizer(
             qubo=qubo,
             qaoa_cfg=qaoa_cfg,
             qubo_cfg=qubo_cfg,
@@ -318,7 +318,7 @@ with tab_sweep:
                         "max_p_mean":    float(np.mean(shot_max_ps)),
                         "feasible_rate": float(np.mean(shot_feasible)),
                         "optimal_rate":  float(np.mean(shot_optimal)),
-                        # keys consumed by Visualization.plot_sweep
+                        # keys consumed by Visualizer.plot_sweep
                         "p":       float(pen),
                         "alpha":   float(np.mean(shot_alphas)),
                         "max_p":   float(np.mean(shot_max_ps)),
@@ -343,9 +343,9 @@ with tab_sweep:
             width="stretch", hide_index=True,
         )
 
-        # Single p_layers: use Visualization.plot_sweep directly
+        # Single p_layers: use Visualizer.plot_sweep directly
         if len(set(r["p_layers"] for r in sr)) == 1:
-            st.pyplot(Visualization.plot_sweep(sr), width="stretch")
+            st.pyplot(Visualizer.plot_sweep(sr), width="stretch")
         else:
             import matplotlib.pyplot as plt
             fig, ax = plt.subplots(figsize=(10, 5))

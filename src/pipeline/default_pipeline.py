@@ -1,28 +1,27 @@
-from builder.qubo_core import CoreAssignmentBuilder
-from data_contracts import QAOAConfig, QUBOConfig
+from builder.builder_core import CoreAssignmentBuilder
+from data_contracts import QAOAConfig, QUBOConfig, Workload
 from data_contracts import SystemSnapshot
 from solver.solver_validator import SolverValidator
 from solver.pennylane_solver import PennylaneSolver
-from tracer.process_tracer import ProcessTracer
-from visualization.visualization import Visualization
+from visualizer.graph_visualizer import Visualizer
 import time
 from contextlib import redirect_stdout
 
 class DefaultPipeline:
-    def __init__(self, tracer: ProcessTracer, builder: CoreAssignmentBuilder, solver: PennylaneSolver, solver_validator: SolverValidator):
-        self.tracer = tracer
+    def __init__(self, builder: CoreAssignmentBuilder, solver: PennylaneSolver, solver_validator: SolverValidator):
         self.builder = builder 
         self.solver = solver 
         self.solver_validator = solver_validator
     
-    def run(self, filename, snapshot: SystemSnapshot, qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig):
-        print(f"\n--- Run Started at {time.ctime()} ---")
-        print("Snapshot ID:", snapshot.snapshot_id)
-        print("Processes:", [(p.pid, p.cpu_weight) for p in snapshot.processes])
+    def run(self, filename, workload: Workload, qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig):
+        print(f"\n--- Raw Run Started at {time.ctime()} ---")
+        print("Workload ID:", workload.snapshot_id)
+        print("Entities:", [(e.entity_id, e.cpu_weight) for e in workload.entities])
+
         print("Building QUBO...")
     
         start_time = time.time()
-        core_qubo = self.builder.build(snapshot)
+        core_qubo = self.builder.build(workload)
         print(f"QUBO Matrix completed in {time.time() - start_time}")
 
         start_time = time.time()
@@ -46,14 +45,15 @@ class DefaultPipeline:
         print(f"Core Assignment - Global energy: {core_validation['global_energy']:.4f}")
         if core_validation["errors"]:
             print(f"Core Assignment - Errors: {core_validation['errors']}")
+        
         print("\n--- Final Schedule ---")
-        for proc in snapshot.processes:
-            core = core_result.decoded_assignments.get(proc.pid, "?")
-            print(f"  PID {proc.pid} (w={proc.cpu_weight:.3f}) → core {core}")
+        for entity in workload.processes:
+            core = core_result.decoded_assignments.get(entity.entity_id, "?")
+            print(f"  Entity {entity.entity_id} (w={entity.cpu_weight:.3f}) → core {core}")
 
         print(f"\nTotal solve time: {core_result.solve_time_ms:.3f}ms")
 
-        Visualization(
+        Visualizer(
             qubo=core_qubo,
             qaoa_cfg=qaoa_cfg,
             qubo_cfg=qubo_cfg,
@@ -62,4 +62,4 @@ class DefaultPipeline:
             global_optimum=core_validation["global_energy"],
         )
         
-        return core_result, core_validation
+        return core_qubo, core_result, core_validation
