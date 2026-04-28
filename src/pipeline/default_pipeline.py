@@ -53,13 +53,6 @@ class DefaultPipeline:
 
         print(f"\nTotal solve time: {core_result.solve_time_ms:.3f}ms")
 
-        Visualizer(
-            qubo=core_qubo,
-            qaoa_cfg=qaoa_cfg,
-            qubo_cfg=qubo_cfg,
-            probs=core_result.probs,
-            energies_over_time=core_result.convergence_curve,
-            global_optimum=core_validation["global_energy"],
-        )
+      
         
         return core_qubo, core_result, core_validation

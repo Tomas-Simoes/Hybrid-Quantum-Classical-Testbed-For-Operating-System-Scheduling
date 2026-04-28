@@ -14,6 +14,7 @@ from solver.pennylane_solver import PennylaneSolver
 from solver.solver_validator import SolverValidator
 from pipeline.default_pipeline import DefaultPipeline
 from tracer.process_tracer import ProcessTracer
+from visualizer.graph_visualizer import Visualizer
 from visualizer.snapshot_visualization import SnapshotVisualizer
 cli_mode = False
 class SchedulingEngine:
@@ -72,6 +73,8 @@ class SchedulingEngine:
                 qaoa_cfg=qaoa_cfg, 
                 qubo_cfg=qubo_cfg
             )
+
+            
         else:
             pipeline = IterativePipeline(builder, solver, validator, subqubo_decomposer)
     
@@ -81,6 +84,15 @@ class SchedulingEngine:
                 qaoa_cfg=qaoa_cfg, 
                 qubo_cfg=qubo_cfg,
                 dec_cfg=decompositor_cfg,
+        )
+            
+        Visualizer(
+            qubo=qubo,
+            qaoa_cfg=qaoa_cfg,
+            qubo_cfg=qubo_cfg,
+            probs=result.probs,
+            energies_over_time=result.convergence_curve,
+            global_optimum=validation["global_energy"],
         )
 
         return SchedulingOutput(
@@ -99,7 +111,7 @@ if __name__ == "__main__":
     
     NUM_CORES = 2 
 
-    qaoa_cfg = QAOAConfig(layers=3, steps=1, learning_rate=0.05, top_k=10, mixer_type="X")
+    qaoa_cfg = QAOAConfig(layers=3, steps=10, learning_rate=0.05, top_k=10, mixer_type="X")
     qubo_cfg = QUBOConfig(penalty=1, num_cores=NUM_CORES, snapshot=None, target_load=None)
     tracer_cfg = TracerConfig(min_rss=20, min_cpu=0.005, cpu_interval=1, num_samples=3, live_mode=False)
     decompositor_cfg = DecompositorConfig(qubit_max=12, num_cores=NUM_CORES, io_alpha=0.5, affinity_alpha=0.8, homogeneity_threshold=0.3, zscore_threshold=1.5, sorting_strategy=Heuristic.COUPLING_DESCENDING)

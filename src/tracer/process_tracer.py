@@ -13,9 +13,8 @@ class ProcessTracer:
 
     def trace(self) -> SystemSnapshot:
         initial_stats = {}
-        procs_cache: dict[int, psutil.Process] = {
-
-        }
+        procs_cache: dict[int, psutil.Process] = {}
+        
         for proc in psutil.process_iter(["pid", "name", "cmdline", "cpu_num", "nice", "memory_info", "cpu_times"]):
             try:
                 pid = proc.info["pid"] 
@@ -82,7 +81,7 @@ class ProcessTracer:
             num_cores=psutil.cpu_count(logical=True),
             total_ram_mb = psutil.virtual_memory().total / (1024 * 1024),
             processes=final_proc,
-            snapshot_id=str(uuid.uuid4())  # add this
+            snapshot_id=str(uuid.uuid4()) 
         )
     
     def get_priority_class(self, pid: int) -> str: 

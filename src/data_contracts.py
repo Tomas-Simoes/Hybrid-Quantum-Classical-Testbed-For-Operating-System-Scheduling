@@ -344,8 +344,6 @@ class QAOAConfig:
     layers: int
     steps: int
     learning_rate: float
-    top_k: int
-    mixer_type: str # TODO check this "dealing with one-hot constraints, an XY Mixer is often more efficient than a standard X mixer because it stays within the feasible subspace"
 
 @dataclass 
 class TracerConfig:
