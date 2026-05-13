@@ -14,7 +14,6 @@ class PennylaneSolver(BaseSolver):
         self.steps = qaoa_cfg.steps
         self.learning_rate = qaoa_cfg.learning_rate
         self.top_k = qaoa_cfg.top_k
-        self.mixer_type = qaoa_cfg.mixer_type
 
     def _make_device(self, num_qubits: int):
         try:
@@ -30,7 +29,7 @@ class PennylaneSolver(BaseSolver):
         num_qubits = qubo.num_variables
 
         # 1. build Hamiltonians
-        cost_h, offset = self.matrix_to_hamiltonian(qubo.Q)
+        cost_h, _ = self.matrix_to_hamiltonian(qubo.Q)
         mixer_h = qml.qaoa.x_mixer(range(num_qubits))
         dev = self._make_device(num_qubits)
 
@@ -51,9 +50,7 @@ class PennylaneSolver(BaseSolver):
         energies_over_time = []
         for _ in range(self.steps):
             params, energy = optimizer.step_and_cost(cost_function, params)
-            # Subtract Ising offset so the convergence curve lives in QUBO space.
-            # expval(cost_h) = <H_QUBO> + offset  →  <H_QUBO> = expval - offset
-            energies_over_time.append(float(energy) - offset)
+            energies_over_time.append(float(energy))
 
         # 3. sample probabilities and pick the best feasible bitstring
         @qml.qnode(dev)
@@ -134,16 +131,17 @@ class PennylaneSolver(BaseSolver):
 
     def matrix_to_hamiltonian(self, Q) -> Tuple[qml.Hamiltonian, float]:
         """
-        Converts an upper-triangular QUBO matrix Q into an Ising Hamiltonian
-        using the substitution x_i = (1 - Z_i) / 2.
+        Converts a full symmetric QUBO matrix Q into an Ising Hamiltonian using
+        the substitution x_i = (1 - Z_i) / 2.
+
+        The project stores off-diagonal couplings symmetrically at half strength,
+        so x.T @ Q @ x expands to:
+
+            sum_i Q[i,i] x_i + sum_{i<j} (Q[i,j] + Q[j,i]) x_i x_j
 
         Returns:
-            cost_h : the PennyLane Hamiltonian  H_Ising = H_QUBO + offset
-            offset  : the constant shift c such that <H_Ising> = <H_QUBO> + c
-
-        The offset is subtracted from the convergence curve in solve() so that
-        tracked energies live in the same space as the final QUBO energy
-        x^T Q x computed from the bitstring.
+            cost_h : the PennyLane Hamiltonian equivalent to x.T @ Q @ x
+            offset : the constant identity coefficient included in cost_h
         """
         n = len(Q)
         linear = np.zeros(n)
@@ -156,13 +154,17 @@ class PennylaneSolver(BaseSolver):
                 if i == j:
                     linear[i] -= Q[i, i] / 2
                     offset += Q[i, i] / 2
-                elif Q[i, j] != 0:
-                    coeffs.append(Q[i, j] / 4)
+                else:
+                    qij = Q[i, j] + Q[j, i]
+                    if np.isclose(qij, 0.0):
+                        continue
+
+                    coeffs.append(qij / 4)
                     obs.append(qml.PauliZ(i) @ qml.PauliZ(j))
 
-                    linear[i] -= Q[i, j] / 4
-                    linear[j] -= Q[i, j] / 4
-                    offset += Q[i, j] / 4
+                    linear[i] -= qij / 4
+                    linear[j] -= qij / 4
+                    offset += qij / 4
 
         for i in range(n):
             if not np.isclose(linear[i], 0.0):

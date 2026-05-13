@@ -11,21 +11,25 @@ class CoreAssignmentBuilder(BaseBuilder):
 
     def build(self, workload: Workload) -> QUBOInstance:
         weights = [e.cpu_weight for e in workload.entities]
+
         N = len(weights)
         K = workload.num_cores
-
         Q = np.zeros((N * K, N * K))
-
+        L_avg = sum(weights) / K
+        
+        if N == 0: raise ValueError("Workload must contain at least one entity.")
+        if K <= 0: raise ValueError("Number of cores must be greater than zero.")
+        if N < K: raise Warning("Number of entities must be greater than or equal to number of cores.")
+        
         for i, j in product(range(N), range(K)):
             for k, l in product(range(N), range(K)):
                 idx1, idx2 = i * K + j, k * K + l
-                if idx1 <= idx2:
-                    if i == k and j == l:
-                        Q[idx1, idx2] = (weights[i] ** 2) - self.P
-                    elif i != k and j == l:
-                        Q[idx1, idx2] = 2 * weights[i] * weights[k]
-                    elif i == k and j != l:
-                        Q[idx1, idx2] = 2 * self.P
+                if i == k and j == l:
+                    Q[idx1, idx2] = (weights[i] ** 2) - 2 * L_avg * weights[i] - self.P
+                elif i != k and j == l:
+                    Q[idx1, idx2] = weights[i] * weights[k]
+                elif i == k and j != l:
+                    Q[idx1, idx2] = self.P
 
         variable_map = {
             i * K + j: (workload.entities[i].entity_id, j)

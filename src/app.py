@@ -10,6 +10,7 @@ import streamlit as st
 from PIL import Image
 
 from data_contracts import DecompositorConfig
+from decomposition.subqubo_heuristics import Heuristic
 # ── Local imports ──────────────────────────────────────────────────────────────
 try:
     from data_contracts import QAOAConfig, QUBOConfig, TracerConfig
@@ -32,10 +33,10 @@ proc_preset = {
 num_cores_preset = [2,3,4]
 weights = []
 
-qaoa_cfg = QAOAConfig(layers=3, steps=1, learning_rate=0.05, top_k=10)
-qubo_cfg = QUBOConfig(penalty=1, num_cores=2, snapshot=None)
+qaoa_cfg = QAOAConfig(layers=3, steps=10, learning_rate=0.05, top_k=10)
+qubo_cfg = QUBOConfig(penalty=1, num_cores=2, snapshot=None, target_load=None)
 tracer_cfg = TracerConfig(min_rss=20, min_cpu=0.005, cpu_interval=1, num_samples=3, live_mode=False)
-decompositor_cfg = DecompositorConfig(num_bundles=8, io_alpha=0.5, affinity_alpha=0.8, affinity_sigma=1.0, homogeneity_threshold=0.3)
+decompositor_cfg = DecompositorConfig(qubit_max=12, num_cores=2, io_alpha=0.5, affinity_alpha=0.8, homogeneity_threshold=0.3, zscore_threshold=1.5, sorting_strategy=Heuristic.COUPLING_DESCENDING)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  HELPERS
@@ -52,9 +53,13 @@ def build_preset_snapshot(weights: list, num_cores: int) -> SystemSnapshot:
                 current_core=0,
                 rss_mb=w * 1024,
                 priority=20,
+                io_wait_ratio=None, 
+                priority_class=None   
             )
             for i, w in enumerate(weights)
         ],
+        total_ram_mb = None,
+        snapshot_id = None
     )
 
 def p_critical(weights: list, num_cores: int) -> float:
@@ -282,7 +287,7 @@ with tab_sweep:
         if total_runs > 100:
             st.warning(f"⚠️ {total_runs} runs may take a long time.")
 
-        snapshot      = build_preset_snapshot(weights, num_cores)
+        snapshot      = build_preset_snapshot(weights, qubo_cfg.num_cores)
         sweep_results = []
         progress      = st.progress(0, text="Starting sweep…")
         run_index     = 0
@@ -297,10 +302,29 @@ with tab_sweep:
                         text=f"P={pen:.2f} · p={layer_val} · shot {shot + 1}/{shots}",
                     )
                     try:
-                        res, val, _, _, _ = SchedulingEngine.run_job(
-                            snapshot, float(pen), layer_val,
-                            int(sweep_steps), float(sweep_lr),
+                        sweep_qaoa_cfg = QAOAConfig(
+                            layers=layer_val,
+                            steps=int(sweep_steps),
+                            learning_rate=float(sweep_lr),
+                            top_k=qaoa_cfg.top_k,
                         )
+                        sweep_qubo_cfg = QUBOConfig(
+                            penalty=float(pen),
+                            num_cores=qubo_cfg.num_cores,
+                            snapshot=None,
+                            target_load=None,
+                        )
+
+                        output = SchedulingEngine.run_job(
+                            qaoa_cfg=sweep_qaoa_cfg,
+                            qubo_cfg=sweep_qubo_cfg,
+                            tracer_cfg=tracer_cfg,
+                            decompositor_cfg=decompositor_cfg,
+                            preset_snapshot=snapshot,
+                        )
+
+                        res = output.result
+                        val = output.validation
                         g_e = val["global_energy"]
                         shot_alphas.append(res.energy / g_e if g_e != 0 else 0.0)
                         shot_max_ps.append(float(np.max(res.probs)) if res.probs is not None else 0.0)
@@ -308,7 +332,6 @@ with tab_sweep:
                         shot_optimal.append(val["is_optimal"])
                     except Exception as e:
                         st.error(f"Run failed at P={pen}, p={layer_val}: {e}")
-
                 if shot_alphas:
                     sweep_results.append({
                         "P":             float(pen),

@@ -54,9 +54,9 @@ class ProcessInfo:
     current_core: int
     cpu_weight: float
     rss_mb: float
-    io_wait_ratio: float
     priority: int
-    priority_class: str
+    io_wait_ratio: float | None 
+    priority_class: str | None 
 
     def to_dict(self) -> dict:
         return {
@@ -83,8 +83,8 @@ class ProcessInfo:
 class SystemSnapshot:
     processes: List[ProcessInfo]
     num_cores: int 
-    total_ram_mb: int
-    snapshot_id: str 
+    total_ram_mb: int | None 
+    snapshot_id: str | None
     timestamp: float 
 
     def to_workload(self) -> Workload:
@@ -329,6 +329,38 @@ class SchedulingOutput:
             self.qubo_cfg
         ))
     
+
+
+@dataclass
+class IterativeSchedulingOutput:
+    # Core results
+    final_assignments: Dict[int, int]       # entity_id -> core
+    solver_results: List[SolverResult]      # one per sub-QUBO
+    phi_history: List[np.ndarray]           # phi vector after each sub-QUBO
+
+    # Context
+    used_workload: Workload
+    qubo_instance: QUBOInstance             # global Q (before decomposition)
+    qaoa_cfg: QAOAConfig
+    qubo_cfg: QUBOConfig
+
+    # Derived metrics — computed in __post_init__
+    final_phi: np.ndarray = field(init=False)
+    L_avg: float = field(init=False)
+    load_imbalance: float = field(init=False)
+    total_solve_time_ms: float = field(init=False)
+    num_sub_qubos: int = field(init=False)
+    num_feasible: int = field(init=False)
+    all_feasible: bool = field(init=False)
+
+    def __post_init__(self):
+        self.final_phi          = self.phi_history[-1]
+        self.L_avg              = self.used_workload.total_weight / self.used_workload.num_cores
+        self.load_imbalance     = float(self.final_phi.max() - self.final_phi.min())
+        self.total_solve_time_ms = sum(r.solve_time_ms for r in self.solver_results)
+        self.num_sub_qubos      = len(self.solver_results)
+        self.num_feasible       = sum(1 for r in self.solver_results if r.is_feasible)
+        self.all_feasible       = self.num_feasible == self.num_sub_qubos
 # ---------------------------------------------------------------------------
 # Configurations
 # ---------------------------------------------------------------------------
@@ -344,6 +376,7 @@ class QAOAConfig:
     layers: int
     steps: int
     learning_rate: float
+    top_k: int
 
 @dataclass 
 class TracerConfig:
@@ -353,7 +386,6 @@ class TracerConfig:
     num_samples: int
     live_mode: bool
 
-@dataclass
 @dataclass
 class DecompositorConfig:
     qubit_max: int

@@ -13,7 +13,7 @@ class DefaultPipeline:
         self.solver = solver 
         self.solver_validator = solver_validator
     
-    def run(self, filename, workload: Workload, qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig):
+    def run(self, workload: Workload, qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig):
         print(f"\n--- Raw Run Started at {time.ctime()} ---")
         print("Workload ID:", workload.snapshot_id)
         print("Entities:", [(e.entity_id, e.cpu_weight) for e in workload.entities])
@@ -47,12 +47,10 @@ class DefaultPipeline:
             print(f"Core Assignment - Errors: {core_validation['errors']}")
         
         print("\n--- Final Schedule ---")
-        for entity in workload.processes:
+        for entity in workload.entities:
             core = core_result.decoded_assignments.get(entity.entity_id, "?")
             print(f"  Entity {entity.entity_id} (w={entity.cpu_weight:.3f}) → core {core}")
 
         print(f"\nTotal solve time: {core_result.solve_time_ms:.3f}ms")
 
-      
-        
         return core_qubo, core_result, core_validation

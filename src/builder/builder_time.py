@@ -31,13 +31,12 @@ class TimeAssignmentBuilder(BaseBuilder):
                 idx1 = i1 * T + t1
                 idx2 = i2 * T + t2
 
-                if idx1 <= idx2:
-                    if i1 == i2 and t1 != t2:
-                        Q[idx1, idx2] = 2 * self.P
-                    elif i1 != i2 and core_map[i1] == core_map[i2] and t1 == t2:
-                        Q[idx1, idx2] = 2 * weights[i1] * weights[i2]
-                    elif i1 == i2 and t1 == t2:
-                        Q[idx1, idx2] = weights[i1] ** 2 - self.P
+                if i1 == i2 and t1 != t2:
+                    Q[idx1, idx2] = self.P
+                elif i1 != i2 and core_map[i1] == core_map[i2] and t1 == t2:
+                    Q[idx1, idx2] = weights[i1] * weights[i2]
+                elif i1 == i2 and t1 == t2:
+                    Q[idx1, idx2] = weights[i1] ** 2 - self.P
 
         variable_map = {
             i * T + t: (processes[i].pid, t)
