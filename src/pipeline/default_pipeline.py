@@ -39,6 +39,8 @@ class DefaultPipeline:
         # validate core assignment
         start_time = time.time()
         core_validation = self.solver_validator.validate(core_qubo, core_result)
+        core_result.decoded_assignments.update(workload.fixed_assignments)
+        core_validation["candidate_assignments"] = core_result.decoded_assignments
         print(f"Validated in {time.time() - start_time}")
 
         print(f"Core Assignment - Optimal: {core_validation['is_optimal']}")
@@ -47,6 +49,8 @@ class DefaultPipeline:
             print(f"Core Assignment - Errors: {core_validation['errors']}")
         
         print("\n--- Final Schedule ---")
+        for entity_id, core in workload.fixed_assignments.items():
+            print(f"  Fixed RT {entity_id} → core {core}")
         for entity in workload.entities:
             core = core_result.decoded_assignments.get(entity.entity_id, "?")
             print(f"  Entity {entity.entity_id} (w={entity.cpu_weight:.3f}) → core {core}")

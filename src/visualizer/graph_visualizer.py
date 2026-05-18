@@ -195,6 +195,9 @@ class Visualizer:
             f"Layers (p): {self.qaoa_cfg.layers}",
             f"Max Steps: {self.qaoa_cfg.steps}",
             f"Learning Rate: {self.qaoa_cfg.learning_rate}",
+            f"Mixer: {self.qaoa_cfg.mixer_type}",
+            f"Init Gamma: {self.qaoa_cfg.init_gamma}",
+            f"Init Beta: {self.qaoa_cfg.init_beta}",
         ]
 
         if self.energies_over_time:
@@ -275,6 +278,7 @@ class Visualizer:
 
         Args:
             penalty_results: list of dicts with keys p, alpha, max_p, feasible.
+                The alpha key stores the relative optimality gap for compatibility.
             save_path:       optional path to save the figure.
         """
         ps     = [r["p"]       for r in penalty_results]
@@ -286,8 +290,8 @@ class Visualizer:
 
         color_alpha = "tab:blue"
         ax1.set_xlabel("Penalty Weight (P)")
-        ax1.set_ylabel("Approximation Ratio (Alpha)", color=color_alpha)
-        ax1.plot(ps, alphas, marker="o", color=color_alpha, linewidth=2, label="Alpha")
+        ax1.set_ylabel("Optimality Gap", color=color_alpha)
+        ax1.plot(ps, alphas, marker="o", color=color_alpha, linewidth=2, label="Gap")
         ax1.tick_params(axis="y", labelcolor=color_alpha)
         ax1.grid(True, linestyle="--", alpha=0.6)
 
@@ -411,6 +415,9 @@ class Visualizer:
             f"Layers (p): {self.qaoa_cfg.layers}",
             f"Max Steps: {self.qaoa_cfg.steps}",
             f"Learning Rate: {self.qaoa_cfg.learning_rate}",
+            f"Mixer: {self.qaoa_cfg.mixer_type}",
+            f"Init Gamma: {self.qaoa_cfg.init_gamma}",
+            f"Init Beta: {self.qaoa_cfg.init_beta}",
         ]
         if self.energies_over_time:
             lines.append(f"Actual Iterations: {len(self.energies_over_time)}")

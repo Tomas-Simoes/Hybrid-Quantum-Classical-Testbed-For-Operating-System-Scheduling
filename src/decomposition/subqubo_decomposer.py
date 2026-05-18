@@ -9,7 +9,7 @@ class SubQUBODecomposer:
     def partition(
         self,
         workload: Workload,
-        Q_global: QUBOInstance,
+        Q_global: np.ndarray,
         dec_cfg: DecompositorConfig,
     ) -> list[list[WorkloadEntity]]:
         """
@@ -25,8 +25,20 @@ class SubQUBODecomposer:
         # workload.entities (0-based, no negative indexing).
         sorted_workload_index: list[list[int]] = heuristic.apply(workload, dec_cfg.qubit_max)
 
+        invalid_indices = [
+            idx
+            for sublist in sorted_workload_index
+            for idx in sublist
+            if idx < 0 or idx >= len(workload.entities)
+        ]
+        if invalid_indices:
+            raise ValueError(
+                "Partition heuristic returned invalid workload positions: "
+                f"{invalid_indices}"
+            )
+
         sorted_workload: list[list[WorkloadEntity]] = [
-            [workload.get_entity(idx) for idx in sublist]
+            [workload.entities[idx] for idx in sublist]
             for sublist in sorted_workload_index
         ]
 
@@ -107,4 +119,4 @@ class SubQUBODecomposer:
                 
     def partition_dynamically(self) -> list[list[WorkloadEntity]]:
         # TODO: implement CORE_BALANCE dynamic partitioning
-        return []
+        raise NotImplementedError("Dynamic CORE_BALANCE partitioning is not implemented yet.")

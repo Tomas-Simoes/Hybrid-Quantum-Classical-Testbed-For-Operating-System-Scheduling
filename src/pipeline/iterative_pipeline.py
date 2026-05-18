@@ -2,12 +2,33 @@ from typing import Dict, List
 
 import numpy as np
 from builder.builder_core import CoreAssignmentBuilder
-from data_contracts import DecompositorConfig, QAOAConfig, QUBOConfig, SolverResult, Workload
+from data_contracts import DecompositorConfig, QAOAConfig, QUBOConfig, QUBOInstance, SolverResult, Workload
 from decomposition.subqubo_decomposer import SubQUBODecomposer
 from decomposition.subqubo_heuristics import Heuristic
 from solver.solver_validator import SolverValidator
 from solver.pennylane_solver import PennylaneSolver
 import time
+
+
+class InfeasibleSubQUBOError(RuntimeError):
+    def __init__(
+        self,
+        subqubo_index: int,
+        result: SolverResult,
+        final_assignments: Dict[int, int],
+        solver_results: List[SolverResult],
+        phi_history: List[np.ndarray],
+    ):
+        self.subqubo_index = subqubo_index
+        self.result = result
+        self.final_assignments = dict(final_assignments)
+        self.solver_results = list(solver_results)
+        self.phi_history = [phi.copy() for phi in phi_history]
+        super().__init__(
+            f"Sub-QUBO {subqubo_index + 1} produced no feasible top-k assignment; "
+            "stopping before updating final assignments or core-load state."
+        )
+
 
 class IterativePipeline:
     def __init__(self, builder: CoreAssignmentBuilder, solver: PennylaneSolver, 
@@ -17,16 +38,46 @@ class IterativePipeline:
         self.solver_validator = solver_validator
         self.decomposer = decomposer
 
+    def _build_global_result(
+        self,
+        workload: Workload,
+        qubo: QUBOInstance,
+        final_assignments: Dict[int, int],
+        solver_results: List[SolverResult],
+    ) -> SolverResult:
+        bitstring = np.zeros(qubo.num_variables, dtype=int)
+
+        for var_idx, (entity_id, core) in qubo.variable_map.items():
+            if final_assignments.get(entity_id) == core:
+                bitstring[var_idx] = 1
+
+        K = qubo.num_cores
+        is_feasible = all(
+            bitstring[i * K : (i + 1) * K].sum() == 1
+            for i in range(qubo.num_entities)
+        )
+        global_energy = float(bitstring.T @ qubo.Q @ bitstring)
+
+        return SolverResult(
+            bitstring=bitstring,
+            decoded_assignments=dict(final_assignments),
+            energy=global_energy,
+            is_feasible=is_feasible,
+            solver_backend="iterative_qaoa_assembled",
+            solve_time_ms=sum(r.solve_time_ms for r in solver_results),
+            solver_params={"sub_qubos": len(solver_results)},
+        )
+
     def run(self, filename, workload: Workload, qaoa_cfg: QAOAConfig, qubo_cfg: QUBOConfig, dec_cfg: DecompositorConfig):
         print(f"\n--- Iterative Run Started at {time.ctime()} ---")
 
         print("Building Q_global...")
         start_time = time.time()
-        qubo_instance = self.builder.build(workload)
+        decomposition_qubo = self.builder.build(workload, include_fixed_bias=False)
         print(f"QUBO Matrix completed in {time.time() - start_time:.4f}s")
 
         print("Partitioning in Sub-QUBOs...")
-        Q_global = qubo_instance.Q
+        Q_global = decomposition_qubo.Q
         groups = self.decomposer.partition(workload, Q_global, dec_cfg)
         
         print(f"{len(groups)} sub-QUBOs | "
@@ -35,11 +86,15 @@ class IterativePipeline:
         print("Starting Iterative Loop...")
         
         K = workload.num_cores
-        phi = np.zeros(K)               # accumulated load per core
-        final_assignments: Dict[int, int] = {}
+        phi = workload.fixed_load_per_core
+        final_assignments: Dict[int, int] = dict(workload.fixed_assignments)
         solver_results: List[SolverResult] = []
         phi_history: List[np.ndarray] = []
         L_avg = workload.total_weight / K
+
+        if final_assignments:
+            print(f"Fixed RT assignments: {final_assignments}")
+            print(f"Initial phi from RT load: {np.round(phi, 4)}")
 
         for t, group in enumerate(groups):
             group_weight = sum(e.cpu_weight for e in group)
@@ -62,9 +117,16 @@ class IterativePipeline:
                   f"feasible={result.is_feasible}")
 
             if not result.is_feasible:
-                # The solver already falls back to best infeasible bitstring.
-                print(f"  WARNING: sub-QUBO {t} returned infeasible solution. "
-                      f"Assignments: {result.decoded_assignments}")
+                solver_results.append(result)
+                print(f"  ERROR: sub-QUBO {t+1} returned no feasible top-k assignment. "
+                      f"Best fallback: {result.decoded_assignments}")
+                raise InfeasibleSubQUBOError(
+                    subqubo_index=t,
+                    result=result,
+                    final_assignments=final_assignments,
+                    solver_results=solver_results,
+                    phi_history=phi_history,
+                )
 
             # Accumulate assignments
             final_assignments.update(result.decoded_assignments)
@@ -82,10 +144,42 @@ class IterativePipeline:
         print(f"Final core loads: {np.round(phi, 4)}")
         print(f"Load imbalance:   {imbalance:.6f}  "
               f"(L_avg={L_avg:.4f})")
-        print(f"Entities assigned: {len(final_assignments)}/{len(workload.entities)}")
+        movable_assigned = sum(
+            1 for entity in workload.entities
+            if entity.entity_id in final_assignments
+        )
+        print(
+            f"Movable entities assigned: {movable_assigned}/{len(workload.entities)} | "
+            f"Fixed RT assignments: {len(workload.fixed_assignments)}"
+        )
 
         missing = set(e.entity_id for e in workload.entities) - set(final_assignments)
         if missing:
             print(f"WARNING: Unassigned entities: {missing}")
 
-        return final_assignments, solver_results, phi_history, qubo_instance
+        print("Validating assembled global assignment...")
+        validation_qubo = self.builder.build(workload, include_fixed_bias=True)
+        global_result = self._build_global_result(
+            workload, validation_qubo, final_assignments, solver_results
+        )
+        global_validation = self.solver_validator.validate(validation_qubo, global_result)
+        global_validation["candidate_assignments"] = dict(final_assignments)
+
+        print(f"Global assignment feasible: {global_validation['valid']}")
+        print(f"Global candidate energy:   {global_validation['candidate_energy']:.6f}")
+        if global_validation["global_energy"] is not None:
+            print(f"Global optimum energy:     {global_validation['global_energy']:.6f}")
+            print(f"Globally optimal:          {global_validation['is_optimal']}")
+        else:
+            print(f"Global brute-force skipped: {global_validation['brute_force_error']}")
+        if global_validation["errors"]:
+            print(f"Global validation errors:  {global_validation['errors']}")
+
+        return (
+            final_assignments,
+            solver_results,
+            phi_history,
+            validation_qubo,
+            global_result,
+            global_validation,
+        )

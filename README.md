@@ -1,94 +1,97 @@
 # Hybrid Quantum-Classical Testbed for OS Scheduling
 
-A research testbed exploring hybrid quantum-classical approaches applied to process scheduling in operating systems. Uses QUBO (Quadratic Unconstrained Binary Optimization) formulations to model core assignment and time slot scheduling problems.
+A research prototype for studying hybrid quantum-classical process scheduling.
 
-> **Status:** Work in progress — prototype stage.
+The current main problem is **process-to-core assignment**: given a workload of
+process CPU weights and a target number of cores, the project builds a QUBO,
+solves it with QAOA through PennyLane, and compares small instances against an
+exact brute-force oracle.
 
----
+> Status: work in progress. The code is useful for experiments, diagnostics, and
+> visual exploration, but it is still a prototype rather than a production
+> scheduler.
+
+## What It Does
+
+The default scheduling flow is:
+
+```text
+SystemSnapshot or preset weights
+        |
+        v
+CoreAssignmentBuilder -> QUBOInstance
+        |
+        +--> PennylaneSolver  -> QAOA candidate
+        |
+        +--> BruteForceSolver -> exact reference, small QUBOs only
+        |
+        v
+SolverValidator -> feasibility, optimality, optimality gap
+```
+
+For larger workloads, the engine switches to an iterative sub-QUBO pipeline:
+
+```text
+Global QUBO -> heuristic partition -> sub-QUBO solves -> bias propagation
+```
 
 ## Prerequisites
 
 - Python 3.12+
-- [uv](https://docs.astral.sh/uv/) (package manager)
+- [uv](https://docs.astral.sh/uv/)
 - make
 
-### Install `uv` (once per machine)
+Install `uv` once per machine:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env   # or restart your terminal
+source "$HOME/.local/bin/env"
 ```
-
----
 
 ## Getting Started
 
 ```bash
-git clone <repo-url>
+git clone github.com/Tomas-Simoes/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling
 cd Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling
 make install
 ```
 
----
+Run the CLI:
+
+```bash
+make run
+```
+
+Run the Streamlit UI:
+
+```bash
+make ui
+```
 
 ## Commands
 
 | Command | Description |
-|---------|-------------|
-| `make` | List all available commands |
-| `make install` | Install all dependencies (`uv sync`) |
-| `make run` | Run the project |
-| `make add pkg=<name>` | Install a package and add it to `pyproject.toml` |
-| `make remove pkg=<name>` | Remove a package from the project |
+| --- | --- |
+| `make` | List available commands |
+| `make install` | Install dependencies with `uv sync` |
+| `make run` | Run `src/main.py` |
+| `make ui` | Run the Streamlit app at `src/app.py` |
+| `make add pkg=<name>` | Add a dependency |
+| `make remove pkg=<name>` | Remove a dependency |
 | `make freeze` | List installed packages |
-| `make activate` | Print the command to manually activate the `.venv` |
+| `make activate` | Print the command to activate the local virtualenv |
+| `make spy` | Record a py-spy profile to `profile.svg` |
 
-### Examples
+## Module Docs
 
-```bash
-# Install all dependencies
-make install
+Detailed notes live next to the code they describe:
 
-# Run the project
-make run
+- [src](src/README.md): engine, contracts, UI entry points, and project map
+- [builder](src/builder/README.md): QUBO builders
+- [solver](src/solver/README.md): QAOA, brute force, validation, metrics
+- [pipeline](src/pipeline/README.md): default and iterative execution flows
+- [decomposition](src/decomposition/README.md): clustering and sub-QUBO partitioning
+- [tracer](src/tracer/README.md): live process snapshot collection
+- [visualizer](src/visualizer/README.md): plotting surfaces
+- [abstract](src/abstract/README.md): base interfaces
 
-# Add a new package
-make add pkg=scipy
-
-# Remove a package
-make remove pkg=scipy
-
-# Activate the .venv manually (to use python/pip directly)
-make activate
-# → copy and run: source .venv/bin/activate
-```
-
----
-
-## Project Structure
-
-```
-.
-├── src/
-│   ├── main.py
-│   ├── qubo/
-│   │   ├── qubo_solver.py          # Base solver (brute-force)
-│   │   ├── qubo_core.py            # Core assignment solver
-│   │   ├── qubo_time.py            # Time slot assignment solver
-│   │   └── solver_checker.py       # Solution validation and global optimum comparison
-│   └── tracer/
-│       ├── tracer.py               # Base tracer class
-│       └── specialized_tracers.py  # Memory and process tracers
-├── pyproject.toml                  # Project dependencies (like package.json)
-├── uv.lock                         # Lock file (like package-lock.json)
-├── Makefile                        # Project commands
-└── .venv/                          # Virtual environment (not versioned)
-```
-
----
-
-## Dependencies
-
-| Package | Version |
-|---------|---------|
-| numpy   | ≥ 2.4.3 |

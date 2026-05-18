@@ -11,7 +11,15 @@ class ProcessTracer:
         self.cpu_interval = tracer_cfg.cpu_interval
         self.num_samples = tracer_cfg.num_samples
 
+    @staticmethod
+    def _normalize_cpu_weight(cpu_percent: float, logical_cores: int) -> float:
+        if logical_cores <= 0:
+            logical_cores = 1
+        weight = (cpu_percent / 100.0) / logical_cores
+        return max(0.0, min(1.0, weight))
+
     def trace(self) -> SystemSnapshot:
+        logical_cores = psutil.cpu_count(logical=True) or 1
         initial_stats = {}
         procs_cache: dict[int, psutil.Process] = {}
         
@@ -56,7 +64,10 @@ class ProcessTracer:
                 
                 total_delta = sum(now_times)- sum(prev_times)
 
-                weight_i = proc.cpu_percent() / 100.0
+                weight_i = self._normalize_cpu_weight(
+                    proc.cpu_percent(),
+                    logical_cores,
+                )
                 mem_i = initial_stats[pid]["rss"]
                 ioratio_i = (io_delta / total_delta) if total_delta > 0 else 0.0
 
@@ -78,7 +89,7 @@ class ProcessTracer:
         
         return SystemSnapshot(
             timestamp=time.time(),
-            num_cores=psutil.cpu_count(logical=True),
+            num_cores=logical_cores,
             total_ram_mb = psutil.virtual_memory().total / (1024 * 1024),
             processes=final_proc,
             snapshot_id=str(uuid.uuid4()) 

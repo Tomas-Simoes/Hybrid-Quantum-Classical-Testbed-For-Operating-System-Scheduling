@@ -4,7 +4,7 @@ import json
 import math
 import uuid
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple
+from typing import Dict, List, Literal, Tuple
 
 import numpy as np
 
@@ -25,10 +25,20 @@ class Workload:
     entities: List[WorkloadEntity]
     num_cores: int 
     snapshot_id: str
+    fixed_assignments: Dict[int, int] = field(default_factory=dict)
+    fixed_loads: Dict[int, float] = field(default_factory=dict)
 
     @property
     def total_weight(self) -> float:
-        return sum(e.cpu_weight for e in self.entities)
+        return sum(e.cpu_weight for e in self.entities) + sum(self.fixed_loads.values())
+
+    @property
+    def fixed_load_per_core(self) -> np.ndarray:
+        phi = np.zeros(self.num_cores)
+        for entity_id, core in self.fixed_assignments.items():
+            if 0 <= core < self.num_cores:
+                phi[core] += self.fixed_loads.get(entity_id, 0.0)
+        return phi
     
     @property
     def entity_map(self) -> Dict[int, WorkloadEntity]:
@@ -66,6 +76,8 @@ class ProcessInfo:
             "current_core": self.current_core,
             "rss_mb": self.rss_mb,
             "priority": self.priority,
+            "io_wait_ratio": self.io_wait_ratio,
+            "priority_class": self.priority_class,
         }
 
     @classmethod
@@ -77,6 +89,8 @@ class ProcessInfo:
             current_core=d["current_core"],
             rss_mb=d["rss_mb"],
             priority=d["priority"],
+            io_wait_ratio=d.get("io_wait_ratio"),
+            priority_class=d.get("priority_class"),
         )
     
 @dataclass
@@ -104,6 +118,7 @@ class SystemSnapshot:
         return {
             "timestamp": self.timestamp,
             "num_cores": self.num_cores,
+            "total_ram_mb": self.total_ram_mb,
             "processes": [p.to_dict() for p in self.processes],
             "snapshot_id": self.snapshot_id,
         }
@@ -114,6 +129,7 @@ class SystemSnapshot:
             timestamp=d["timestamp"],
             num_cores=d["num_cores"],
             processes=[ProcessInfo.from_dict(p) for p in d["processes"]],
+            total_ram_mb=d.get("total_ram_mb"),
             snapshot_id=d["snapshot_id"],
         )
     
@@ -177,6 +193,7 @@ class ClusteredSnapshot:
     bundles: List[Bundle]
     num_cores: int
     source_snapshot_id: str
+    rt_procs: List[ProcessInfo] = field(default_factory=list)
 
     def to_workload(self) -> Workload:
         return Workload(
@@ -190,13 +207,16 @@ class ClusteredSnapshot:
                 for b in self.bundles
             ],
             num_cores=self.num_cores,
-            snapshot_id=self.source_snapshot_id
+            snapshot_id=self.source_snapshot_id,
+            fixed_assignments={p.pid: p.current_core for p in self.rt_procs},
+            fixed_loads={p.pid: p.cpu_weight for p in self.rt_procs},
         )
     def to_dict(self) -> dict:
         return {
             "bundles": [c.to_dict() for c in self.bundles],
             "num_cores": self.num_cores,
             "source_snapshot_id": self.source_snapshot_id,
+            "rt_procs": [p.to_dict() for p in self.rt_procs],
         }
 
     @classmethod
@@ -205,6 +225,7 @@ class ClusteredSnapshot:
             bundles=[Bundle.from_dict(c) for c in d["bundles"]],
             num_cores=d["num_cores"],
             source_snapshot_id=d["source_snapshot_id"],
+            rt_procs=[ProcessInfo.from_dict(p) for p in d.get("rt_procs", [])],
         )
 # ---------------------------------------------------------------------------
 # Translator output
@@ -340,9 +361,12 @@ class IterativeSchedulingOutput:
 
     # Context
     used_workload: Workload
-    qubo_instance: QUBOInstance             # global Q (before decomposition)
+    qubo_instance: QUBOInstance             # global Q used for final validation
     qaoa_cfg: QAOAConfig
     qubo_cfg: QUBOConfig
+    global_result: SolverResult | None = None
+    validation: dict | None = None
+    alpha: float | None = None
 
     # Derived metrics — computed in __post_init__
     final_phi: np.ndarray = field(init=False)
@@ -377,6 +401,13 @@ class QAOAConfig:
     steps: int
     learning_rate: float
     top_k: int
+    mixer_type: Literal["xy", "x"] = "xy"
+    init_gamma: float = 0.5
+    init_beta: float = 0.5
+
+    def __post_init__(self):
+        if self.mixer_type not in ("xy", "x"):
+            raise ValueError(f"Unsupported mixer_type '{self.mixer_type}'. Expected 'xy' or 'x'.")
 
 @dataclass 
 class TracerConfig:
@@ -396,6 +427,10 @@ class DecompositorConfig:
     zscore_threshold: float
     sorting_strategy: Heuristic = Heuristic.WEIGHT_DESCENDING
 
+    def __post_init__(self):
+        if self.qubit_max < self.num_cores:
+            raise ValueError("qubit_max must be greater than or equal to num_cores.")
+
     def num_bundles(self, n_processes: int) -> int:
         max_per_bundle = self.qubit_max // self.num_cores   
         return min(math.ceil(n_processes / max_per_bundle), n_processes)
@@ -406,33 +441,46 @@ def round_trip_test() -> None:
     snapshot_id = "test-snapshot-uuid-1234"
 
     # ProcessInfo
-    proc = ProcessInfo(pid=42, command="python3", cpu_weight=0.8, current_core=1, rss_mb=128.5, priority=20)
+    proc = ProcessInfo(
+        pid=42,
+        command="python3",
+        cpu_weight=0.8,
+        current_core=1,
+        rss_mb=128.5,
+        priority=20,
+        io_wait_ratio=0.1,
+        priority_class="BE",
+    )
     assert ProcessInfo.from_dict(proc.to_dict()) == proc
 
     # SystemSnapshot (auto-generated id overridden for determinism)
-    snap = SystemSnapshot(timestamp=1_700_000_000.0, num_cores=4, processes=[proc], snapshot_id=snapshot_id)
+    snap = SystemSnapshot(
+        timestamp=1_700_000_000.0,
+        num_cores=4,
+        processes=[proc],
+        total_ram_mb=16384.0,
+        snapshot_id=snapshot_id,
+    )
     snap_rt = SystemSnapshot.from_dict(snap.to_dict())
     assert snap_rt == snap
 
-    # ClusterGroup
-    cluster = ClusterGroup(
-        cluster_id=0,
+    # Bundle / ClusteredSnapshot
+    bundle = Bundle(
+        bundle_id=0,
         member_pids=[42, 99],
         aggregate_cpu_weight=1.3,
         aggregate_rss_mb=256.0,
-        contention_score=0.72,
+        representative_cmd="python",
     )
-    assert ClusterGroup.from_dict(cluster.to_dict()) == cluster
+    assert Bundle.from_dict(bundle.to_dict()) == bundle
 
-    # DecomposedSubproblem
-    subproblem = DecomposedSubproblem(
-        clusters=[cluster],
-        candidate_cores=[0, 1, 2],
-        fixed_load_per_core={0: 0.4, 1: 0.6},
-        iteration_index=0,
+    clustered = ClusteredSnapshot(
+        bundles=[bundle],
+        num_cores=4,
         source_snapshot_id=snapshot_id,
+        rt_procs=[proc],
     )
-    assert DecomposedSubproblem.from_dict(subproblem.to_dict()) == subproblem
+    assert ClusteredSnapshot.from_dict(clustered.to_dict()) == clustered
 
     # QUBOInstance
     Q = np.array([[1.0, -0.5], [-0.5, 1.0]])
@@ -491,7 +539,7 @@ def round_trip_test() -> None:
     assert len(pipeline_rt.iterations) == 1
 
     # Verify full JSON round-trip goes through json.dumps/loads without error
-    for obj in [proc, snap, cluster, subproblem, pipeline]:
+    for obj in [proc, snap, bundle, clustered, qubo, result, pipeline]:
         json.dumps(obj.to_dict())
 
     print("All round-trip assertions passed.")

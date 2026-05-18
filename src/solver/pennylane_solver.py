@@ -6,6 +6,7 @@ import pennylane as qml
 from abstract.abstract import BaseSolver
 from data_contracts import QAOAConfig, QUBOInstance, SolverResult
 import time
+import warnings
 
 
 class PennylaneSolver(BaseSolver):
@@ -14,37 +15,81 @@ class PennylaneSolver(BaseSolver):
         self.steps = qaoa_cfg.steps
         self.learning_rate = qaoa_cfg.learning_rate
         self.top_k = qaoa_cfg.top_k
+        self.mixer_type = qaoa_cfg.mixer_type
+        self.init_gamma = qaoa_cfg.init_gamma
+        self.init_beta = qaoa_cfg.init_beta
 
-    def _make_device(self, num_qubits: int):
-        try:
-            dev = qml.device("lightning.gpu", wires=num_qubits)
-            return dev
-        except Exception:
-            import warnings
-            warnings.warn("lightning.gpu unavailable, falling back to lightning.qubit")
-            return qml.device("lightning.qubit", wires=num_qubits)
+    def _make_device(self, device_name: str, num_qubits: int):
+        return qml.device(device_name, wires=num_qubits)
+
+    def _xy_mixer_layer(self, beta: float, N: int, K: int):
+        """
+        XY mixer that preserves the one-hot constraint per process.
+        For each process i, applies XX+YY on every pair of core qubits (j, k).
+        This swaps amplitude between |01> and |10> — i.e. between core assignments —
+        without ever creating |00> or |11> states, so feasibility is structurally preserved.
+        """
+        for i in range(N):
+            for j in range(K):
+                for k in range(j + 1, K):
+                    wire_j = i * K + j
+                    wire_k = i * K + k
+                    qml.IsingXX(2 * beta, wires=[wire_j, wire_k])
+                    qml.IsingYY(2 * beta, wires=[wire_j, wire_k])
+
+    def _prepare_initial_state(self, num_qubits: int, N: int, K: int):
+        """
+        X mixer:  uniform superposition over all 2^n bitstrings (includes infeasible).
+        XY mixer: valid one-hot state — every process assigned to core 0.
+                  XY mixer then explores only feasible reassignments from here.
+        """
+        if self.mixer_type == "xy":
+            # assign every process to core 0: flip qubit i*K+0 for each process i
+            for i in range(N):
+                qml.PauliX(wires=i * K)
+        else:
+            for i in range(num_qubits):
+                qml.Hadamard(wires=i)
 
     def solve(self, qubo: QUBOInstance) -> SolverResult:
+        try:
+            return self._solve_on_device(qubo, "lightning.gpu")
+        except Exception as gpu_error:
+            warnings.warn(
+                f"lightning.gpu failed during QAOA solve; retrying on lightning.qubit. "
+                f"Original error: {gpu_error}"
+            )
+            return self._solve_on_device(qubo, "lightning.qubit")
+
+    def _solve_on_device(self, qubo: QUBOInstance, device_name: str) -> SolverResult:
         start_time = time.perf_counter()
         num_qubits = qubo.num_variables
+        N = qubo.num_entities
+        K = qubo.num_cores
 
-        # 1. build Hamiltonians
+        # 1. build cost Hamiltonian
         cost_h, _ = self.matrix_to_hamiltonian(qubo.Q)
-        mixer_h = qml.qaoa.x_mixer(range(num_qubits))
-        dev = self._make_device(num_qubits)
+
+        # X mixer is built once as a Hamiltonian; XY mixer is applied inline per layer
+        if self.mixer_type == "x":
+            mixer_h = qml.qaoa.x_mixer(range(num_qubits))
+
+        dev = self._make_device(device_name, num_qubits)
 
         @qml.qnode(dev, diff_method="adjoint")
         def cost_function(params):
-            for i in range(num_qubits):
-                qml.Hadamard(wires=i)
+            self._prepare_initial_state(num_qubits, N, K)
             gammas, betas = params
             for i in range(self.p):
                 qml.qaoa.cost_layer(gammas[i], cost_h)
-                qml.qaoa.mixer_layer(betas[i], mixer_h)
+                if self.mixer_type == "xy":
+                    self._xy_mixer_layer(betas[i], N, K)
+                else:
+                    qml.qaoa.mixer_layer(betas[i], mixer_h)
             return qml.expval(cost_h)
 
         # 2. optimization loop
-        params = pnp.array([[0.5] * self.p, [0.5] * self.p], requires_grad=True)
+        params = pnp.array([[self.init_gamma] * self.p, [self.init_beta] * self.p], requires_grad=True)
         optimizer = qml.AdamOptimizer(stepsize=self.learning_rate)
 
         energies_over_time = []
@@ -55,28 +100,26 @@ class PennylaneSolver(BaseSolver):
         # 3. sample probabilities and pick the best feasible bitstring
         @qml.qnode(dev)
         def get_probs(params):
-            for i in range(num_qubits):
-                qml.Hadamard(wires=i)
+            self._prepare_initial_state(num_qubits, N, K)
             gammas, betas = params
             for i in range(self.p):
                 qml.qaoa.cost_layer(gammas[i], cost_h)
-                qml.qaoa.mixer_layer(betas[i], mixer_h)
+                if self.mixer_type == "xy":
+                    self._xy_mixer_layer(betas[i], N, K)
+                else:
+                    qml.qaoa.mixer_layer(betas[i], mixer_h)
             return qml.probs(wires=range(num_qubits))
 
         probs = get_probs(params)
 
-        # evaluate top_k candidates in descending probability order.
-        # among feasible ones, take lowest QUBO energy.
-        # if none are feasible, fall back to the highest-probability bitstring.
-        k = min(self.top_k, len(probs))
-        top_k_indices = pnp.argsort(probs)[-k:][::-1]  # descending by probability
+        ranked_indices = np.argsort(np.asarray(probs))[::-1]
 
         best_bitstring = None
         best_energy = float("inf")
         best_decoded = None
         best_feasible = False
 
-        for idx in top_k_indices:
+        for idx in ranked_indices:
             bit_str = bin(int(idx))[2:].zfill(num_qubits)
             bitstring_array = np.array([int(b) for b in bit_str])
 
@@ -89,12 +132,13 @@ class PennylaneSolver(BaseSolver):
                     best_energy = energy
                     best_decoded = decoded
                     best_feasible = True
-            else:
-                # keep as fallback only if we have found nothing better yet
-                if not best_feasible and best_bitstring is None:
-                    best_bitstring = bitstring_array
-                    best_energy = energy
-                    best_decoded = decoded
+
+        if best_bitstring is None:
+            fallback_idx = int(ranked_indices[0])
+            bit_str = bin(fallback_idx)[2:].zfill(num_qubits)
+            best_bitstring = np.array([int(b) for b in bit_str])
+            best_decoded, _ = self.decode_assignments(best_bitstring, qubo)
+            best_energy = float(best_bitstring.T @ qubo.Q @ best_bitstring)
 
         solve_time = (time.perf_counter() - start_time) * 1000
 
@@ -103,9 +147,17 @@ class PennylaneSolver(BaseSolver):
             decoded_assignments=best_decoded,
             energy=best_energy,
             is_feasible=best_feasible,
-            solver_backend="qaoa_pennylane",
+            solver_backend=f"qaoa_pennylane_{device_name}_{self.mixer_type}_mixer",
             solve_time_ms=solve_time,
-            solver_params={"p_layers": self.p, "opt_steps": self.steps},
+            solver_params={
+                "p_layers": self.p,
+                "opt_steps": self.steps,
+                "mixer_type": self.mixer_type,
+                "init_gamma": self.init_gamma,
+                "init_beta": self.init_beta,
+                "device": device_name,
+                "selection_pool": "all_states",
+            },
             probs=probs,
             convergence_curve=energies_over_time,
         )
@@ -117,12 +169,10 @@ class PennylaneSolver(BaseSolver):
         for idx in active_indices:
             pid, core = qubo.variable_map[idx]
             if pid in decoded:
-                # mark conflict — keeps the entry but flags it as non-integer
                 decoded[pid] = f"CONFLICT({decoded[pid]},{core})"
             else:
                 decoded[pid] = core
 
-        # Feasible if every process has exactly one integer core assignment
         is_feasible = (
             len(decoded) == qubo.num_entities
             and all(isinstance(v, int) for v in decoded.values())
@@ -130,19 +180,6 @@ class PennylaneSolver(BaseSolver):
         return decoded, is_feasible
 
     def matrix_to_hamiltonian(self, Q) -> Tuple[qml.Hamiltonian, float]:
-        """
-        Converts a full symmetric QUBO matrix Q into an Ising Hamiltonian using
-        the substitution x_i = (1 - Z_i) / 2.
-
-        The project stores off-diagonal couplings symmetrically at half strength,
-        so x.T @ Q @ x expands to:
-
-            sum_i Q[i,i] x_i + sum_{i<j} (Q[i,j] + Q[j,i]) x_i x_j
-
-        Returns:
-            cost_h : the PennyLane Hamiltonian equivalent to x.T @ Q @ x
-            offset : the constant identity coefficient included in cost_h
-        """
         n = len(Q)
         linear = np.zeros(n)
         coeffs = []
@@ -158,10 +195,8 @@ class PennylaneSolver(BaseSolver):
                     qij = Q[i, j] + Q[j, i]
                     if np.isclose(qij, 0.0):
                         continue
-
                     coeffs.append(qij / 4)
                     obs.append(qml.PauliZ(i) @ qml.PauliZ(j))
-
                     linear[i] -= qij / 4
                     linear[j] -= qij / 4
                     offset += qij / 4

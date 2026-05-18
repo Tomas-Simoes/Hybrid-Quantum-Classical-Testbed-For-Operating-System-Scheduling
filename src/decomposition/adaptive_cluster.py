@@ -1,4 +1,5 @@
 import time
+import logging
 import numpy as np
 from scipy.spatial.distance import pdist, squareform
 from sklearn.cluster import KMeans, SpectralClustering
@@ -7,6 +8,8 @@ from data_contracts import (
     AffinityMatrix, Bundle, ClusteredSnapshot,
     DecompositorConfig, FeatureMatrix, ProcessInfo, SystemSnapshot,
 )
+
+logger = logging.getLogger(__name__)
 
 class AdaptiveCluster:
     def __init__(self, decompositor_cfg: DecompositorConfig):
@@ -17,8 +20,13 @@ class AdaptiveCluster:
         rt_procs, normal_procs = self._separate_rt_processes(snapshot)
 
         if not normal_procs:
-            # only RT processes — trivial singleton decomposition
-            result = self._trivial_decomposition(snapshot, rt_procs)
+            # Only fixed RT processes; no movable bundles enter the QUBO.
+            result = ClusteredSnapshot(
+                bundles=[],
+                num_cores=snapshot.num_cores,
+                source_snapshot_id=snapshot.snapshot_id,
+                rt_procs=rt_procs,
+            )
             result.rt_procs = rt_procs
             return result
 
@@ -49,6 +57,12 @@ class AdaptiveCluster:
             )
         except Exception as e:
             import warnings
+            logger.exception(
+                "spectral_clustering_failed snapshot_id=%s n_processes=%s n_bundles=%s",
+                snapshot.snapshot_id,
+                n,
+                n_bundles,
+            )
             warnings.warn(f"SpectralClustering failed: ({e}). Using K-Means fallback.")
             clustered_snapshot = self._kmeans_fallback(
                 feature_matrix, normal_snapshot, n_bundles
@@ -65,7 +79,8 @@ class AdaptiveCluster:
         w_eff = cpu_weight * (1 - io_alpha * io_wait_ratio)
         Range: [0, cpu_weight].  io_wait_ratio is clamped to [0, 1] here.
         """
-        io_ratio = max(0.0, min(1.0, proc.io_wait_ratio))
+        raw_io_ratio = 0.0 if proc.io_wait_ratio is None else proc.io_wait_ratio
+        io_ratio = max(0.0, min(1.0, raw_io_ratio))
         return proc.cpu_weight * (1.0 - self.dec_cfg.io_alpha * io_ratio)
 
     # Feature / affinity construction
@@ -193,11 +208,10 @@ class AdaptiveCluster:
             member_weights = [pid_to_weff[p] for p in members]
 
             # 1. Intra-bundle heterogeneity via coefficient of variation.
-            #    CV = (max - min) / mean — scale-invariant measure of spread.
-            delta_w = max(member_weights) - min(member_weights)
+            #    CV = std / mean — scale-invariant measure of spread.
             bundle_mean = np.mean(member_weights)
             if bundle_mean > 1e-9:
-                cv = delta_w / bundle_mean
+                cv = np.std(member_weights) / bundle_mean
                 is_heterogeneous = cv > self.dec_cfg.homogeneity_threshold
             else:
                 is_heterogeneous = False  # all-zero weights: uniform, not heterogeneous
@@ -207,8 +221,11 @@ class AdaptiveCluster:
             is_heavy_outlier = z_score > self.dec_cfg.zscore_threshold
 
             # 3. Memory pressure check
-            mem_cap = snapshot.total_ram_mb / snapshot.num_cores
-            is_mem_heavy = bundle_agg_rss[i] > (mem_cap * 0.4)
+            if snapshot.total_ram_mb is not None:
+                mem_cap = snapshot.total_ram_mb / snapshot.num_cores
+                is_mem_heavy = bundle_agg_rss[i] > (mem_cap * 0.4)
+            else:
+                is_mem_heavy = False
 
             if (is_heterogeneous or is_heavy_outlier or is_mem_heavy) and len(members) > 1:
                 sub_bundles = self._split_bundle(
