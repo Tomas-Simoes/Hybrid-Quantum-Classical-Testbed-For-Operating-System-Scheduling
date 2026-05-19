@@ -1,0 +1,55 @@
+scenario_version = 1
+id = "T2.1"
+tier = 2
+category = "correctness"
+name = "Brute force feasible ground truth check"
+description = "Requested low-penalty audit case. It is intended to show whether brute force reports the feasible optimum separately from the unconstrained minimum."
+
+[workload]
+mode = "preset"
+num_processes = 3
+num_cores = 2
+weights = [0.1, 0.8, 0.1]
+
+[qubo]
+penalty = 0.1
+penalty_intent = "below_p_critical"
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 10
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 6
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["brute_force"]
+repeats = 1
+
+[checks]
+no_crash = true
+brute_force_feasible_optimum_reported = true
+unconstrained_minimum_reported = true
+unconstrained_minimum_expected_feasible = false
+feasible_and_unconstrained_should_diverge = true
+priority = "highest"
+current_builder_note = "Spot-check on the current builder returned a feasible unconstrained minimum at P=0.1; if this does not diverge during audit, lower P or use a more adversarial fixture."

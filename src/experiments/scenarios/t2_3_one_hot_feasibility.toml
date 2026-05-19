@@ -1,0 +1,51 @@
+scenario_version = 1
+id = "T2.3"
+tier = 2
+category = "correctness"
+name = "One-hot feasibility check"
+description = "Uniform weights create high degeneracy; returned assignments must still be exactly one core per process."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.25, 0.25, 0.25, 0.25]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 20
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["qaoa", "brute_force"]
+repeats = 1
+
+[checks]
+no_crash = true
+one_hot_per_process = true
+no_duplicate_core_choices_per_process = true
+global_assignment_feasible = true
