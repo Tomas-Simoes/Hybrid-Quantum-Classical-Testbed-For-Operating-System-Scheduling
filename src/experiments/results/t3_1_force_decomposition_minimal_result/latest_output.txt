@@ -1,0 +1,107 @@
+========================================================================================
+EXPERIMENT RESULT: t3_1_force_decomposition_minimal (T3.1)
+========================================================================================
+Run id:        run_20260521_160951_d9297444
+Repeat:        1/1
+Status:        success
+Started UTC:   20260521_160959
+Duration:      1.702s
+Scenario file: src/experiments/scenarios/t3_1_force_decomposition_minimal.toml
+JSON result:   src/experiments/results/t3_1_force_decomposition_minimal_result/20260521_160959_run_20260521_160951_d9297444_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t3_1_force_decomposition_minimal_result/20260521_160959_run_20260521_160951_d9297444_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -22.0
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 841.0874259989214
+num_sub_qubos: 2
+num_feasible_sub_qubos: 2
+all_sub_qubos_feasible: true
+load_imbalance: 0.0
+final_phi: [1.0, 1.0]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 1
+1002 -> 0
+1003 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "candidate_energy": -22.0,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -22.0,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -22.0,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    2.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Thu May 21 17:09:59 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+2 sub-QUBOs | sizes: [3, 1]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/2] 3 entities | weight=1.9000
+  phi before: [0. 0.]
+  residual capacity: [1. 1.]
+  Solved in 539.4ms | energy=-16.990000 | feasible=True
+  phi after:  [1.  0.9]
+
+[Sub-QUBO 2/2] 1 entities | weight=0.1000
+  phi before: [1.  0.9]
+  residual capacity: [0.  0.1]
+  Solved in 301.7ms | energy=-5.010000 | feasible=True
+  phi after:  [1. 1.]
+
+--- Run Complete ---
+Final core loads: [1. 1.]
+Load imbalance:   0.000000  (L_avg=1.0000)
+Movable entities assigned: 4/4 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -22.000000
+Global optimum energy:     -22.000000
+Globally optimal:          True
+

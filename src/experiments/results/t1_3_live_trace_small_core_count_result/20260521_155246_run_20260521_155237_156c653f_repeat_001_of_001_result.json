@@ -1,0 +1,190 @@
+{
+  "category": "smoke",
+  "config": {
+    "category": "smoke",
+    "checks": {
+      "assignment_printed": true,
+      "expected_messages": [
+        "whatever processes get captured",
+        "feasible assignment printed"
+      ],
+      "global_assignment_feasible": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Capture live processes, force the virtual scheduling target to two cores, and cap sub-QUBOs at eight qubits.",
+    "execution": {
+      "brute_force_policy": "skip_if_above_limit",
+      "pipeline": "auto",
+      "repeats": 1,
+      "solvers": [
+        "qaoa"
+      ]
+    },
+    "id": "T1.3",
+    "name": "Live trace, small core count",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "scenario_version": 1,
+    "tier": 1,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "live_trace",
+      "num_cores": 2,
+      "process_source": "system_snapshot"
+    }
+  },
+  "duration_s": 5.257830381393433,
+  "ended_at_epoch": 1779378772.1537054,
+  "log_path": "src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155246_run_20260521_155237_156c653f_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "assignments": {
+      "0": 1,
+      "1": 0,
+      "10": 1,
+      "11": 1,
+      "12": 0,
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "17": 1,
+      "18": 1,
+      "19": 1,
+      "2": 0,
+      "20": 1,
+      "3": 1,
+      "4": 1,
+      "5": 1,
+      "6": 1,
+      "7": 0,
+      "8": 0,
+      "9": 1
+    },
+    "energy": -105.0001513888889,
+    "feasible": true,
+    "final_phi": [
+      0.008333333333333333,
+      0.009083333333333334
+    ],
+    "load_imbalance": 0.0007500000000000007,
+    "num_cores": 2,
+    "num_entities": 21,
+    "num_feasible_sub_qubos": 6,
+    "num_sub_qubos": 6,
+    "num_variables": 42,
+    "optimal": null,
+    "optimality_gap": null,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "solve_time_ms": 2761.754881998968,
+    "validation": {
+      "brute_force_error": "Brute-force refused: 42 variables exceeds 22 limit.",
+      "candidate_assignments": {
+        "0": 1,
+        "1": 0,
+        "10": 1,
+        "11": 1,
+        "12": 0,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 1,
+        "2": 0,
+        "20": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 0,
+        "8": 0,
+        "9": 1
+      },
+      "candidate_energy": -105.0001513888889,
+      "errors": [],
+      "global_assignments": {},
+      "global_energy": null,
+      "is_optimal": null,
+      "unconstrained_assignments": {},
+      "unconstrained_energy": null,
+      "unconstrained_is_feasible": null,
+      "valid": true
+    }
+  },
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": null,
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155246_run_20260521_155237_156c653f_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_155237_156c653f",
+  "scenario_file": "src/experiments/scenarios/t1_3_live_trace_small_core_count.toml",
+  "scenario_id": "T1.3",
+  "scenario_name": "Live trace, small core count",
+  "scenario_stem": "t1_3_live_trace_small_core_count",
+  "started_at_epoch": 1779378766.895875,
+  "started_at_utc": "20260521_155246",
+  "status": "success",
+  "tier": 1,
+  "warnings": []
+}

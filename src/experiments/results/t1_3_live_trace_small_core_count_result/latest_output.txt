@@ -1,0 +1,16 @@
+========================================================================================
+EXPERIMENT RESULT: t1_3_live_trace_small_core_count (T1.3)
+========================================================================================
+Run id:        run_20260521_155912_3627ee6a
+Repeat:        1/1
+Status:        unknown
+Started UTC:   20260521_155914
+Duration:      0.402s
+Scenario file: src/experiments/scenarios/t1_3_live_trace_small_core_count.toml
+JSON result:   src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_output.txt
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING LIVE SYSTEM TRACER
+

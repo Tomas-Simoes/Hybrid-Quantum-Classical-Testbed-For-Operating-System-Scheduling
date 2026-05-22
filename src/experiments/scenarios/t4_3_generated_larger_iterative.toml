@@ -1,0 +1,54 @@
+scenario_version = 1
+id = "T4.3"
+tier = 4
+category = "scaling"
+name = "Generated larger iterative workload"
+description = "Generated ten-process workload on two cores. Static scaling check for runner-generated input and iterative scheduling without live tracing."
+
+[workload]
+mode = "generated"
+num_processes = 10
+num_cores = 2
+weight_strategy = "uniform_total"
+total_weight = 1.0
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 80
+learning_rate = 0.05
+top_k = 20
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 6
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "WEIGHT_DESCENDING"
+
+[execution]
+pipeline = "iterative"
+solvers = ["qaoa"]
+repeats = 1
+
+[record]
+metrics = ["global_energy", "load_imbalance", "solve_time_ms", "num_sub_qubos"]
+
+[checks]
+no_crash = true
+expected_pipeline = "iterative"
+generated_workload_supported = true

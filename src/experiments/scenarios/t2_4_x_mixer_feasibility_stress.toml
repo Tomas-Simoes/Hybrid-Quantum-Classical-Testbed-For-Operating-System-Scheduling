@@ -1,0 +1,51 @@
+scenario_version = 1
+id = "T2.4"
+tier = 2
+category = "correctness"
+name = "X mixer feasibility stress"
+description = "Uses the standard X mixer on a direct workload. This intentionally samples infeasible states and validates fallback/feasibility reporting against the XY mixer scenarios."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.4, 0.3, 0.2, 0.1]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 20
+mixer_type = "x"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["qaoa", "brute_force"]
+repeats = 1
+
+[checks]
+no_crash = true
+expected_pipeline = "default"
+feasibility_reporting_required = true
+compare_against_xy_mixer = true

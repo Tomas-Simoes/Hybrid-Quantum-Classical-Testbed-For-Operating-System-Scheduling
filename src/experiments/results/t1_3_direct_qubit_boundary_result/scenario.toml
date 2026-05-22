@@ -1,0 +1,51 @@
+scenario_version = 1
+id = "T1.3"
+tier = 1
+category = "smoke"
+name = "Direct path at qubit boundary"
+description = "Four processes on two cores use exactly eight variables, equal to qubit_max. This verifies the <= boundary stays on DefaultPipeline."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.15, 0.35, 0.25, 0.25]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 12
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["qaoa", "brute_force"]
+repeats = 1
+
+[checks]
+no_crash = true
+expected_pipeline = "default"
+qubit_count_equals_qubit_max = true
+global_optimum_available = true

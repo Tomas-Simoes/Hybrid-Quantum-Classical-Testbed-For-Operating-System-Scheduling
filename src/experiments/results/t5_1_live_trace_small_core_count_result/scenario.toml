@@ -1,0 +1,50 @@
+scenario_version = 1
+id = "T5.1"
+tier = 5
+category = "live"
+name = "Live trace small core count"
+description = "Captures current system processes, forces a two-core virtual scheduling target, and runs the automatic direct/iterative path. Non-deterministic by design."
+
+[workload]
+mode = "live_trace"
+num_cores = 2
+process_source = "system_snapshot"
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 10
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+
+[tracer]
+live_mode = true
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "auto"
+solvers = ["qaoa"]
+brute_force_policy = "skip_if_above_limit"
+repeats = 1
+
+[checks]
+no_crash = true
+non_deterministic_live_input = true
+assignment_printed = true

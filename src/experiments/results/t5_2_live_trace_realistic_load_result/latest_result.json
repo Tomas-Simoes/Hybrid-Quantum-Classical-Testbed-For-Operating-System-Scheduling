@@ -1,0 +1,224 @@
+{
+  "category": "live",
+  "config": {
+    "category": "live",
+    "checks": {
+      "assignment_printed": true,
+      "no_crash": true,
+      "non_deterministic_live_input": true,
+      "real_processes_captured": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 4,
+      "qubit_max": 10,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Real system snapshot during external CPU-intensive activity for thesis-style evidence on realistic processes. Non-deterministic by design.",
+    "execution": {
+      "brute_force_policy": "skip_if_above_limit",
+      "pipeline": "auto",
+      "repeats": 1,
+      "solvers": [
+        "qaoa"
+      ]
+    },
+    "id": "T5.2",
+    "name": "Live trace realistic load",
+    "pre_run": {
+      "operator_action": "Start a CPU-intensive workload such as a compile or benchmark before launching this scenario."
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 20
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "global_energy",
+        "global_feasibility_rate",
+        "solve_time_ms",
+        "num_processes_captured",
+        "num_sub_qubos"
+      ]
+    },
+    "scenario_version": 1,
+    "tier": 5,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "live_trace",
+      "num_cores": 4,
+      "process_source": "system_snapshot"
+    }
+  },
+  "duration_s": 41.55306839942932,
+  "ended_at_epoch": 1779379913.6297789,
+  "log_path": "src/experiments/results/t5_2_live_trace_realistic_load_result/20260521_161112_run_20260521_160951_d9297444_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "assignments": {
+      "0": 0,
+      "1": 0,
+      "10": 3,
+      "11": 0,
+      "12": 0,
+      "13": 3,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0,
+      "2": 2,
+      "20": 0,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "24": 1,
+      "25": 3,
+      "26": 0,
+      "27": 0,
+      "28": 0,
+      "29": 0,
+      "3": 3,
+      "30": 0,
+      "31": 0,
+      "4": 0,
+      "5": 3,
+      "6": 0,
+      "7": 1,
+      "8": 1,
+      "9": 0
+    },
+    "energy": -160.00028181597224,
+    "feasible": true,
+    "final_phi": [
+      0.012416666666666666,
+      0.008333333333333333,
+      0.006583333333333333,
+      0.007416666666666668
+    ],
+    "load_imbalance": 0.005833333333333333,
+    "num_cores": 4,
+    "num_entities": 32,
+    "num_feasible_sub_qubos": 16,
+    "num_sub_qubos": 16,
+    "num_variables": 128,
+    "optimal": null,
+    "optimality_gap": null,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "solve_time_ms": 38731.921037002394,
+    "validation": {
+      "brute_force_error": "Brute-force refused: 128 variables exceeds 22 limit.",
+      "candidate_assignments": {
+        "0": 0,
+        "1": 0,
+        "10": 3,
+        "11": 0,
+        "12": 0,
+        "13": 3,
+        "14": 0,
+        "15": 0,
+        "16": 0,
+        "17": 0,
+        "18": 0,
+        "19": 0,
+        "2": 2,
+        "20": 0,
+        "21": 0,
+        "22": 0,
+        "23": 0,
+        "24": 1,
+        "25": 3,
+        "26": 0,
+        "27": 0,
+        "28": 0,
+        "29": 0,
+        "3": 3,
+        "30": 0,
+        "31": 0,
+        "4": 0,
+        "5": 3,
+        "6": 0,
+        "7": 1,
+        "8": 1,
+        "9": 0
+      },
+      "candidate_energy": -160.00028181597224,
+      "errors": [],
+      "global_assignments": {},
+      "global_energy": null,
+      "is_optimal": null,
+      "unconstrained_assignments": {},
+      "unconstrained_energy": null,
+      "unconstrained_is_feasible": null,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/t5_2_live_trace_realistic_load_result/20260521_161112_run_20260521_160951_d9297444_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 4,
+      "qubit_max": 10,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": null,
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 20
+    },
+    "qubo": {
+      "num_cores": 4,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t5_2_live_trace_realistic_load_result/20260521_161112_run_20260521_160951_d9297444_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_160951_d9297444",
+  "scenario_file": "src/experiments/scenarios/t5_2_live_trace_realistic_load.toml",
+  "scenario_id": "T5.2",
+  "scenario_name": "Live trace realistic load",
+  "scenario_stem": "t5_2_live_trace_realistic_load",
+  "started_at_epoch": 1779379872.0767105,
+  "started_at_utc": "20260521_161112",
+  "status": "success",
+  "tier": 5,
+  "warnings": []
+}

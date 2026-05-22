@@ -1,0 +1,118 @@
+INITIATING LIVE SYSTEM TRACER
+
+================================================================================
+ RAW SYSTEM SNAPSHOT 
+ ID: 67bc2221-4821-4050-97e3-60f41ad0bab9 | Cores: 2 | Time: 1779378767.9474967
+================================================================================
+     PID | CLASS |   CPU% |   MEM(MB) |   I/O | COMMAND
+-------------------------------------------------------
+   64100 | BE   |   0.5% |    392.2 |  0.00 | /app/extra/vscode/code --type=zygote
+   64069 | BE   |   0.3% |    252.4 |  0.00 | /app/extra/vscode/code --type=zygote --no-zygote-s..
+   64185 | BE   |   0.3% |    360.3 |  0.00 | /app/extra/vscode/code --type=zygote
+    3228 | BE   |   0.1% |     68.8 |  0.00 | Hyprland --watchdog-fd 4
+    3277 | BE   |   0.1% |     42.9 |  0.00 | waybar
+    3499 | BE   |   0.1% |    128.9 |  0.00 | /usr/bin/swaync
+   52561 | BE   |   0.1% |    630.0 |  0.00 | /opt/google/chrome/chrome --type=renderer --crashp..
+   64001 | BE   |   0.1% |    214.0 |  0.00 | /app/extra/vscode/code --extensions-dir=/home/simo..
+   64199 | BE   |   0.1% |    110.8 |  0.00 | /proc/self/exe --type=utility --utility-sub-type=n..
+   64905 | BE   |   0.1% |    180.9 |  0.00 | /home/simoes/.var/app/com.visualstudio.code/data/v..
+     618 | BE   |   0.0% |     27.9 |  0.00 | /usr/lib/systemd/systemd-journald
+    1072 | BE   |   0.0% |     22.3 |  0.00 | /usr/bin/abrt-dump-journal-core -D -T -f -e
+    1073 | BE   |   0.0% |     20.9 |  0.00 | /usr/bin/abrt-dump-journal-oops -fxtD
+    1516 | BE   |   0.0% |     24.5 |  0.00 | /usr/bin/python3 -Es /usr/sbin/tuned-ppd -l
+    3270 | BE   |   0.0% |     20.5 |  0.00 | nm-applet --indicator
+... and 40 more processes.
+----------------------------------------
+
+INITIATING ADAPTIVE CLUSTERING
+
+================================================================================
+ ADAPTIVE CLUSTERING RESULT 
+ Source ID: 67bc2221-4821-4050-97e3-60f41ad0bab9 | Bundles: 21
+================================================================================
+ B_ID |   AGG CPU% |  AGG MEM(MB) | MEMBERS (PIDs)
+--------------------------------------------------
+    9 |       0.5% |       392.2 | [64100]
+    7 |       0.3% |       252.4 | [64069]
+    8 |       0.3% |       360.3 | [64185]
+    0 |       0.1% |        68.8 | [3228]
+    1 |       0.1% |        42.9 | [3277]
+    2 |       0.1% |       128.9 | [3499]
+    3 |       0.1% |       630.0 | [52561]
+    4 |       0.1% |       214.0 | [64001]
+    5 |       0.1% |       110.8 | [64199]
+    6 |       0.1% |       180.9 | [64905]
+   10 |       0.0% |       358.4 | [618, 1072, 1073, 1516, 3270, 3278, 3286, 3287, 3508, 3533, 5784, 31670, 74635, 77204]
+   11 |       0.0% |        69.0 | [49498]
+   12 |       0.0% |       448.8 | [3387, 3397, 49543, 64005, 64025, 69760]
+   13 |       0.0% |      1645.3 | [49531, 49786, 49809, 62576, 64194, 64248, 64273, 64345, 64377, 64521, 64830, 74614, 75825, 77043]
+   14 |       0.0% |      1639.5 | [64143, 64773, 77208]
+   15 |       0.0% |       822.4 | [49479, 49728]
+   16 |       0.0% |        79.1 | [64079]
+   17 |       0.0% |        81.3 | [64566]
+   18 |       0.0% |        77.2 | [72699]
+   19 |       0.0% |        68.9 | [49499]
+   20 |       0.0% |       333.0 | [49529]
+================================================================================
+
+----------------------------------------
+
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   21 processes on 2 cores
+WEIGHTS:    0.017 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Thu May 21 16:52:47 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0003s
+Partitioning in Sub-QUBOs...
+6 sub-QUBOs | sizes: [4, 4, 4, 4, 4, 1]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/6] 4 entities | weight=0.0008
+  phi before: [0. 0.]
+  residual capacity: [0.0087 0.0087]
+  Solved in 392.8ms | energy=-20.000014 | feasible=True
+  phi after:  [0.     0.0008]
+
+[Sub-QUBO 2/6] 4 entities | weight=0.0116
+  phi before: [0.     0.0008]
+  residual capacity: [0.0087 0.0079]
+  Solved in 542.0ms | energy=-20.000125 | feasible=True
+  phi after:  [0.0067 0.0058]
+
+[Sub-QUBO 3/6] 4 entities | weight=0.0017
+  phi before: [0.0067 0.0058]
+  residual capacity: [0.002 0.003]
+  Solved in 448.1ms | energy=-20.000007 | feasible=True
+  phi after:  [0.0067 0.0074]
+
+[Sub-QUBO 4/6] 4 entities | weight=0.0033
+  phi before: [0.0067 0.0074]
+  residual capacity: [0.002  0.0013]
+  Solved in 710.2ms | energy=-20.000006 | feasible=True
+  phi after:  [0.0083 0.0091]
+
+[Sub-QUBO 5/6] 4 entities | weight=0.0000
+  phi before: [0.0083 0.0091]
+  residual capacity: [ 0.0004 -0.0004]
+  Solved in 401.5ms | energy=-20.000000 | feasible=True
+  phi after:  [0.0083 0.0091]
+
+[Sub-QUBO 6/6] 1 entities | weight=0.0000
+  phi before: [0.0083 0.0091]
+  residual capacity: [ 0.0004 -0.0004]
+  Solved in 267.2ms | energy=-5.000000 | feasible=True
+  phi after:  [0.0083 0.0091]
+
+--- Run Complete ---
+Final core loads: [0.0083 0.0091]
+Load imbalance:   0.000750  (L_avg=0.0087)
+Movable entities assigned: 21/21 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -105.000151
+Global brute-force skipped: Brute-force refused: 42 variables exceeds 22 limit.

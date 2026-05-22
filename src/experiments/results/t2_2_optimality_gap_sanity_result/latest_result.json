@@ -1,0 +1,196 @@
+{
+  "category": "correctness",
+  "config": {
+    "category": "correctness",
+    "checks": {
+      "alpha_min": 0.0,
+      "brute_force_available": true,
+      "expected_pipeline": "default",
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Balanced three-process workload where brute force should be available, letting the runner report candidate energy, global energy, and optimality gap.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "T2.2",
+    "name": "Optimality gap sanity",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "scenario_version": 1,
+    "tier": 2,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 3,
+      "weights": [
+        0.3,
+        0.4,
+        0.3
+      ]
+    }
+  },
+  "duration_s": 0.4819767475128174,
+  "ended_at_epoch": 1779379796.4423492,
+  "log_path": "src/experiments/results/t2_2_optimality_gap_sanity_result/20260521_160955_run_20260521_160951_d9297444_repeat_001_of_001.log",
+  "metrics": {
+    "assignments": {
+      "1000": 0,
+      "1001": 1,
+      "1002": 0
+    },
+    "energy": -15.48,
+    "feasible": true,
+    "max_probability": 0.13426479082926912,
+    "num_cores": 2,
+    "num_entities": 3,
+    "num_variables": 6,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "solve_time_ms": 480.2674139991723,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "validation": {
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 0
+      },
+      "candidate_energy": -15.48,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 1
+      },
+      "global_energy": -15.48,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 1
+      },
+      "unconstrained_energy": -15.48,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/t2_2_optimality_gap_sanity_result/20260521_160955_run_20260521_160951_d9297444_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.4,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 409.6
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1779379795.9605045,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t2_2_optimality_gap_sanity_result/20260521_160955_run_20260521_160951_d9297444_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_160951_d9297444",
+  "scenario_file": "src/experiments/scenarios/t2_2_optimality_gap_sanity.toml",
+  "scenario_id": "T2.2",
+  "scenario_name": "Optimality gap sanity",
+  "scenario_stem": "t2_2_optimality_gap_sanity",
+  "started_at_epoch": 1779379795.9603724,
+  "started_at_utc": "20260521_160955",
+  "status": "success",
+  "tier": 2,
+  "warnings": []
+}

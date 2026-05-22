@@ -1,0 +1,179 @@
+{
+  "category": "live",
+  "config": {
+    "category": "live",
+    "checks": {
+      "assignment_printed": true,
+      "no_crash": true,
+      "non_deterministic_live_input": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Captures current system processes, forces a two-core virtual scheduling target, and runs the automatic direct/iterative path. Non-deterministic by design.",
+    "execution": {
+      "brute_force_policy": "skip_if_above_limit",
+      "pipeline": "auto",
+      "repeats": 1,
+      "solvers": [
+        "qaoa"
+      ]
+    },
+    "id": "T5.1",
+    "name": "Live trace small core count",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "scenario_version": 1,
+    "tier": 5,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "live_trace",
+      "num_cores": 2,
+      "process_source": "system_snapshot"
+    }
+  },
+  "duration_s": 4.362435817718506,
+  "ended_at_epoch": 1779379872.073886,
+  "log_path": "src/experiments/results/t5_1_live_trace_small_core_count_result/20260521_161107_run_20260521_160951_d9297444_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "assignments": {
+      "0": 1,
+      "1": 1,
+      "10": 1,
+      "11": 1,
+      "12": 1,
+      "13": 1,
+      "14": 1,
+      "15": 1,
+      "16": 1,
+      "2": 0,
+      "3": 0,
+      "4": 1,
+      "5": 1,
+      "6": 0,
+      "7": 0,
+      "8": 1,
+      "9": 0
+    },
+    "energy": -85.00072516666665,
+    "feasible": true,
+    "final_phi": [
+      0.019000000000000003,
+      0.019083333333333334
+    ],
+    "load_imbalance": 8.33333333333311e-05,
+    "num_cores": 2,
+    "num_entities": 17,
+    "num_feasible_sub_qubos": 5,
+    "num_sub_qubos": 5,
+    "num_variables": 34,
+    "optimal": null,
+    "optimality_gap": null,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "solve_time_ms": 2175.230595998073,
+    "validation": {
+      "brute_force_error": "Brute-force refused: 34 variables exceeds 22 limit.",
+      "candidate_assignments": {
+        "0": 1,
+        "1": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "2": 0,
+        "3": 0,
+        "4": 1,
+        "5": 1,
+        "6": 0,
+        "7": 0,
+        "8": 1,
+        "9": 0
+      },
+      "candidate_energy": -85.00072516666665,
+      "errors": [],
+      "global_assignments": {},
+      "global_energy": null,
+      "is_optimal": null,
+      "unconstrained_assignments": {},
+      "unconstrained_energy": null,
+      "unconstrained_is_feasible": null,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/t5_1_live_trace_small_core_count_result/20260521_161107_run_20260521_160951_d9297444_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": null,
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": true,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t5_1_live_trace_small_core_count_result/20260521_161107_run_20260521_160951_d9297444_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_160951_d9297444",
+  "scenario_file": "src/experiments/scenarios/t5_1_live_trace_small_core_count.toml",
+  "scenario_id": "T5.1",
+  "scenario_name": "Live trace small core count",
+  "scenario_stem": "t5_1_live_trace_small_core_count",
+  "started_at_epoch": 1779379867.71145,
+  "started_at_utc": "20260521_161107",
+  "status": "success",
+  "tier": 5,
+  "warnings": []
+}

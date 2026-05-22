@@ -1,0 +1,206 @@
+{
+  "category": "smoke",
+  "config": {
+    "category": "smoke",
+    "checks": {
+      "expected_pipeline": "default",
+      "generated_workload_supported": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "WEIGHT_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Generated uniform workload with explicit num_processes. This verifies the runner's generated workload mode without using sweep expansion.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "T1.4",
+    "name": "Generated static workload direct path",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 12
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "scenario_version": 1,
+    "tier": 1,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "generated",
+      "num_cores": 2,
+      "num_processes": 4,
+      "total_weight": 1.0,
+      "weight_strategy": "uniform_total"
+    }
+  },
+  "duration_s": 0.6711537837982178,
+  "ended_at_epoch": 1779379795.5164423,
+  "log_path": "src/experiments/results/t1_4_generated_static_direct_result/20260521_160954_run_20260521_160951_d9297444_repeat_001_of_001.log",
+  "metrics": {
+    "assignments": {
+      "1000": 0,
+      "1001": 0,
+      "1002": 1,
+      "1003": 1
+    },
+    "energy": -20.5,
+    "feasible": true,
+    "max_probability": 0.068751606870223,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_variables": 8,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "solve_time_ms": 666.1496029992122,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "validation": {
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 0,
+        "1002": 1,
+        "1003": 1
+      },
+      "candidate_energy": -20.5,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "global_energy": -20.5,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "unconstrained_energy": -20.5,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/t1_4_generated_static_direct_result/20260521_160954_run_20260521_160951_d9297444_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "WEIGHT_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1779379794.8454492,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 50,
+      "top_k": 12
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t1_4_generated_static_direct_result/20260521_160954_run_20260521_160951_d9297444_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_160951_d9297444",
+  "scenario_file": "src/experiments/scenarios/t1_4_generated_static_direct.toml",
+  "scenario_id": "T1.4",
+  "scenario_name": "Generated static workload direct path",
+  "scenario_stem": "t1_4_generated_static_direct",
+  "started_at_epoch": 1779379794.8452885,
+  "started_at_utc": "20260521_160954",
+  "status": "success",
+  "tier": 1,
+  "warnings": []
+}

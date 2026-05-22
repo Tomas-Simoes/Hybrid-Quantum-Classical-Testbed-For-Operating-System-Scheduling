@@ -1,0 +1,306 @@
+========================================================================================
+EXPERIMENT RESULT: t5_2_live_trace_realistic_load (T5.2)
+========================================================================================
+Run id:        run_20260521_160951_d9297444
+Repeat:        1/1
+Status:        success
+Started UTC:   20260521_161112
+Duration:      41.553s
+Scenario file: src/experiments/scenarios/t5_2_live_trace_realistic_load.toml
+JSON result:   src/experiments/results/t5_2_live_trace_realistic_load_result/20260521_161112_run_20260521_160951_d9297444_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t5_2_live_trace_realistic_load_result/20260521_161112_run_20260521_160951_d9297444_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 32
+num_cores: 4
+num_variables: 128
+energy: -160.00028181597224
+feasible: true
+optimal: null
+optimality_gap: null
+solve_time_ms: 38731.921037002394
+num_sub_qubos: 16
+num_feasible_sub_qubos: 16
+all_sub_qubos_feasible: true
+load_imbalance: 0.005833333333333333
+final_phi: [0.012416666666666666, 0.008333333333333333, 0.006583333333333333, 0.007416666666666668]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+0 -> 0
+1 -> 0
+10 -> 3
+11 -> 0
+12 -> 0
+13 -> 3
+14 -> 0
+15 -> 0
+16 -> 0
+17 -> 0
+18 -> 0
+19 -> 0
+2 -> 2
+20 -> 0
+21 -> 0
+22 -> 0
+23 -> 0
+24 -> 1
+25 -> 3
+26 -> 0
+27 -> 0
+28 -> 0
+29 -> 0
+3 -> 3
+30 -> 0
+31 -> 0
+4 -> 0
+5 -> 3
+6 -> 0
+7 -> 1
+8 -> 1
+9 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "brute_force_error": "Brute-force refused: 128 variables exceeds 22 limit.",
+  "candidate_assignments": {
+    "0": 0,
+    "1": 0,
+    "10": 3,
+    "11": 0,
+    "12": 0,
+    "13": 3,
+    "14": 0,
+    "15": 0,
+    "16": 0,
+    "17": 0,
+    "18": 0,
+    "19": 0,
+    "2": 2,
+    "20": 0,
+    "21": 0,
+    "22": 0,
+    "23": 0,
+    "24": 1,
+    "25": 3,
+    "26": 0,
+    "27": 0,
+    "28": 0,
+    "29": 0,
+    "3": 3,
+    "30": 0,
+    "31": 0,
+    "4": 0,
+    "5": 3,
+    "6": 0,
+    "7": 1,
+    "8": 1,
+    "9": 0
+  },
+  "candidate_energy": -160.00028181597224,
+  "errors": [],
+  "global_assignments": {},
+  "global_energy": null,
+  "is_optimal": null,
+  "unconstrained_assignments": {},
+  "unconstrained_energy": null,
+  "unconstrained_is_feasible": null,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING LIVE SYSTEM TRACER
+
+================================================================================
+ RAW SYSTEM SNAPSHOT 
+ ID: 5763ead3-e9d6-4689-a4e5-38c333d19611 | Cores: 4 | Time: 1779379873.1191213
+================================================================================
+     PID | CLASS |   CPU% |   MEM(MB) |   I/O | COMMAND
+-------------------------------------------------------
+   64100 | BE   |   1.2% |    474.5 |  0.00 | /app/extra/vscode/code --type=zygote
+   64069 | BE   |   0.7% |    254.8 |  0.00 | /app/extra/vscode/code --type=zygote --no-zygote-s..
+    3228 | BE   |   0.5% |     68.8 |  0.00 | Hyprland --watchdog-fd 4
+   64001 | BE   |   0.3% |    217.0 |  0.00 | /app/extra/vscode/code --extensions-dir=/home/simo..
+   64143 | BE   |   0.2% |    584.0 |  0.00 | /proc/self/exe --type=utility --utility-sub-type=n..
+   52561 | BE   |   0.2% |    743.1 |  0.00 | /opt/google/chrome/chrome --type=renderer --crashp..
+    3277 | BE   |   0.1% |     42.9 |  0.00 | waybar
+    3499 | BE   |   0.1% |    128.9 |  0.00 | /usr/bin/swaync
+   49529 | BE   |   0.1% |    336.2 |  0.00 | /opt/google/chrome/chrome --type=gpu-process --ozo..
+   83479 | BE   |   0.1% |   1314.0 |  0.00 | /home/simoes/dev/projects/Hybrid-Quantum-Classical..
+     618 | BE   |   0.0% |     28.0 |  0.00 | /usr/lib/systemd/systemd-journald
+    1072 | BE   |   0.0% |     22.3 |  0.00 | /usr/bin/abrt-dump-journal-core -D -T -f -e
+    1073 | BE   |   0.0% |     20.9 |  0.00 | /usr/bin/abrt-dump-journal-oops -fxtD
+    1516 | BE   |   0.0% |     24.5 |  0.00 | /usr/bin/python3 -Es /usr/sbin/tuned-ppd -l
+    3270 | BE   |   0.0% |     20.5 |  0.00 | nm-applet --indicator
+... and 40 more processes.
+----------------------------------------
+
+INITIATING ADAPTIVE CLUSTERING
+
+================================================================================
+ ADAPTIVE CLUSTERING RESULT 
+ Source ID: 5763ead3-e9d6-4689-a4e5-38c333d19611 | Bundles: 32
+================================================================================
+ B_ID |   AGG CPU% |  AGG MEM(MB) | MEMBERS (PIDs)
+--------------------------------------------------
+    1 |       1.2% |       474.5 | [64100]
+    2 |       0.7% |       254.8 | [64069]
+    5 |       0.5% |        68.8 | [3228]
+    8 |       0.4% |      1327.2 | [52561, 64143]
+    7 |       0.3% |       217.0 | [64001]
+    3 |       0.1% |        42.9 | [3277]
+   10 |       0.1% |       128.9 | [3499]
+   13 |       0.1% |      1314.0 | [83479]
+   24 |       0.1% |       336.2 | [49529]
+    0 |       0.0% |       816.4 | [49786, 64248, 64905, 69760, 81855]
+    4 |       0.0% |       804.3 | [618, 1072, 1073, 1516, 3270, 3278, 3286, 3287, 3508, 3533, 5784, 64773, 83213]
+    6 |       0.0% |        91.8 | [64377]
+    9 |       0.0% |       730.0 | [49531, 62576, 64194, 64521, 64830, 83192]
+   11 |       0.0% |        38.6 | [83476]
+   12 |       0.0% |        86.9 | [64345]
+   14 |       0.0% |        89.9 | [49809]
+   15 |       0.0% |        81.8 | [64566]
+   16 |       0.0% |        31.6 | [31670]
+   17 |       0.0% |        79.1 | [64079]
+   18 |       0.0% |        51.0 | [64005]
+   19 |       0.0% |        68.9 | [49499]
+   20 |       0.0% |        77.2 | [80867]
+   21 |       0.0% |        61.2 | [49543]
+   22 |       0.0% |        53.1 | [64025]
+   23 |       0.0% |        54.0 | [3387]
+   25 |       0.0% |       275.0 | [64185]
+   26 |       0.0% |        48.2 | [3397]
+   27 |       0.0% |        94.0 | [83955]
+   28 |       0.0% |       845.9 | [49479, 49728]
+   29 |       0.0% |       103.1 | [64273]
+   30 |       0.0% |        69.0 | [49498]
+   31 |       0.0% |       111.2 | [64199]
+================================================================================
+
+----------------------------------------
+
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   32 processes on 4 cores
+WEIGHTS:    0.035 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Thu May 21 17:11:13 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0017s
+Partitioning in Sub-QUBOs...
+16 sub-QUBOs | sizes: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/16] 2 entities | weight=0.0166
+  phi before: [0. 0. 0. 0.]
+  residual capacity: [0.0087 0.0087 0.0087 0.0087]
+  Solved in 2750.8ms | energy=-10.000117 | feasible=True
+  phi after:  [0.0124 0.0042 0.     0.    ]
+
+[Sub-QUBO 2/16] 2 entities | weight=0.0074
+  phi before: [0.0124 0.0042 0.     0.    ]
+  residual capacity: [-0.0037  0.0045  0.0087  0.0087]
+  Solved in 2586.6ms | energy=-10.000085 | feasible=True
+  phi after:  [0.0124 0.0042 0.0066 0.0008]
+
+[Sub-QUBO 3/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0042 0.0066 0.0008]
+  residual capacity: [-0.0037  0.0045  0.0021  0.0079]
+  Solved in 2304.7ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0042 0.0066 0.0008]
+
+[Sub-QUBO 4/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0042 0.0066 0.0008]
+  residual capacity: [-0.0037  0.0045  0.0021  0.0079]
+  Solved in 2458.3ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0042 0.0066 0.0008]
+
+[Sub-QUBO 5/16] 2 entities | weight=0.0058
+  phi before: [0.0124 0.0042 0.0066 0.0008]
+  residual capacity: [-0.0037  0.0045  0.0021  0.0079]
+  Solved in 2550.7ms | energy=-10.000060 | feasible=True
+  phi after:  [0.0124 0.005  0.0066 0.0058]
+
+[Sub-QUBO 6/16] 2 entities | weight=0.0033
+  phi before: [0.0124 0.005  0.0066 0.0058]
+  residual capacity: [-0.0037  0.0037  0.0021  0.0029]
+  Solved in 2328.3ms | energy=-10.000013 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0058]
+
+[Sub-QUBO 7/16] 2 entities | weight=0.0017
+  phi before: [0.0124 0.0083 0.0066 0.0058]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0029]
+  Solved in 2687.3ms | energy=-10.000007 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 8/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2310.7ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 9/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2323.7ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 10/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2337.0ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 11/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2319.6ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 12/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2314.4ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 13/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2341.5ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 14/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2340.7ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 15/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2309.2ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+[Sub-QUBO 16/16] 2 entities | weight=0.0000
+  phi before: [0.0124 0.0083 0.0066 0.0074]
+  residual capacity: [-0.0037  0.0004  0.0021  0.0013]
+  Solved in 2468.3ms | energy=-10.000000 | feasible=True
+  phi after:  [0.0124 0.0083 0.0066 0.0074]
+
+--- Run Complete ---
+Final core loads: [0.0124 0.0083 0.0066 0.0074]
+Load imbalance:   0.005833  (L_avg=0.0087)
+Movable entities assigned: 32/32 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -160.000282
+Global brute-force skipped: Brute-force refused: 128 variables exceeds 22 limit.
+

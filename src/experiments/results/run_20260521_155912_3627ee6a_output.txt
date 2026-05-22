@@ -1,0 +1,197 @@
+========================================================================================
+EXPERIMENT RESULT: t1_1_minimal_direct (T1.1)
+========================================================================================
+Run id:        run_20260521_155912_3627ee6a
+Repeat:        1/1
+Status:        success
+Started UTC:   20260521_155913
+Duration:      0.766s
+Scenario file: src/experiments/scenarios/t1_1_minimal_direct.toml
+JSON result:   src/experiments/results/t1_1_minimal_direct_result/20260521_155913_run_20260521_155912_3627ee6a_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t1_1_minimal_direct_result/20260521_155913_run_20260521_155912_3627ee6a_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 2
+num_cores: 2
+num_variables: 4
+energy: -10.42
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 765.3640569997151
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.2622052758545041
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 0
+  },
+  "candidate_energy": -10.42,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 0
+  },
+  "global_energy": -10.42,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 0
+  },
+  "unconstrained_energy": -10.42,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   2 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Thu May 21 16:59:13 2026 ---
+Workload ID: None
+Entities: [(1000, 0.3), (1001, 0.7)]
+Building QUBO...
+QUBO Matrix completed in 4.696846008300781e-05
+QUBO solved in 0.7654306888580322
+
+Core Assignment - Energy: -10.4200
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0}
+Core Assignment - Solve time: 765.4ms
+Validated in 0.0003440380096435547
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -10.4200
+
+--- Final Schedule ---
+  Entity 1000 (w=0.300) → core 1
+  Entity 1001 (w=0.700) → core 0
+
+Total solve time: 765.364ms
+
+========================================================================================
+EXPERIMENT RESULT: t1_2_slightly_larger_direct (T1.2)
+========================================================================================
+Run id:        run_20260521_155912_3627ee6a
+Repeat:        1/1
+Status:        success
+Started UTC:   20260521_155914
+Duration:      0.497s
+Scenario file: src/experiments/scenarios/t1_2_slightly_larger_direct.toml
+JSON result:   src/experiments/results/t1_2_slightly_larger_direct_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t1_2_slightly_larger_direct_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 3
+num_cores: 2
+num_variables: 6
+energy: -15.500000000000002
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 494.6943570002986
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.13426479080408618
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 1
+1002 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 0
+  },
+  "candidate_energy": -15.500000000000002,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 1
+  },
+  "global_energy": -15.500000000000002,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 1
+  },
+  "unconstrained_energy": -15.500000000000002,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   3 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Thu May 21 16:59:14 2026 ---
+Workload ID: None
+Entities: [(1000, 0.2), (1001, 0.5), (1002, 0.3)]
+Building QUBO...
+QUBO Matrix completed in 3.361701965332031e-05
+QUBO solved in 0.49512791633605957
+
+Core Assignment - Energy: -15.5000
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 1, 1002: 0}
+Core Assignment - Solve time: 494.7ms
+Validated in 0.0009348392486572266
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -15.5000
+
+--- Final Schedule ---
+  Entity 1000 (w=0.200) → core 0
+  Entity 1001 (w=0.500) → core 1
+  Entity 1002 (w=0.300) → core 0
+
+Total solve time: 494.694ms
+
+========================================================================================
+EXPERIMENT RESULT: t1_3_live_trace_small_core_count (T1.3)
+========================================================================================
+Run id:        run_20260521_155912_3627ee6a
+Repeat:        1/1
+Status:        unknown
+Started UTC:   20260521_155914
+Duration:      0.402s
+Scenario file: src/experiments/scenarios/t1_3_live_trace_small_core_count.toml
+JSON result:   src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t1_3_live_trace_small_core_count_result/20260521_155914_run_20260521_155912_3627ee6a_repeat_001_of_001_output.txt
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING LIVE SYSTEM TRACER
+

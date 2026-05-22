@@ -1,0 +1,195 @@
+========================================================================================
+EXPERIMENT RESULT: t5_1_live_trace_small_core_count (T5.1)
+========================================================================================
+Run id:        run_20260521_160951_d9297444
+Repeat:        1/1
+Status:        success
+Started UTC:   20260521_161107
+Duration:      4.362s
+Scenario file: src/experiments/scenarios/t5_1_live_trace_small_core_count.toml
+JSON result:   src/experiments/results/t5_1_live_trace_small_core_count_result/20260521_161107_run_20260521_160951_d9297444_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t5_1_live_trace_small_core_count_result/20260521_161107_run_20260521_160951_d9297444_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 17
+num_cores: 2
+num_variables: 34
+energy: -85.00072516666665
+feasible: true
+optimal: null
+optimality_gap: null
+solve_time_ms: 2175.230595998073
+num_sub_qubos: 5
+num_feasible_sub_qubos: 5
+all_sub_qubos_feasible: true
+load_imbalance: 8.33333333333311e-05
+final_phi: [0.019000000000000003, 0.019083333333333334]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+0 -> 1
+1 -> 1
+10 -> 1
+11 -> 1
+12 -> 1
+13 -> 1
+14 -> 1
+15 -> 1
+16 -> 1
+2 -> 0
+3 -> 0
+4 -> 1
+5 -> 1
+6 -> 0
+7 -> 0
+8 -> 1
+9 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "brute_force_error": "Brute-force refused: 34 variables exceeds 22 limit.",
+  "candidate_assignments": {
+    "0": 1,
+    "1": 1,
+    "10": 1,
+    "11": 1,
+    "12": 1,
+    "13": 1,
+    "14": 1,
+    "15": 1,
+    "16": 1,
+    "2": 0,
+    "3": 0,
+    "4": 1,
+    "5": 1,
+    "6": 0,
+    "7": 0,
+    "8": 1,
+    "9": 0
+  },
+  "candidate_energy": -85.00072516666665,
+  "errors": [],
+  "global_assignments": {},
+  "global_energy": null,
+  "is_optimal": null,
+  "unconstrained_assignments": {},
+  "unconstrained_energy": null,
+  "unconstrained_is_feasible": null,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING LIVE SYSTEM TRACER
+
+================================================================================
+ RAW SYSTEM SNAPSHOT 
+ ID: 5010ae3e-bbda-4376-961a-6784d323f81d | Cores: 2 | Time: 1779379868.7596657
+================================================================================
+     PID | CLASS |   CPU% |   MEM(MB) |   I/O | COMMAND
+-------------------------------------------------------
+   64100 | BE   |   1.2% |    473.2 |  0.00 | /app/extra/vscode/code --type=zygote
+   64069 | BE   |   0.8% |    254.5 |  0.00 | /app/extra/vscode/code --type=zygote --no-zygote-s..
+    3228 | BE   |   0.6% |     68.8 |  0.00 | Hyprland --watchdog-fd 4
+   49479 | BE   |   0.2% |    438.6 |  0.00 | /opt/google/chrome/chrome
+   52561 | BE   |   0.2% |    743.1 |  0.00 | /opt/google/chrome/chrome --type=renderer --crashp..
+   64001 | BE   |   0.2% |    217.0 |  0.00 | /app/extra/vscode/code --extensions-dir=/home/simo..
+   64143 | BE   |   0.2% |    584.0 |  0.00 | /proc/self/exe --type=utility --utility-sub-type=n..
+   64905 | BE   |   0.2% |    180.9 |  0.00 | /home/simoes/.var/app/com.visualstudio.code/data/v..
+   49529 | BE   |   0.1% |    336.2 |  0.00 | /opt/google/chrome/chrome --type=gpu-process --ozo..
+   64248 | BE   |   0.1% |    146.6 |  0.00 | /home/simoes/.var/app/com.visualstudio.code/data/v..
+   64773 | BE   |   0.1% |    517.0 |  0.00 | /app/extra/vscode/code /home/simoes/.var/app/com.v..
+     618 | BE   |   0.0% |     28.0 |  0.00 | /usr/lib/systemd/systemd-journald
+    1072 | BE   |   0.0% |     22.3 |  0.00 | /usr/bin/abrt-dump-journal-core -D -T -f -e
+    1073 | BE   |   0.0% |     20.9 |  0.00 | /usr/bin/abrt-dump-journal-oops -fxtD
+    1516 | BE   |   0.0% |     24.5 |  0.00 | /usr/bin/python3 -Es /usr/sbin/tuned-ppd -l
+... and 39 more processes.
+----------------------------------------
+
+INITIATING ADAPTIVE CLUSTERING
+
+================================================================================
+ ADAPTIVE CLUSTERING RESULT 
+ Source ID: 5010ae3e-bbda-4376-961a-6784d323f81d | Bundles: 17
+================================================================================
+ B_ID |   AGG CPU% |  AGG MEM(MB) | MEMBERS (PIDs)
+--------------------------------------------------
+    1 |       1.2% |       473.2 | [64100]
+    3 |       0.8% |       254.5 | [64069]
+    2 |       0.6% |        68.8 | [3228]
+    9 |       0.5% |      1181.7 | [49479, 52561]
+    4 |       0.4% |       544.5 | [64001, 64248, 64905]
+    8 |       0.2% |      1101.0 | [64143, 64773]
+   14 |       0.1% |       336.2 | [49529]
+    0 |       0.0% |       357.3 | [618, 1072, 1073, 1516, 3270, 3278, 3286, 3287, 3508, 3533, 5784, 31670, 83213, 83476]
+    5 |       0.0% |       489.0 | [49786, 69760, 81855]
+    6 |       0.0% |      1220.9 | [83479]
+    7 |       0.0% |      1423.0 | [3499, 49531, 49809, 62576, 64194, 64199, 64273, 64345, 64377, 64521, 64566, 64830, 83192]
+   10 |       0.0% |        77.2 | [80867]
+   11 |       0.0% |       735.5 | [3277, 3387, 3397, 49728, 64005, 64025, 64079]
+   12 |       0.0% |        69.0 | [49498]
+   13 |       0.0% |        61.2 | [49543]
+   15 |       0.0% |       275.0 | [64185]
+   16 |       0.0% |        68.9 | [49499]
+================================================================================
+
+----------------------------------------
+
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   17 processes on 2 cores
+WEIGHTS:    0.038 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Thu May 21 17:11:08 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0002s
+Partitioning in Sub-QUBOs...
+5 sub-QUBOs | sizes: [4, 4, 4, 4, 1]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/5] 4 entities | weight=0.0166
+  phi before: [0. 0.]
+  residual capacity: [0.019 0.019]
+  Solved in 495.3ms | energy=-20.000472 | feasible=True
+  phi after:  [0.005  0.0116]
+
+[Sub-QUBO 2/5] 4 entities | weight=0.0207
+  phi before: [0.005  0.0116]
+  residual capacity: [0.014  0.0075]
+  Solved in 659.7ms | energy=-20.000252 | feasible=True
+  phi after:  [0.019  0.0183]
+
+[Sub-QUBO 3/5] 4 entities | weight=0.0008
+  phi before: [0.019  0.0183]
+  residual capacity: [0.     0.0008]
+  Solved in 392.5ms | energy=-20.000001 | feasible=True
+  phi after:  [0.019  0.0191]
+
+[Sub-QUBO 4/5] 4 entities | weight=0.0000
+  phi before: [0.019  0.0191]
+  residual capacity: [ 0. -0.]
+  Solved in 362.8ms | energy=-20.000000 | feasible=True
+  phi after:  [0.019  0.0191]
+
+[Sub-QUBO 5/5] 1 entities | weight=0.0000
+  phi before: [0.019  0.0191]
+  residual capacity: [ 0. -0.]
+  Solved in 265.0ms | energy=-5.000000 | feasible=True
+  phi after:  [0.019  0.0191]
+
+--- Run Complete ---
+Final core loads: [0.019  0.0191]
+Load imbalance:   0.000083  (L_avg=0.0190)
+Movable entities assigned: 17/17 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -85.000725
+Global brute-force skipped: Brute-force refused: 34 variables exceeds 22 limit.
+

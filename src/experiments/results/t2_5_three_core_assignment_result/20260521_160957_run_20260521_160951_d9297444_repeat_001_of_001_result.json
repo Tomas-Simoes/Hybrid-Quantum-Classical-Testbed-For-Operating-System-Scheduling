@@ -1,0 +1,211 @@
+{
+  "category": "correctness",
+  "config": {
+    "category": "correctness",
+    "checks": {
+      "brute_force_available": true,
+      "expected_pipeline": "default",
+      "no_crash": true,
+      "three_core_mapping": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 3,
+      "qubit_max": 12,
+      "sorting_strategy": "WEIGHT_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Four processes on three cores. Tests K > 2 variable mapping, decoding, brute-force validation, and visualization metadata.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "T2.5",
+    "name": "Three-core direct assignment",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 60,
+      "top_k": 20
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "scenario_version": 1,
+    "tier": 2,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 3,
+      "num_processes": 4,
+      "weights": [
+        0.4,
+        0.25,
+        0.2,
+        0.15
+      ]
+    }
+  },
+  "duration_s": 1.4790220260620117,
+  "ended_at_epoch": 1779379799.2388866,
+  "log_path": "src/experiments/results/t2_5_three_core_assignment_result/20260521_160957_run_20260521_160951_d9297444_repeat_001_of_001.log",
+  "metrics": {
+    "assignments": {
+      "1000": 2,
+      "1001": 0,
+      "1002": 1,
+      "1003": 1
+    },
+    "energy": -20.321666666666665,
+    "feasible": true,
+    "max_probability": 0.015294666386554762,
+    "num_cores": 3,
+    "num_entities": 4,
+    "num_variables": 12,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "solve_time_ms": 1420.5842749997828,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "validation": {
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 2,
+        "1001": 0,
+        "1002": 1,
+        "1003": 1
+      },
+      "candidate_energy": -20.321666666666665,
+      "errors": [],
+      "global_assignments": {
+        "1000": 2,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "global_energy": -20.321666666666665,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 2,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "unconstrained_energy": -20.321666666666665,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/t2_5_three_core_assignment_result/20260521_160957_run_20260521_160951_d9297444_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 3,
+      "qubit_max": 12,
+      "sorting_strategy": "WEIGHT_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 3,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.4,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 409.6
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.2,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 204.8
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1779379797.7599976,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 1,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 60,
+      "top_k": 20
+    },
+    "qubo": {
+      "num_cores": 3,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/t2_5_three_core_assignment_result/20260521_160957_run_20260521_160951_d9297444_repeat_001_of_001_result.json",
+  "run_id": "run_20260521_160951_d9297444",
+  "scenario_file": "src/experiments/scenarios/t2_5_three_core_assignment.toml",
+  "scenario_id": "T2.5",
+  "scenario_name": "Three-core direct assignment",
+  "scenario_stem": "t2_5_three_core_assignment",
+  "started_at_epoch": 1779379797.7598646,
+  "started_at_utc": "20260521_160957",
+  "status": "success",
+  "tier": 2,
+  "warnings": []
+}

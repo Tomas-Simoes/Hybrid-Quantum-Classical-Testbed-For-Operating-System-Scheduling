@@ -1,0 +1,23 @@
+========================================================================================
+EXPERIMENT RESULT: t1_1_minimal_direct (T1.1)
+========================================================================================
+Run id:        run_20260521_160802_01153f55
+Repeat:        1/1
+Status:        failed
+Started UTC:   20260521_160802
+Duration:      0.003s
+Scenario file: src/experiments/scenarios/t1_1_minimal_direct.toml
+JSON result:   src/experiments/results/t1_1_minimal_direct_result/20260521_160802_run_20260521_160802_01153f55_repeat_001_of_001_result.json
+Output file:   src/experiments/results/t1_1_minimal_direct_result/20260521_160802_run_20260521_160802_01153f55_repeat_001_of_001_output.txt
+
+ERROR
+----------------------------------------------------------------------------------------
+{
+  "message": "No module named 'streamlit'",
+  "type": "ModuleNotFoundError"
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+(no program output captured)
+
