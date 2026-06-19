@@ -1,0 +1,264 @@
+\chapter{Resolução do QUBO com QAOA}
+\label{chap:resolucao-qubo-qaoa}
+
+O \acs{QAOA} é um algoritmo variacional híbrido para otimização combinatória, no qual
+um circuito quântico é combinado com um otimizador clássico para
+minimizar o valor esperado de um Hamiltoniano de custo~\cite{Farhi2014QAOA,Cerezo2021VQA}.
+Neste projeto, a implementação do circuito e da otimização é feita com PennyLane~\cite{Bergholm2018PennyLane}.
+
+Importa realçar que a execução foi realizada em simulação, e não em hardware
+quântico real. Esta opção permite evitar a latência associada aos dispositivos
+quânticos remotos, bem como os efeitos de ruído físico. Na implementação, o solver
+tenta primeiro o backend \path{lightning.gpu} do PennyLane, quando há suporte para
+\acs{GPU}. Quando este backend não está disponível, recorre a \path{lightning.qubit}
+como alternativa~\cite{Asadi2024Lightning}.
+
+A abordagem implementada atribui um qubit lógico a cada par processo-núcleo. Assim,
+uma instância com $N$ processos e $K$ núcleos requer $N \cdot K$ qubits.
+
+\section{Conversão do QUBO em Hamiltoniano}
+\label{sec:conversao-qubo-hamiltoniano}
+
+O \acs{QAOA} trabalha com um Hamiltoniano de custo $H_C$ e não diretamente com a matriz $Q$. Assim, a energia \acs{QUBO}
+
+\begin{equation}
+    E(\mathbf{x}) = \mathbf{x}^{\top}Q\mathbf{x}
+\end{equation}
+\listeq{Energia QUBO a converter em Hamiltoniano}
+
+tem de ser convertida em forma de operadores quânticos. Esta conversão segue a
+relação usual entre variáveis binárias e variáveis de \textit{spin} usada em formulações
+Ising de problemas combinatórios~\cite{Lucas2014Ising}. Para isso, cada variável binária $x_i \in \{0,1\}$ é mapeada para operadores de Pauli $Z_i$ usando a substituição:
+
+\begin{equation}
+    x_i = \frac{I - Z_i}{2}.
+\end{equation}
+\listeq{Mapeamento de variável binária para operador de Pauli Z}
+
+Esta substituição permite representar os valores binários $0$ e $1$ através dos
+dois estados da base computacional, $\lvert 0\rangle$ e $\lvert 1\rangle$. Quando o qubit está no estado $\lvert 0\rangle$, o operador $Z_i$ tem valor
+$+1$, resultando em $x_i = 0$; quando está no estado $\lvert 1\rangle$, o operador $Z_i$
+tem valor $-1$, resultando em $x_i = 1$.
+
+Assim, um termo linear da diagonal do \acs{QUBO} transforma-se em:
+
+\begin{equation}
+    Q_{ii}x_i
+    =
+    Q_{ii}\frac{I - Z_i}{2}
+    =
+    \frac{Q_{ii}}{2}I - \frac{Q_{ii}}{2}Z_i.
+\end{equation}
+\listeq{Conversão de um termo linear do QUBO}
+
+Para os termos quadráticos, considerando $q_{ij}=Q_{ij}+Q_{ji}$, obtém-se:
+
+\begin{equation}
+    q_{ij}x_ix_j
+    =
+    q_{ij}\frac{I - Z_i}{2}\frac{I - Z_j}{2}
+    =
+    \frac{q_{ij}}{4}
+    \left(I - Z_i - Z_j + Z_iZ_j\right).
+\end{equation}
+\listeq{Conversão de um termo quadrático do QUBO}
+
+Desta forma, o Hamiltoniano de custo pode ser escrito como:
+
+\begin{equation}
+    H_C =
+    cI
+    +
+    \sum_i h_i Z_i
+    +
+    \sum_{i<j} J_{ij} Z_iZ_j,
+\end{equation}
+\listeq{Hamiltoniano de custo}
+
+onde $c$ é uma constante, $h_i$ são os coeficientes lineares associados a cada
+qubit, e $J_{ij}$ representa a interação entre pares de qubits.
+
+Uma vez obtido o Hamiltoniano de custo $H_C$, este passa a definir a energia associada a cada estado. No \acs{QAOA}, esta informação é usada através de uma operação unitária de custo~\cite{Farhi2014QAOA}:
+
+\begin{equation}
+    U_C(\gamma) = e^{-i\gamma H_C},
+\end{equation}
+\listeq{Unitária de custo do QAOA}
+
+onde $\gamma$ é um parâmetro variacional. Esta operação pode ser vista como uma evolução temporal sob o Hamiltoniano $H_C$ durante um tempo controlado por $\gamma$. Como $H_C$ é diagonal na base computacional, cada bitstring recebe uma fase dependente da sua energia:
+
+\begin{equation}
+    U_C(\gamma)\lvert x\rangle
+    =
+    e^{-i\gamma E(x)}\lvert x\rangle.
+\end{equation}
+\listeq{Fase induzida pela energia da bitstring}
+
+Logo, a camada de custo não altera diretamente a probabilidade de cada bitstring; altera as suas fases relativas. Essas fases tornam-se úteis quando é aplicada a camada de mistura, responsável por distribuir amplitude entre soluções.
+
+A camada de mistura é definida por outro Hamiltoniano $H_M$ e pelo operador unitario
+
+\begin{equation}
+\label{eq:mixer-op}
+    U_M(\beta) = e^{-i\beta H_M},
+\end{equation}
+\listeq{Unitária de mistura do QAOA}
+
+onde $\beta$ é também um parâmetro variacional. Enquanto $U_C$ traduz informação
+sobre a qualidade das soluções através das fases, $U_M$ permite explorar novas
+soluções ao misturar amplitudes entre estados da base computacional.
+
+\section{Mixer X e XY}
+\label{sec:mixer-x-xy}
+
+O Hamiltoniano $H_M$ presente em \eqref{eq:mixer-op} é designado por \textit{mixer}. No \acs{QAOA}, o \textit{mixer} é responsável por distribuir amplitude entre estados da base computacional~\cite{Farhi2014QAOA,Hadfield2017AlternatingOperator}. Para este trabalho foram considerados dois tipos: X e XY.
+
+A diferença entre eles está no espaço de soluções explorado. O \textit{mixer} $X$ atua sobre todos os qubits individualmente, permitindo explorar todo o espaço binário. Já o \textit{mixer} $XY$ é adaptado à restrição one-hot, pois atua apenas entre qubits que representam núcleos alternativos para o mesmo processo~\cite{Wang2019XYMixers,Fuchs2022ConstrainedMixers}.
+
+\subsection{Mixer X}
+\label{subsec:mixer-x}
+
+O \textit{mixer} $X$ é o padrão da formulação do \acs{QAOA}~\cite{Farhi2014QAOA}. O seu Hamiltoniano de forma simplificada é:
+
+\begin{equation}
+    H_M^X=\sum_i X_i
+\end{equation}
+\listeq{Hamiltoniano do mixer X}
+
+onde $X_i$ é o operador de Pauli X aplicado ao qubit $i$.
+
+Este mixer é aplicado numa superposição de estados uniforme, aplicando \textit{Hadamard gates} no estado inicial.
+
+\begin{equation}
+    \ket{s} = \frac{1}{\sqrt{2^n}} \sum_{x \in \{0,1\}^n} \ket{x},
+\end{equation}
+\listeq{Estado inicial uniforme do mixer X}
+
+onde $n=N \cdot K$ é o número total de qubits. Assim, o circuito começa numa superposição sobre todos os bitstrings possíveis.
+
+No entanto, para o problema do escalonamento este espaço contém estados inválidos. Por exemplo, para um único processo e dois núcleos, existem
+quatro estados possíveis:
+
+\begin{equation}
+    \ket{00},\ \ket{01},\ \ket{10},\ \ket{11}.
+\end{equation}
+\listeq{Estados possíveis para um processo e dois núcleos}
+
+Assumindo que cada posição representa a atribuição do processo a um núcleo, apenas
+dois destes estados são válidos:
+
+\begin{equation}
+    \ket{10},\ \ket{01}.
+\end{equation}
+\listeq{Estados one-hot válidos}
+
+Por isso, com o mixer $X$, a validade das soluções depende da penalidade one-hot incluída no \acs{QUBO}.
+
+\subsection{Mixer XY}
+\label{subsec:mixer-xy}
+
+O \textit{mixer} $XY$ é mais adequado à estrutura deste problema, porque atua
+apenas entre os qubits que representam os possíveis núcleos de um mesmo processo.
+Para cada processo $i$, existe um bloco de $K$ qubits:
+
+\begin{equation}
+    x_{i0}, x_{i1}, \dots, x_{i,K-1}.
+\end{equation}
+\listeq{Bloco de qubits associado a um processo}
+
+O mixer XY aplica operações entre pares de qubits dentro desse bloco, que têm a forma:
+
+\begin{equation}
+   X_{ij}X_{ik} + Y_{ij}Y_{ik}
+\end{equation}
+\listeq{Interação do mixer XY}
+
+onde $j$ e $k$ representam dois núcleos distintos associados ao mesmo processo $i$.
+Esta operação permite transferir amplitude entre atribuições do mesmo
+processo, por exemplo:
+
+\begin{equation}
+   \ket{10} \leftrightarrow \ket{01}.
+\end{equation}
+\listeq{Troca de amplitude entre atribuições}
+
+Esta operação preserva o número de bits ativos no
+bloco. Assim, partindo de um estado válido, como $\ket{10}$ ou $\ket{01}$, o mixer
+$XY$ não cria estados inválidos como $\ket{00}$ ou $\ket{11}$~\cite{Wang2019XYMixers,Fuchs2022ConstrainedMixers}.
+
+Na implementação, quando se usa o \textit{mixer} $XY$, o estado inicial não é a
+superposição uniforme sobre todos os bitstrings. Em vez disso, é preparado um
+estado válido em que todos os processos começam atribuídos ao núcleo $0$.
+
+Deste modo, embora o circuito continue a ter $N \cdot K$ qubits e o espaço binário
+total tenha dimensão
+
+\begin{equation}
+    2^{N \cdot K},
+\end{equation}
+\listeq{Dimensão do espaço binário total}
+
+o mixer $XY$ restringe o subespaço one-hot, que contém
+
+\begin{equation}
+    K^N
+\end{equation}
+\listeq{Número de atribuições one-hot válidas}
+
+atribuições válidas. Por esta razão, este \textit{mixer} é particularmente adequado para o
+problema de atribuição de processos a núcleos.
+
+\section{Circuito Variacional e Otimização Clássica}
+\label{sec:circuito-variacional-otimizacao}
+
+Depois de definidas as camadas de custo e de mistura, o circuito \acs{QAOA} é construído alternando estas duas operações durante $p$ camadas~\cite{Farhi2014QAOA}:
+\begin{equation}
+\ket{\psi(\boldsymbol{\gamma},\boldsymbol{\beta})}
+=
+U_M(\beta_p)U_C(\gamma_p)
+\cdots
+U_M(\beta_1)U_C(\gamma_1)
+\ket{\psi_0}.
+\end{equation}
+\listeq{Circuito QAOA com \(p\) camadas}
+
+Os vetores $\boldsymbol{\gamma}=(\gamma_1,\dots,\gamma_p)$ e
+$\boldsymbol{\beta}=(\beta_1,\dots,\beta_p)$ são parâmetros variacionais. O seu
+valor não é fixado manualmente; é ajustado por um otimizador clássico de forma a
+minimizar o valor esperado do Hamiltoniano de custo:
+
+\begin{equation}
+    \min_{\boldsymbol{\gamma},\boldsymbol{\beta}}
+    \bra{\psi(\boldsymbol{\gamma},\boldsymbol{\beta})}
+    H_C
+    \ket{\psi(\boldsymbol{\gamma},\boldsymbol{\beta})}.
+\end{equation}
+\listeq{Otimização dos parâmetros variacionais}
+
+A otimização é feita com o otimizador
+Adam do PennyLane~\cite{Kingma2014Adam}, durante um número configurável de iterações. Em cada iteração,
+o circuito é avaliado, o valor esperado de $H_C$ é calculado, e os parâmetros são
+atualizados para reduzir essa energia esperada.
+
+\section{Medição, Descodificação e Seleção da Solução}
+\label{sec:medicao-descodificacao-selecao}
+
+Após a otimização dos parâmetros variacionais, o circuito \acs{QAOA} final define uma distribuição de probabilidades sobre os bitstrings possíveis.
+
+A validade de cada bitstring é verificada impondo a restrição one-hot: cada processo
+deve ter exatamente uma variável ativa entre os seus $K$ núcleos possíveis. Se um
+processo não tiver nenhuma variável ativa, ou se tiver mais do que uma, o bitstring
+é considerado inválido.
+
+Para cada bitstring viável, a energia clássica é recalculada diretamente a partir
+da matriz \acs{QUBO}:
+
+\begin{equation}
+    E(\mathbf{x}) = \mathbf{x}^{\top}Q\mathbf{x}.
+\end{equation}
+\listeq{Energia clássica usada na seleção final}
+
+A solução final devolvida pelo solver corresponde ao bitstring viável com menor
+energia \acs{QUBO} encontrado após a avaliação da distribuição final. Desta forma, a
+etapa quântica gera uma distribuição candidata, enquanto a etapa clássica final
+garante que a solução é uma atribuição válida e energeticamente favorável.

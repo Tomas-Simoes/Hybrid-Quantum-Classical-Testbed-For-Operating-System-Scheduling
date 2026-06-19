@@ -12,6 +12,22 @@
         "**/relatorio.aux": true,
         "**/relatorio.log": true,
         "**/relatorio.gz": true,
-        "**/relatorio.out": true
+        "**/relatorio.out": true,
+        "**/relatorio-projeto.aux": true,
+        "**/relatorio-projeto.log": true,
+        "**/relatorio-projeto.gz": true,
+        "**/relatorio-projeto.out": true,
+        "**/capa.aux": true,
+        "**/capa.log": true,
+        "**/capa.gz": true,
+        "**/capa.out": true,
+        "**/resolucao-qubo-qaoa.aux": true,
+        "**/resolucao-qubo-qaoa.log": true,
+        "**/resolucao-qubo-qaoa.gz": true,
+        "**/resolucao-qubo-qaoa.out": true,
+        "**/introducao.aux": true,
+        "**/introducao.log": true,
+        "**/introducao.gz": true,
+        "**/introducao.out": true
     }
 }

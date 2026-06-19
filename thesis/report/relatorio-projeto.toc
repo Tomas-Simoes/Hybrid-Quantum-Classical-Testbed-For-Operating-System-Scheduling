@@ -1,0 +1,20 @@
+\babel@toc {portuguese}{}\relax 
+\contentsline {chapter}{Conte\'udo}{ii}{section*.2}%
+\contentsline {chapter}{Lista de Figuras}{iii}{section*.3}%
+\contentsline {chapter}{Lista de Tabelas}{iv}{section*.4}%
+\contentsline {chapter}{Lista de Equações}{v}{chapter*.5}%
+\contentsline {chapter}{\chapternumberline {1}Introdução}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Formulação do Problema}{1}{section.1.1}%
+\contentsline {chapter}{\chapternumberline {2}Formulação QUBO para Escalonamento}{2}{chapter.2}%
+\contentsline {section}{\numberline {2.1}CPU Scheduling em Sistemas Operativos}{2}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Formulação QUBO}{2}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Construção da Matriz Q}{3}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Exemplo Ilustrativo}{4}{section.2.4}%
+\contentsline {chapter}{\chapternumberline {3}Resolução do QUBO com QAOA}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Conversão do QUBO em Hamiltoniano}{6}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Mixer X e XY}{7}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Mixer X}{8}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Mixer XY}{8}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Circuito Variacional e Otimização Clássica}{9}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Medição, Descodificação e Seleção da Solução}{9}{section.3.4}%
+\contentsline {chapter}{Bibliografia}{11}{chapter*.7}%

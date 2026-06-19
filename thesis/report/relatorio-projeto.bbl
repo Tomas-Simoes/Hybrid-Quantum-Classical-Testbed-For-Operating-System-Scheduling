@@ -1,0 +1,80 @@
+\begin{thebibliography}{10}
+
+\bibitem{LinuxCFS}
+{The Linux Kernel Development Community}.
+\newblock {CFS} scheduler.
+\newblock \url{https://docs.kernel.org/scheduler/sched-design-CFS.html}.
+\newblock Accessed: 2026-06-18.
+
+\bibitem{Farhi2014QAOA}
+Edward Farhi, Jeffrey Goldstone, and Sam Gutmann.
+\newblock A quantum approximate optimization algorithm, 2014.
+
+\bibitem{Kochenberger2014QUBO}
+Gary Kochenberger, Jin-Kao Hao, Fred Glover, Mark Lewis, Zhipeng L{\"u}, Haibo
+  Wang, and Yang Wang.
+\newblock The unconstrained binary quadratic programming problem: A survey.
+\newblock {\em Journal of Combinatorial Optimization}, 28(1):58--81, 2014.
+
+\bibitem{Glover2019QUBO}
+Fred Glover, Gary Kochenberger, and Yu~Du.
+\newblock A tutorial on formulating and using {QUBO} models, 2018.
+
+\bibitem{Tirado2025QTIS}
+Jos{\'e}~A. Tirado-Dom{\'i}nguez, Eladio Guti{\'e}rrez, and Oscar Plata.
+\newblock {QTIS}: A {QAOA}-based quantum time interval scheduler, 2025.
+
+\bibitem{Preskill2018}
+John Preskill.
+\newblock Quantum computing in the {NISQ} era and beyond.
+\newblock {\em Quantum}, 2:79, 2018.
+
+\bibitem{Preskill2025}
+John Preskill.
+\newblock Beyond {NISQ}: The megaquop machine, 2025.
+
+\bibitem{Bergholm2018PennyLane}
+Ville Bergholm, Josh Izaac, Maria Schuld, Christian Gogolin, Shahnawaz Ahmed,
+  Vishnu Ajith, M.~Sohaib Alam, Guillermo Alonso-Linaje, B.~AkashNarayanan, Ali
+  Asadi, et~al.
+\newblock {PennyLane}: Automatic differentiation of hybrid quantum-classical
+  computations, 2018.
+
+\bibitem{Cerezo2021VQA}
+Marco Cerezo, Andrew Arrasmith, Ryan Babbush, Simon~C. Benjamin, Suguru Endo,
+  Keisuke Fujii, Jarrod~R. McClean, Kosuke Mitarai, Xiao Yuan, Lukasz Cincio,
+  and Patrick~J. Coles.
+\newblock Variational quantum algorithms.
+\newblock {\em Nature Reviews Physics}, 3:625--644, 2021.
+
+\bibitem{Asadi2024Lightning}
+Ali Asadi et~al.
+\newblock Hybrid quantum programming with {PennyLane Lightning} on {HPC}
+  platforms, 2024.
+
+\bibitem{Lucas2014Ising}
+Andrew Lucas.
+\newblock Ising formulations of many {NP} problems.
+\newblock {\em Frontiers in Physics}, 2:5, 2014.
+
+\bibitem{Hadfield2017AlternatingOperator}
+Stuart Hadfield, Zhihui Wang, Bryan O'Gorman, Eleanor~G. Rieffel, Davide
+  Venturelli, and Rupak Biswas.
+\newblock From the quantum approximate optimization algorithm to a quantum
+  alternating operator ansatz, 2017.
+
+\bibitem{Wang2019XYMixers}
+Zhihui Wang, Nicholas~C. Rubin, Jason~M. Dominy, and Eleanor~G. Rieffel.
+\newblock {$XY$}-mixers: Analytical and numerical results for {QAOA}, 2019.
+
+\bibitem{Fuchs2022ConstrainedMixers}
+Franz~G. Fuchs, Kjetil~Olsen Lye, Halvor~M{\o}ll Nilsen, Alexander~J. Stasik,
+  and Giorgio Sartor.
+\newblock Constrained mixers for the quantum approximate optimization
+  algorithm, 2022.
+
+\bibitem{Kingma2014Adam}
+Diederik~P. Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization, 2014.
+
+\end{thebibliography}

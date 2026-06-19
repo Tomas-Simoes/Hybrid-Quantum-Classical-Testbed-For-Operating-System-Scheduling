@@ -1,0 +1,228 @@
+\chapter{Formulação QUBO para Escalonamento}
+\label{chap:formulacao-qubo-escalonamento}
+
+\section{CPU Scheduling em Sistemas Operativos}
+\label{sec:cpu-scheduling}
+
+Um escalonador de \acs{CPU} determina que processo ou \textit{thread} executa em cada núcleo do processador
+em cada instante. Escalonadores como o \ac{CFS} do Linux consideram
+simultaneamente latência, \textit{throughput}, prioridade, afinidade de núcleo e localização de cache,
+tomando decisões em microssegundos com base em heurísticas clássicas~\cite{LinuxCFS}.
+
+No entanto, a decisão de atribuição de processos a núcleos é fundamentalmente um problema de partição combinatorial. Dado um conjunto de $N$ processos com cargas $w_i$ e $K$ núcleos, o número de atribuições possíveis cresce como $K^N$, tornando a procura exaustiva para instâncias reais~\cite{Kochenberger2014QUBO,Glover2019QUBO}.
+
+Este projeto adota uma formulação simplificada deste problema: cada \textit{workload entity} possui
+uma utilização de \acs{CPU} conhecida, e o objetivo é distribuí-las pelos núcleos disponíveis minimizando o
+desequilíbrio de carga. Esta abstração isola a componente combinatorial do escalonamento sem replicar a complexidade de um escalonador de kernel completo.
+
+\section{Formulação QUBO}
+\label{sec:formulacao-qubo}
+
+Um problema \acs{QUBO}~\cite{Kochenberger2014QUBO,Glover2019QUBO} consiste em minimizar
+uma expressão quadrática sobre variáveis binárias $x_i \in \{0, 1\}$, representada de forma compacta como:
+
+\begin{equation}
+    \min_{\mathbf{x} \in \{0,1\}^n} \mathbf{x}^\top Q\, \mathbf{x} = \sum_{i} \sum_{j} Q_{ij} \cdot x_i \cdot x_j
+\end{equation}
+\listeq{Forma geral de um problema QUBO}
+
+onde $Q \in \mathbb{R}^{n \times n}$ é uma matriz cujos coeficientes codificam o problema a resolver.
+Expandindo o somatório, surgem dois tipos de termos:
+
+\begin{itemize}
+    \item \textbf{Termos diagonais} ($i = j$): como $x_i^2 = x_i$ para variáveis binárias,
+    $Q_{ii} \cdot x_i \cdot x_i = Q_{ii} \cdot x_i$. Estes termos associam um custo individual
+    a cada variável --- um coeficiente $Q_{ii} < 0$ incentiva o otimizador quântico a escolher $x_i = 1$; um coeficiente
+    $Q_{ii} > 0$ incentiva $x_i = 0$.
+
+    \item \textbf{Termos fora da diagonal} ($i \neq j$): $Q_{ij} \cdot x_i \cdot x_j$ contribui
+    para a energia apenas quando $x_i = x_j = 1$. Um coeficiente positivo penaliza a ativação
+    simultânea de $x_i$ e $x_j$; um coeficiente negativo recompensa-a.
+\end{itemize}
+
+A energia de uma solução $\mathbf{x}$ é o valor $\mathbf{x}^\top Q\, \mathbf{x}$.
+A solução ótima $\mathbf{x}^*$ é a atribuição binária que minimiza esta energia no espaço de
+$2^n$ configurações possíveis.
+
+\section{Construção da Matriz Q}
+\label{sec:construcao-matriz-q}
+
+Dado um conjunto de $N$ processos com cargas $w_i$ e $K$ núcleos, define-se uma
+variável binária $x_{ij} \in \{0,1\}$ para cada par processo-núcleo. Esta variável
+toma o valor $1$ quando o processo $i$ é atribuído ao núcleo $j$, e o valor $0$
+caso contrário.
+Na implementação, a variável $x_{ij}$ é armazenada no índice linear $iK+j$ da matriz $Q$.
+
+O objetivo original do problema é equilibrar a carga entre núcleos. Para isso,
+mede-se o desequilíbrio através do desvio quadrático total das cargas relativamente
+à carga média:
+
+\begin{equation}
+    \min \sum_{j=0}^{K-1}(L_j - L_{avg})^2.
+\end{equation}
+\listeq{Desvio quadrático total das cargas}
+
+onde
+\begin{equation}
+    L_{avg} = \frac{W_{total}}{K}.
+\end{equation}
+\listeq{Carga média alvo}
+
+Para obter a formulação \acs{QUBO}, este termo é expandido e combinado com penalidades que impõem
+atribuições válidas. O resultado é codificado na matriz $Q$, de modo que o \textit{solver}
+minimize a energia
+\begin{equation}
+    E(\mathbf{x}) = \mathbf{x}^{\top}Q\mathbf{x}.
+\end{equation}
+\listeq{Energia QUBO de uma solução}
+
+Assim, minimizar a energia \acs{QUBO} corresponde, por construção, a procurar uma atribuição
+simultaneamente equilibrada e válida.
+
+Para cada núcleo $j$, a carga total é dada por:
+\begin{equation}
+    L_j = \phi_j + \sum_{i=0}^{N-1} w_i x_{ij},
+\end{equation}
+\listeq{Carga total no núcleo \(j\)}
+onde $\phi_j$ representa carga já comprometida nesse núcleo, relevante para a secção da
+decomposição iterativa. Na primeira iteração, ou num \acs{QUBO} sem carga fixa, tem-se
+$\phi_j = 0$.
+
+Substituindo $L_j$ no termo de um núcleo e usando $x_{ij}^2=x_{ij}$, obtém-se:
+\begin{equation}
+\begin{aligned}
+(L_j - L_{avg})^2
+&= \left(\phi_j + \sum_{i=0}^{N-1}w_ix_{ij} - L_{avg}\right)^2 \\
+&= \underbrace{\sum_{i=0}^{N-1} d_{ij}x_{ij}}_{\text{termos diagonais}}
+ + 2\underbrace{\sum_{0 \leq i < k}^{N-1} w_iw_kx_{ij}x_{kj}}_{\text{termos de co-localização}}
+ + \underbrace{(\phi_j - L_{avg})^2}_{\text{constante}},
+\end{aligned}
+\end{equation}
+\listeq{Expansão do termo de balanceamento}
+onde
+\begin{equation}
+    d_{ij}=w_i^2 + 2w_i\phi_j - 2L_{avg}w_i.
+\end{equation}
+\listeq{Coeficiente diagonal do balanceamento}
+
+Estes coeficientes são então
+adicionados à matriz $Q$. Os termos diagonais estão associados
+à ativação individual de uma variável $x_{ij}$; os termos de co-localização aparecem
+quando dois processos distintos são atribuídos ao mesmo núcleo.
+
+Além do objetivo de balanceamento, é necessário garantir que cada processo é atribuído a
+exatamente um núcleo. Para isso adiciona-se a penalidade one-hot:
+\begin{equation}
+    P \sum_{i=0}^{N-1}\left(\sum_{j=0}^{K-1}x_{ij} - 1\right)^2.
+\end{equation}
+\listeq{Penalidade one-hot}
+Esta penalidade segue a prática comum de converter restrições de igualdade em termos
+quadráticos penalizados em \acs{QUBO}~\cite{Glover2019QUBO}. Neste caso, contribui com $-P$
+na diagonal de cada variável e com $+P$ entre variáveis do mesmo processo em núcleos diferentes.
+
+Combinando o objetivo de balanceamento e a penalidade one-hot, cada entrada da matriz
+é determinada pelo tipo de relação entre as duas variáveis consideradas:
+\begin{equation}
+Q[x_{ij},x_{kl}] =
+\begin{cases}
+w_i^2 + 2w_i\phi_j - 2L_{avg}w_i - P, & \text{se } i=k \text{ e } j=l,\\
+w_iw_k, & \text{se } i \neq k \text{ e } j=l,\\
+P, & \text{se } i=k \text{ e } j \neq l,\\
+0, & \text{se } i \neq k \text{ e } j \neq l.
+\end{cases}
+\end{equation}
+\listeq{Coeficientes da matriz \(Q\)}
+A primeira linha corresponde à contribuição individual de cada variável. A segunda
+linha penaliza processos distintos que partilham o mesmo núcleo, enquanto a terceira
+corresponde à penalidade one-hot entre núcleos diferentes do mesmo processo. A última
+linha indica que variáveis de processos e núcleos diferentes não interagem diretamente.
+
+\section{Exemplo Ilustrativo}
+\label{sec:exemplo-qubo}
+
+Considere-se $N=2$ processos e $K=2$ núcleos, com cargas $w_0=0.3$ e $w_1=0.5$,
+sem carga fixa ($\phi_j=0$). As variáveis ficam ordenadas como:
+\begin{equation}
+\begin{array}{c|cccc}
+\text{índice} & 0 & 1 & 2 & 3 \\
+\hline
+\text{variável} & x_{00} & x_{01} & x_{10} & x_{11}
+\end{array}
+\end{equation}
+\listeq{Indexação linear das variáveis no exemplo}
+A carga média é $L_{avg}=(0.3+0.5)/2=0.4$.
+
+Antes de adicionar a penalidade one-hot, os termos diagonais do balanceamento são:
+\begin{equation}
+\begin{aligned}
+Q_{0,0}^{bal}=Q_{1,1}^{bal}
+&= w_0^2 - 2L_{avg}w_0
+= 0.09 - 2(0.4)(0.3)
+= -0.15,\\
+Q_{2,2}^{bal}=Q_{3,3}^{bal}
+&= w_1^2 - 2L_{avg}w_1
+= 0.25 - 2(0.4)(0.5)
+= -0.15.
+\end{aligned}
+\end{equation}
+\listeq{Termos diagonais do balanceamento no exemplo}
+
+Para o núcleo $0$, a expansão de $(L_0 - L_{avg})^2$ contém o termo de
+co-localização:
+\[
+2w_0w_1x_{00}x_{10}=0.30x_{00}x_{10}.
+\]
+De forma análoga, a expansão de $(L_1 - L_{avg})^2$ contém:
+\[
+2w_0w_1x_{01}x_{11}=0.30x_{01}x_{11}.
+\]
+Como $Q$ é simétrica, este contributo é dividido pelas duas posições simétricas da matriz.
+
+Assim, a matriz do objetivo de balanceamento é:
+\begin{equation}
+Q_{bal} =
+\begin{pmatrix}
+-0.15 & 0 & 0.15 & 0 \\
+0 & -0.15 & 0 & 0.15 \\
+0.15 & 0 & -0.15 & 0 \\
+0 & 0.15 & 0 & -0.15
+\end{pmatrix}.
+\end{equation}
+\listeq{Matriz de balanceamento do exemplo}
+
+Com $P=1.0$, a penalidade one-hot subtrai $1.0$ a cada termo diagonal e adiciona $1.0$
+entre as variáveis do mesmo processo em núcleos distintos: $x_{00}$ com $x_{01}$, e
+$x_{10}$ com $x_{11}$. A matriz final fica:
+\begin{equation}
+Q =
+\begin{pmatrix}
+-1.15 & 1.0 & 0.15 & 0 \\
+1.0 & -1.15 & 0 & 0.15 \\
+0.15 & 0 & -1.15 & 1.0 \\
+0 & 0.15 & 1.0 & -1.15
+\end{pmatrix}.
+\end{equation}
+\listeq{Matriz Q final do exemplo}
+
+Para verificar o efeito dos termos de co-localização, comparem-se duas soluções viáveis:
+A, com os processos distribuídos ($x_{00}=x_{11}=1$), e B, com ambos os processos no
+núcleo $0$ ($x_{00}=x_{10}=1$). Usando $E(\mathbf{x})=\mathbf{x}^{\top}Q\mathbf{x}$:
+\begin{equation}
+\begin{aligned}
+E_A &= Q_{0,0} + Q_{3,3}
+= -1.15 + (-1.15)
+= \mathbf{-2.30},\\
+E_B &= Q_{0,0} + Q_{2,2} + Q_{0,2} + Q_{2,0}
+= -1.15 + (-1.15) + 0.15 + 0.15
+= \mathbf{-2.00}.
+\end{aligned}
+\end{equation}
+\listeq{Comparação de energia entre duas soluções viáveis}
+
+Como $E_A < E_B$, a solução distribuída tem menor energia. A matriz penaliza, portanto,
+a concentração dos dois processos no mesmo núcleo, favorecendo uma distribuição mais
+equilibrada.
+
+Depois de construída a matriz $Q$, o problema de escalonamento passa a estar expresso
+numa forma compatível com otimizadores \acs{QUBO}. O próximo passo será resolver esta matriz, isto é, procurar a bitstring $\mathbf{x}$ que minimiza a energia $E(\mathbf{x})=\mathbf{x}^{\top}Q\mathbf{x}$. Neste trabalho, essa etapa é realizada
+com \acs{QAOA}~\cite{Farhi2014QAOA}, implementado em PennyLane~\cite{Bergholm2018PennyLane}.
