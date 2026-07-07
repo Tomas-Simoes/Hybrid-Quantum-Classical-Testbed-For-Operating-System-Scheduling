@@ -1,0 +1,36 @@
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   6 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sat Jun 27 19:04:12 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+2 sub-QUBOs | sizes: [3, 3]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/2] 3 entities | weight=0.8200
+  phi before: [0. 0.]
+  residual capacity: [0.5 0.5]
+  Solved in 1493.9ms | energy=-15.147600 | feasible=True
+  phi after:  [0.   0.82]
+
+[Sub-QUBO 2/2] 3 entities | weight=0.1800
+  phi before: [0.   0.82]
+  residual capacity: [ 0.5  -0.32]
+  Solved in 1506.9ms | energy=-15.147600 | feasible=True
+  phi after:  [0.18 0.82]
+
+--- Run Complete ---
+Final core loads: [0.18 0.82]
+Load imbalance:   0.640000  (L_avg=0.5000)
+Movable entities assigned: 6/6 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -30.295200
+Global optimum energy:     -30.420000
+Globally optimal:          False

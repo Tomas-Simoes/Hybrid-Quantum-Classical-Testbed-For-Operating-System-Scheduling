@@ -1,0 +1,127 @@
+========================================================================================
+EXPERIMENT RESULT: phase4_e1c_synthetic_clustering (E1c.37)
+========================================================================================
+Run id:        sweep_20260627_173015_a8b15101
+Repeat:        1/1
+Status:        success
+Started UTC:   20260627_173821
+Duration:      0.939s
+Scenario file: src/experiments/scenarios/phase4_e1c_synthetic_clustering.toml
+JSON result:   src/experiments/results/phase4/phase4_e1c_synthetic_clustering_result/20260627_173821_sweep_20260627_173015_a8b15101_repeat_001_of_001_result.json
+Output file:   src/experiments/results/phase4/phase4_e1c_synthetic_clustering_result/20260627_173821_sweep_20260627_173015_a8b15101_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 2
+num_cores: 2
+num_variables: 4
+energy: -10.26975
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 807.4740270003531
+annealing_energy: -10.26975
+annealing_gap: 0.0
+beats_annealing: true
+annealing_solve_time_ms: 125.36946000000171
+brute_force_solve_time_ms: 0.1614093780517578
+sa_energy_match: true
+component_timings_ms: {"clustering_ms": 4.12982299894793, "decomposition_ms": 0.01019000046653673, "instrumented_total_ms": 937.687461002497, "qaoa_ms": 807.8567080010544, "qubo_build_ms": 0.0654499999654945, "reconstruction_ms": 0.025260002075810917, "validation_ms": 125.60002999998687, "workload_ms": 0.0}
+experiment_metadata: {"clustering": {"affinity_alpha": 0.8, "bundles": [{"aggregate_cpu_weight": 0.8125, "aggregate_rss_mb": 720.0, "bundle_id": 0, "member_commands": ["cpu_bound_1", "cpu_bound_2", "cpu_bound_3"], "member_pids": [2101, 2102, 2103]}, {"aggregate_cpu_weight": 0.166, "aggregate_rss_mb": 5760.0, "bundle_id": 1, "member_commands": ["io_bound_1", "io_bound_2", "io_bound_3"], "member_pids": [2201, 2202, 2203]}], "inter_cluster_coupling": {"count": 9, "mean": 0.2936216396226397, "sum": 2.6425947566037573}, "intra_cluster_coupling": {"count": 6, "mean": 0.9836319003999753, "sum": 5.9017914023998514}, "io_alpha": 0.5, "num_bundles": 2, "num_input_processes": 6}}
+num_sub_qubos: 1
+num_feasible_sub_qubos: 1
+all_sub_qubos_feasible: true
+load_imbalance: 0.6465
+final_phi: [0.8125, 0.166]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+0 -> 0
+1 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {
+    "0": 1,
+    "1": 0
+  },
+  "annealing_backend": "simulated_annealing_one_hot",
+  "annealing_energy": -10.26975,
+  "annealing_error": null,
+  "annealing_gap": 0.0,
+  "annealing_is_feasible": true,
+  "annealing_solve_time_ms": 125.36946000000171,
+  "beats_annealing": true,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 0.1614093780517578,
+  "candidate_assignments": {
+    "0": 0,
+    "1": 1
+  },
+  "candidate_energy": -10.26975,
+  "errors": [],
+  "global_assignments": {
+    "0": 1,
+    "1": 0
+  },
+  "global_energy": -10.26975,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "0": 1,
+    "1": 0
+  },
+  "unconstrained_energy": -10.26975,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING ADAPTIVE CLUSTERING FOR PRESET SNAPSHOT
+
+================================================================================
+ ADAPTIVE CLUSTERING RESULT 
+ Source ID: phase4-e1c-synthetic | Bundles: 2
+================================================================================
+ B_ID |   AGG CPU% |  AGG MEM(MB) | MEMBERS (PIDs)
+--------------------------------------------------
+    0 |      81.2% |       720.0 | [2101, 2102, 2103]
+    1 |      16.6% |      5760.0 | [2201, 2202, 2203]
+================================================================================
+
+----------------------------------------
+
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   2 processes on 2 cores
+WEIGHTS:    0.979 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sat Jun 27 18:38:21 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+1 sub-QUBOs | sizes: [2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/1] 2 entities | weight=0.9785
+  phi before: [0. 0.]
+  residual capacity: [0.4892 0.4892]
+  Solved in 807.5ms | energy=-10.269750 | feasible=True
+  phi after:  [0.8125 0.166 ]
+
+--- Run Complete ---
+Final core loads: [0.8125 0.166 ]
+Load imbalance:   0.646500  (L_avg=0.4893)
+Movable entities assigned: 2/2 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -10.269750
+Global optimum energy:     -10.269750
+Globally optimal:          True
+

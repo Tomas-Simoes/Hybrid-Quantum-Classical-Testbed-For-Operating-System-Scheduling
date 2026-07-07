@@ -1,0 +1,139 @@
+========================================================================================
+EXPERIMENT RESULT: phase4_e1a_dominant_process (E1a.62)
+========================================================================================
+Run id:        sweep_20260627_173015_a8b15101
+Repeat:        1/1
+Status:        success
+Started UTC:   20260627_173312
+Duration:      2.412s
+Scenario file: src/experiments/scenarios/phase4_e1a_dominant_process.toml
+JSON result:   src/experiments/results/phase4/phase4_e1a_dominant_process_result/20260627_173312_sweep_20260627_173015_a8b15101_repeat_001_of_001_result.json
+Output file:   src/experiments/results/phase4/phase4_e1a_dominant_process_result/20260627_173312_sweep_20260627_173015_a8b15101_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 6
+num_cores: 2
+num_variables: 12
+energy: -30.18
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 2025.2803459989082
+annealing_energy: -30.18
+annealing_gap: 0.0
+beats_annealing: true
+annealing_solve_time_ms: 304.9993840013485
+brute_force_solve_time_ms: 79.83207702636719
+sa_energy_match: true
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.01841000084823463, "instrumented_total_ms": 2411.0813639981643, "qaoa_ms": 2025.9456980002142, "qubo_build_ms": 0.15505999908782542, "reconstruction_ms": 0.03873999776260462, "validation_ms": 384.91728600092756, "workload_ms": 0.00616999932390172}
+experiment_metadata: {}
+num_sub_qubos: 2
+num_feasible_sub_qubos: 2
+all_sub_qubos_feasible: true
+load_imbalance: 0.8
+final_phi: [0.9, 0.1]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 1
+1002 -> 1
+1003 -> 1
+1004 -> 1
+1005 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 1,
+    "1005": 0
+  },
+  "annealing_backend": "simulated_annealing_one_hot",
+  "annealing_energy": -30.18,
+  "annealing_error": null,
+  "annealing_gap": 0.0,
+  "annealing_is_feasible": true,
+  "annealing_solve_time_ms": 304.9993840013485,
+  "beats_annealing": true,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 79.83207702636719,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 1,
+    "1005": 0
+  },
+  "candidate_energy": -30.18,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 1,
+    "1005": 0
+  },
+  "global_energy": -30.18,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 1,
+    "1005": 0
+  },
+  "unconstrained_energy": -30.18,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   6 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 1 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sat Jun 27 18:33:12 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+2 sub-QUBOs | sizes: [3, 3]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/2] 3 entities | weight=0.9400
+  phi before: [0. 0.]
+  residual capacity: [0.5 0.5]
+  Solved in 980.2ms | energy=-15.128400 | feasible=True
+  phi after:  [0.9  0.04]
+
+[Sub-QUBO 2/2] 3 entities | weight=0.0600
+  phi before: [0.9  0.04]
+  residual capacity: [-0.4   0.46]
+  Solved in 1045.1ms | energy=-15.051600 | feasible=True
+  phi after:  [0.9 0.1]
+
+--- Run Complete ---
+Final core loads: [0.9 0.1]
+Load imbalance:   0.800000  (L_avg=0.5000)
+Movable entities assigned: 6/6 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -30.180000
+Global optimum energy:     -30.180000
+Globally optimal:          True
+

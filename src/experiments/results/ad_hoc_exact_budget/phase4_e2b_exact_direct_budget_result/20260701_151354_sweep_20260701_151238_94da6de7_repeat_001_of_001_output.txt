@@ -1,0 +1,135 @@
+========================================================================================
+EXPERIMENT RESULT: phase4_e2b_exact_direct_budget (E2X.5)
+========================================================================================
+Run id:        sweep_20260701_151238_94da6de7
+Repeat:        1/1
+Status:        success
+Started UTC:   20260701_151354
+Duration:      22.381s
+Scenario file: src/experiments/scenarios/phase4_e2b_exact_direct_budget.toml
+JSON result:   src/experiments/results/ad_hoc_exact_budget/phase4_e2b_exact_direct_budget_result/20260701_151354_sweep_20260701_151238_94da6de7_repeat_001_of_001_result.json
+Output file:   src/experiments/results/ad_hoc_exact_budget/phase4_e2b_exact_direct_budget_result/20260701_151354_sweep_20260701_151238_94da6de7_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 8
+num_cores: 2
+num_variables: 16
+energy: -40.924800000000005
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 20738.55687300056
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.005887597566179424
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 1640.8641338348389
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 22380.53322399901, "qaoa_ms": 20739.27626600016, "qubo_build_ms": 0.088079999841284, "reconstruction_ms": 0.0, "validation_ms": 1641.1554369997248, "workload_ms": 0.013440999282465782}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 0
+1002 -> 1
+1003 -> 0
+1004 -> 0
+1005 -> 1
+1006 -> 0
+1007 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 1640.8641338348389,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 1,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 1
+  },
+  "candidate_energy": -40.924800000000005,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0
+  },
+  "global_energy": -40.924800000000005,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0
+  },
+  "unconstrained_energy": -40.924800000000005,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   8 processes on 2 cores
+WEIGHTS:    1.360 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 3 | Steps = 200 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Wed Jul  1 16:13:54 2026 ---
+Workload ID: None
+Entities: [(1000, 0.3), (1001, 0.27), (1002, 0.22), (1003, 0.18), (1004, 0.15), (1005, 0.11), (1006, 0.08), (1007, 0.05)]
+Building QUBO...
+QUBO Matrix completed in 8.807999984128401e-05
+QUBO solved in 20.73927626600016
+
+Core Assignment - Energy: -40.9248
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 0, 1002: 1, 1003: 0, 1004: 0, 1005: 1, 1006: 0, 1007: 1}
+Core Assignment - Solve time: 20738.6ms
+Validated in 1.6411554369997248
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -40.9248
+
+--- Final Schedule ---
+  Entity 1000 (w=0.300) → core 1
+  Entity 1001 (w=0.270) → core 0
+  Entity 1002 (w=0.220) → core 1
+  Entity 1003 (w=0.180) → core 0
+  Entity 1004 (w=0.150) → core 0
+  Entity 1005 (w=0.110) → core 1
+  Entity 1006 (w=0.080) → core 0
+  Entity 1007 (w=0.050) → core 1
+
+Total solve time: 20738.557ms
+

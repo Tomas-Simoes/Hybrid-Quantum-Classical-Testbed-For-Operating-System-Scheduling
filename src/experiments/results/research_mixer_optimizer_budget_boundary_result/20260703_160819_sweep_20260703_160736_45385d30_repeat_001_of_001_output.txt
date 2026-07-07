@@ -1,0 +1,122 @@
+========================================================================================
+EXPERIMENT RESULT: research_mixer_optimizer_budget_boundary (MX3.179)
+========================================================================================
+Run id:        sweep_20260703_160736_45385d30
+Repeat:        1/1
+Status:        success
+Started UTC:   20260703_160819
+Duration:      0.650s
+Scenario file: src/experiments/scenarios/research_mixer_optimizer_budget_boundary.toml
+JSON result:   src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160819_sweep_20260703_160736_45385d30_repeat_001_of_001_result.json
+Output file:   src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160819_sweep_20260703_160736_45385d30_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -0.7000000000000001
+feasible: true
+optimal: false
+optimality_gap: 0.37499999999966516
+solve_time_ms: 642.4836280002637
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.07623376074800664
+feasible_probability_mass: 0.9999999999999992
+invalid_probability_mass: 7.771561172376096e-16
+top_state_feasible: true
+first_feasible_rank: 1
+first_optimal_rank: 3
+optimal_probability_mass: 0.12499916009466819
+feasible_candidates_in_top_k: 1
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 3.9205551147460938
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 647.1252289975382, "qaoa_ms": 642.931119999048, "qubo_build_ms": 0.050210999688715674, "reconstruction_ms": 0.0, "validation_ms": 4.137657999308431, "workload_ms": 0.0062399994931183755}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 0
+1002 -> 0
+1003 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 3.9205551147460938,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 0,
+    "1002": 0,
+    "1003": 0
+  },
+  "candidate_energy": -0.7000000000000001,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -1.12,
+  "is_optimal": false,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -1.12,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.175
+QAOA CFG:   Layers (p) = 1 | Steps = 50 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 17:08:19 2026 ---
+Workload ID: None
+Entities: [(1000, 0.7), (1001, 0.1), (1002, 0.1), (1003, 0.1)]
+Building QUBO...
+QUBO Matrix completed in 5.0210999688715674e-05
+QUBO solved in 0.642931119999048
+
+Core Assignment - Energy: -0.7000
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 0, 1002: 0, 1003: 0}
+Core Assignment - Solve time: 642.5ms
+Validated in 0.004137657999308431
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -1.1200
+
+--- Final Schedule ---
+  Entity 1000 (w=0.700) → core 0
+  Entity 1001 (w=0.100) → core 0
+  Entity 1002 (w=0.100) → core 0
+  Entity 1003 (w=0.100) → core 0
+
+Total solve time: 642.484ms
+

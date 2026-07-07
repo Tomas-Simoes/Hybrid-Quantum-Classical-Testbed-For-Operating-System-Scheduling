@@ -1,0 +1,68 @@
+scenario_version = 1
+id = "E2"
+tier = 7
+category = "phase4_direct_budget"
+name = "Direct 16-variable QAOA budget follow-up"
+description = "Follow-up to D2 at qubit_max=16 with four depths, three step budgets, and five random seeds."
+
+[workload]
+mode = "preset"
+num_processes = 8
+num_cores = 2
+weights = [0.30, 0.27, 0.22, 0.18, 0.15, 0.11, 0.08, 0.05]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 100
+learning_rate = 0.1
+top_k = 10
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 101
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 16
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[validation]
+always_run_annealing = true
+
+[execution]
+pipeline = "default"
+visualization = false
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "convergence_iterations_to_final_tol", "component_timings_ms"]
+
+[[sweep.axes]]
+name = "layers"
+path = "qaoa.layers"
+values = [1, 2, 3, 4]
+
+[[sweep.axes]]
+name = "steps"
+path = "qaoa.steps"
+values = [100, 200, 500]
+
+[[sweep.axes]]
+name = "random_seed"
+path = "qaoa.random_seed"
+values = [101, 102, 103, 104, 105]

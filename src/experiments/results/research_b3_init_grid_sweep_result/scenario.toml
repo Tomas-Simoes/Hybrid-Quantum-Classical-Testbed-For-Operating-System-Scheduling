@@ -1,0 +1,71 @@
+scenario_version = 1
+id = "B3"
+tier = 6
+category = "qaoa_parameterization"
+name = "QAOA gamma beta initialization grid"
+description = "N=4, K=2 reference workload. Sweeps p, initial gamma, and initial beta to test whether gamma=beta=0.5 is a local-minimum-sensitive choice."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.15, 0.35, 0.25, 0.25]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 2
+steps = 100
+learning_rate = 0.05
+top_k = 32
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "fixed"
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["qaoa", "brute_force"]
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "convergence_final_objective"]
+
+[[sweep.axes]]
+name = "layers"
+path = "qaoa.layers"
+values = [2, 3]
+
+[[sweep.axes]]
+name = "init_gamma"
+path = "qaoa.init_gamma"
+values = [0.1, 0.3, 0.5, 0.7, 1.0]
+
+[[sweep.axes]]
+name = "init_beta"
+path = "qaoa.init_beta"
+values = [0.1, 0.3, 0.5, 0.7, 1.0]
+
+[checks]
+no_crash = true
+expected_pipeline = "default"
+global_optimum_available = true
+qaoa_feasible = true
+

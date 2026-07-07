@@ -1,0 +1,141 @@
+========================================================================================
+EXPERIMENT RESULT: research_d1_sweep_n (D1.6)
+========================================================================================
+Run id:        sweep_20260626_163548_3b2fdff6
+Repeat:        3/5
+Status:        success
+Started UTC:   20260626_164942
+Duration:      6.739s
+Scenario file: src/experiments/scenarios/research_d1_sweep_n.toml
+JSON result:   src/experiments/results/research_d1_sweep_n_result/20260626_164942_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_result.json
+Output file:   src/experiments/results/research_d1_sweep_n_result/20260626_164942_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 8
+num_cores: 2
+num_variables: 16
+energy: -40.5
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 4179.508546999841
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+num_sub_qubos: 3
+num_feasible_sub_qubos: 3
+all_sub_qubos_feasible: true
+load_imbalance: 0.0
+final_phi: [0.5, 0.5]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 1
+1002 -> 0
+1003 -> 0
+1004 -> 0
+1005 -> 1
+1006 -> 0
+1007 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 1
+  },
+  "candidate_energy": -40.5,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 0,
+    "1005": 0,
+    "1006": 0,
+    "1007": 0
+  },
+  "global_energy": -40.5,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1,
+    "1004": 0,
+    "1005": 0,
+    "1006": 0,
+    "1007": 0
+  },
+  "unconstrained_energy": -40.5,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   8 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Fri Jun 26 17:49:42 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0001s
+Partitioning in Sub-QUBOs...
+3 sub-QUBOs | sizes: [3, 3, 2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/3] 3 entities | weight=0.3750
+  phi before: [0. 0.]
+  residual capacity: [0.5 0.5]
+  Solved in 1670.0ms | energy=-15.296875 | feasible=True
+  phi after:  [0.125 0.25 ]
+
+[Sub-QUBO 2/3] 3 entities | weight=0.3750
+  phi before: [0.125 0.25 ]
+  residual capacity: [0.375 0.25 ]
+  Solved in 1655.7ms | energy=-15.171875 | feasible=True
+  phi after:  [0.375 0.375]
+
+[Sub-QUBO 3/3] 2 entities | weight=0.2500
+  phi before: [0.375 0.375]
+  residual capacity: [0.125 0.125]
+  Solved in 853.8ms | energy=-10.031250 | feasible=True
+  phi after:  [0.5 0.5]
+
+--- Run Complete ---
+Final core loads: [0.5 0.5]
+Load imbalance:   0.000000  (L_avg=0.5000)
+Movable entities assigned: 8/8 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -40.500000
+Global optimum energy:     -40.500000
+Globally optimal:          True
+

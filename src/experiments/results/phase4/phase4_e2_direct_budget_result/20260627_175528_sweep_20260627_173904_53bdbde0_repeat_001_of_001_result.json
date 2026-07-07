@@ -1,0 +1,382 @@
+{
+  "category": "phase4_direct_budget",
+  "config": {
+    "category": "phase4_direct_budget",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 16,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Follow-up to D2 at qubit_max=16 with four depths, three step budgets, and five random seeds.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E2.51",
+    "name": "Direct 16-variable QAOA budget follow-up [51/60]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 4,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 200,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "convergence_iterations_to_final_tol",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "layers": "qaoa.layers",
+        "random_seed": "qaoa.random_seed",
+        "steps": "qaoa.steps"
+      },
+      "values": {
+        "layers": 4,
+        "random_seed": 101,
+        "steps": 200
+      },
+      "variant_count": 60,
+      "variant_index": 51
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 8,
+      "weights": [
+        0.3,
+        0.27,
+        0.22,
+        0.18,
+        0.15,
+        0.11,
+        0.08,
+        0.05
+      ]
+    }
+  },
+  "duration_s": 26.65658187866211,
+  "ended_at_epoch": 1782582954.9329479,
+  "log_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_175528_sweep_20260627_173904_53bdbde0_repeat_001_of_001.log",
+  "metrics": {
+    "annealing_energy": -40.9248,
+    "annealing_gap": 0.0,
+    "annealing_solve_time_ms": 414.9485079997248,
+    "assignments": {
+      "1000": 0,
+      "1001": 1,
+      "1002": 1,
+      "1003": 0,
+      "1004": 0,
+      "1005": 1,
+      "1006": 1,
+      "1007": 0
+    },
+    "beats_annealing": true,
+    "brute_force_solve_time_ms": 1559.7734451293945,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.0,
+      "instrumented_total_ms": 26656.123746999583,
+      "qaoa_ms": 24681.069345999276,
+      "qubo_build_ms": 0.05835000047227368,
+      "reconstruction_ms": 0.0,
+      "validation_ms": 1974.9883810000028,
+      "workload_ms": 0.007669999831705354
+    },
+    "convergence_final_objective": -40.85721342189189,
+    "convergence_initial_objective": -40.165475180892955,
+    "convergence_iterations_to_final_tol": 39,
+    "convergence_steps_recorded": 200,
+    "energy": -40.9248,
+    "experiment_metadata": {},
+    "feasible": true,
+    "max_probability": 0.005900840242351041,
+    "num_cores": 2,
+    "num_entities": 8,
+    "num_variables": 16,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "sa_energy_match": true,
+    "solve_time_ms": 24680.51356400065,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.0,
+        "qaoa_ms": 24681.069345999276,
+        "qubo_build_ms": 0.05835000047227368,
+        "reconstruction_ms": 0.0,
+        "validation_ms": 1974.9883810000028
+      },
+      "device": "lightning.gpu",
+      "final_beta": [
+        0.3988450897396792,
+        1.110192477401931,
+        0.8583301615071776,
+        0.38191546021731904
+      ],
+      "final_gamma": [
+        0.9434215509277266,
+        -2.3463169556176124,
+        0.3701343635338645,
+        1.0861484456786414
+      ],
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "initial_beta": [
+        0.2943285611969282,
+        0.9227256864229143,
+        0.8693315446785694,
+        0.36413842629052284
+      ],
+      "initial_gamma": [
+        0.9435325056105539,
+        0.35942103334157316,
+        0.7848054119699771,
+        0.5912781852294118
+      ],
+      "mixer_type": "xy",
+      "opt_steps": 200,
+      "p_layers": 4,
+      "random_seed": 101,
+      "selection_pool": "top_k_probable_states",
+      "top_k": 10
+    },
+    "validation": {
+      "annealing_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1,
+        "1004": 1,
+        "1005": 0,
+        "1006": 0,
+        "1007": 1
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -40.9248,
+      "annealing_error": null,
+      "annealing_gap": 0.0,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 414.9485079997248,
+      "beats_annealing": true,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 1559.7734451293945,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 1,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 1,
+        "1007": 0
+      },
+      "candidate_energy": -40.9248,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "global_energy": -40.924800000000005,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "unconstrained_energy": -40.924800000000005,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_175528_sweep_20260627_173904_53bdbde0_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 16,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.27,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 276.48
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.22,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 225.28
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.18,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 184.32
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.11,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 112.64
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.08,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 81.92
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.05,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 51.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782582928.2764475,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 4,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 200,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 101,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "default",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_175528_sweep_20260627_173904_53bdbde0_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_173904_53bdbde0",
+  "scenario_file": "src/experiments/scenarios/phase4_e2_direct_budget.toml",
+  "scenario_id": "E2.51",
+  "scenario_name": "Direct 16-variable QAOA budget follow-up [51/60]",
+  "scenario_stem": "phase4_e2_direct_budget",
+  "started_at_epoch": 1782582928.276366,
+  "started_at_utc": "20260627_175528",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

@@ -1,0 +1,23 @@
+========================================================================================
+EXPERIMENT RESULT: phase4_e2b_exact_direct_budget (E2X)
+========================================================================================
+Run id:        run_20260701_151158_70165670
+Repeat:        1/1
+Status:        failed
+Started UTC:   20260701_151158
+Duration:      0.004s
+Scenario file: src/experiments/scenarios/phase4_e2b_exact_direct_budget.toml
+JSON result:   src/experiments/results/ad_hoc_exact_budget/phase4_e2b_exact_direct_budget_result/20260701_151158_run_20260701_151158_70165670_repeat_001_of_001_result.json
+Output file:   src/experiments/results/ad_hoc_exact_budget/phase4_e2b_exact_direct_budget_result/20260701_151158_run_20260701_151158_70165670_repeat_001_of_001_output.txt
+
+ERROR
+----------------------------------------------------------------------------------------
+{
+  "message": "No module named 'streamlit'",
+  "type": "ModuleNotFoundError"
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+(no program output captured)
+

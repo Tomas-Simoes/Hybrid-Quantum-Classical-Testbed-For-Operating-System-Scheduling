@@ -1,0 +1,33 @@
+{
+  "figures": [
+    "time_vs_num_variables.png",
+    "qaoa_parameters_vs_optimality_gap.png",
+    "quality_vs_qubit_max.png",
+    "default_vs_iterative.png",
+    "qaoa_vs_bruteforce_vs_sa.png",
+    "top_k_sensitivity.png"
+  ],
+  "input_files": [
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/run_20260626_152701_7a132ebd_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/sweep_20260626_152713_c32d7ee9_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/sweep_20260626_152916_694c56fc_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/sweep_20260626_153039_2c23dc71_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/sweep_20260626_163548_3b2fdff6_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/run_20260627_142003_9cb1a45d_results.jsonl"
+  ],
+  "input_record_count": 434,
+  "phase": 3,
+  "sa_seeds": [
+    101,
+    102,
+    103,
+    104,
+    105
+  ],
+  "successful_record_count": 434,
+  "tables": [
+    "phase3_runs.csv",
+    "phase3_summary.csv",
+    "d1_solver_baselines.csv"
+  ]
+}

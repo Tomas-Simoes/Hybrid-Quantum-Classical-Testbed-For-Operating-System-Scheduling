@@ -1,0 +1,48 @@
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   15 processes on 2 cores
+WEIGHTS:    9.054 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sun Jul  5 15:29:08 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0001s
+Partitioning in Sub-QUBOs...
+4 sub-QUBOs | sizes: [4, 4, 4, 3]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/4] 4 entities | weight=3.1997
+  phi before: [0. 0.]
+  residual capacity: [4.5272 4.5272]
+  Solved in 2361.1ms | energy=-43.852147 | feasible=True
+  phi after:  [1.5933 1.6064]
+
+[Sub-QUBO 2/4] 4 entities | weight=2.8020
+  phi before: [1.5933 1.6064]
+  residual capacity: [2.9339 2.9207]
+  Solved in 2501.0ms | energy=-32.478671 | feasible=True
+  phi after:  [3.0124 2.9894]
+
+[Sub-QUBO 3/4] 4 entities | weight=2.2293
+  phi before: [3.0124 2.9894]
+  residual capacity: [1.5148 1.5378]
+  Solved in 2411.6ms | energy=-24.320437 | feasible=True
+  phi after:  [4.1208 4.1102]
+
+[Sub-QUBO 4/4] 3 entities | weight=0.8233
+  phi before: [4.1208 4.1102]
+  residual capacity: [0.4063 0.417 ]
+  Solved in 1690.2ms | energy=-15.338829 | feasible=True
+  phi after:  [4.5196 4.5347]
+
+--- Run Complete ---
+Final core loads: [4.5196 4.5347]
+Load imbalance:   0.015112  (L_avg=4.5272)
+Movable entities assigned: 15/15 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -115.990083
+Global optimum energy:     -115.990198
+Globally optimal:          False

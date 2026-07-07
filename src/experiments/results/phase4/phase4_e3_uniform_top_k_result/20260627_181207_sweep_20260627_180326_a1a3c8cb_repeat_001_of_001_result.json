@@ -1,0 +1,345 @@
+{
+  "category": "phase4_top_k_generalization",
+  "config": {
+    "category": "phase4_top_k_generalization",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Forced iterative pipeline for the seven D1 dimensions, four top-k values, and five random seeds.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E3U.101",
+    "name": "Top-k generalization across uniform dimensions [101/140]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 1
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "load_imbalance",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "num_processes": "workload.num_processes",
+        "random_seed": "qaoa.random_seed",
+        "top_k": "qaoa.top_k"
+      },
+      "values": {
+        "num_processes": 8,
+        "random_seed": 101,
+        "top_k": 1
+      },
+      "variant_count": 140,
+      "variant_index": 101
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "generated",
+      "num_cores": 2,
+      "num_processes": 8,
+      "total_weight": 1.0,
+      "weight_strategy": "uniform_total"
+    }
+  },
+  "duration_s": 6.375329971313477,
+  "ended_at_epoch": 1782583933.4302807,
+  "log_path": "src/experiments/results/phase4/phase4_e3_uniform_top_k_result/20260627_181207_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": -40.5,
+    "annealing_gap": 0.03125,
+    "annealing_solve_time_ms": 419.7895099987363,
+    "assignments": {
+      "1000": 1,
+      "1001": 1,
+      "1002": 1,
+      "1003": 0,
+      "1004": 0,
+      "1005": 0,
+      "1006": 1,
+      "1007": 1
+    },
+    "beats_annealing": false,
+    "brute_force_solve_time_ms": 1625.4982948303223,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.020850000510108657,
+      "instrumented_total_ms": 6373.973798003135,
+      "qaoa_ms": 4328.24830699974,
+      "qubo_build_ms": 0.22732100114808418,
+      "reconstruction_ms": 0.049251000746153295,
+      "validation_ms": 2045.4203890003555,
+      "workload_ms": 0.007680000635446049
+    },
+    "convergence_steps_recorded": 300,
+    "energy": -40.46875,
+    "experiment_metadata": {},
+    "feasible": true,
+    "final_phi": [
+      0.375,
+      0.625
+    ],
+    "load_imbalance": 0.25,
+    "max_subqubo_convergence_iterations_to_final_tol": 2,
+    "num_cores": 2,
+    "num_entities": 8,
+    "num_feasible_sub_qubos": 3,
+    "num_sub_qubos": 3,
+    "num_variables": 16,
+    "optimal": false,
+    "optimality_gap": 0.0007716049382715858,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "sa_energy_match": false,
+    "solve_time_ms": 4327.130043997386,
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.020850000510108657,
+        "qaoa_ms": 4328.24830699974,
+        "qubo_build_ms": 0.22732100114808418,
+        "reconstruction_ms": 0.049251000746153295,
+        "validation_ms": 2045.4203890003555
+      },
+      "sub_qubos": 3
+    },
+    "validation": {
+      "annealing_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 0,
+        "1003": 1,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 1
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -40.5,
+      "annealing_error": null,
+      "annealing_gap": 0.03125,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 419.7895099987363,
+      "beats_annealing": false,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 1625.4982948303223,
+      "candidate_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 0,
+        "1004": 0,
+        "1005": 0,
+        "1006": 1,
+        "1007": 1
+      },
+      "candidate_energy": -40.46875,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 0,
+        "1005": 0,
+        "1006": 0,
+        "1007": 0
+      },
+      "global_energy": -40.5,
+      "is_optimal": false,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 0,
+        "1005": 0,
+        "1006": 0,
+        "1007": 0
+      },
+      "unconstrained_energy": -40.5,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e3_uniform_top_k_result/20260627_181207_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782583927.0550413,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 1
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 101,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e3_uniform_top_k_result/20260627_181207_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_180326_a1a3c8cb",
+  "scenario_file": "src/experiments/scenarios/phase4_e3_uniform_top_k.toml",
+  "scenario_id": "E3U.101",
+  "scenario_name": "Top-k generalization across uniform dimensions [101/140]",
+  "scenario_stem": "phase4_e3_uniform_top_k",
+  "started_at_epoch": 1782583927.0549507,
+  "started_at_utc": "20260627_181207",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

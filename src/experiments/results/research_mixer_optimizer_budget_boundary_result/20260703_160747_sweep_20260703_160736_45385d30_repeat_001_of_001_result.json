@@ -1,0 +1,327 @@
+{
+  "category": "mixer_adversarial",
+  "config": {
+    "category": "mixer_adversarial",
+    "checks": {
+      "expected_pipeline": "default",
+      "global_optimum_available": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Paired X/XY runs with top_k=1 and progressively restricted optimizer budgets.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "MX3.51",
+    "metadata": {
+      "penalty_multiplier": 0.25,
+      "workload": "reference"
+    },
+    "name": "Mixer optimizer-budget boundary at top-k one [51/240]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 1,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 20,
+      "top_k": 1
+    },
+    "qubo": {
+      "penalty": 0.0875
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "max_probability"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "metadata.penalty_multiplier": "metadata.penalty_multiplier",
+        "metadata.workload": "metadata.workload",
+        "qaoa.mixer_type": "qaoa.mixer_type",
+        "qubo.penalty": "qubo.penalty",
+        "random_seed": "qaoa.random_seed",
+        "steps": "qaoa.steps",
+        "workload.weights": "workload.weights"
+      },
+      "values": {
+        "case": "reference_xy_p025",
+        "metadata.penalty_multiplier": 0.25,
+        "metadata.workload": "reference",
+        "qaoa.mixer_type": "xy",
+        "qubo.penalty": 0.0875,
+        "random_seed": 101,
+        "steps": 20,
+        "workload.weights": [
+          0.15,
+          0.35,
+          0.25,
+          0.25
+        ]
+      },
+      "variant_count": 240,
+      "variant_index": 51
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 4,
+      "weights": [
+        0.15,
+        0.35,
+        0.25,
+        0.25
+      ]
+    }
+  },
+  "duration_s": 0.2675004005432129,
+  "ended_at_epoch": 1783094868.1371248,
+  "log_path": "src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160747_sweep_20260703_160736_45385d30_repeat_001_of_001.log",
+  "metrics": {
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 1,
+      "1001": 1,
+      "1002": 1,
+      "1003": 1
+    },
+    "beats_annealing": null,
+    "brute_force_solve_time_ms": 4.195690155029297,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.0,
+      "instrumented_total_ms": 264.8954190008226,
+      "qaoa_ms": 260.4505680010334,
+      "qubo_build_ms": 0.05043099918111693,
+      "reconstruction_ms": 0.0,
+      "validation_ms": 4.388130000734236,
+      "workload_ms": 0.006289999873843044
+    },
+    "convergence_final_objective": -0.713758545256259,
+    "convergence_initial_objective": -0.7085707256221723,
+    "convergence_iterations_to_final_tol": 20,
+    "convergence_steps_recorded": 20,
+    "energy": -0.35000000000000003,
+    "experiment_metadata": {},
+    "feasible": true,
+    "feasible_candidates_in_top_k": 1,
+    "feasible_probability_mass": 1.0,
+    "first_feasible_rank": 1,
+    "first_optimal_rank": 8,
+    "invalid_probability_mass": 0.0,
+    "max_probability": 0.06522851140554835,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_variables": 8,
+    "optimal": false,
+    "optimal_probability_mass": 0.12497116589640327,
+    "optimality_gap": 0.4999999999994999,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "sa_energy_match": null,
+    "solve_time_ms": 260.0392560016189,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.0,
+        "qaoa_ms": 260.4505680010334,
+        "qubo_build_ms": 0.05043099918111693,
+        "reconstruction_ms": 0.0,
+        "validation_ms": 4.388130000734236
+      },
+      "device": "lightning.gpu",
+      "final_beta": [
+        0.3953840805505116
+      ],
+      "final_gamma": [
+        0.9435325055377122
+      ],
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "initial_beta": [
+        0.35942103334157316
+      ],
+      "initial_gamma": [
+        0.9435325056105539
+      ],
+      "mixer_type": "xy",
+      "opt_steps": 20,
+      "p_layers": 1,
+      "random_seed": 101,
+      "selection_pool": "top_k_probable_states",
+      "top_k": 1
+    },
+    "top_state_feasible": true,
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_solve_time_ms": null,
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 4.195690155029297,
+      "candidate_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1
+      },
+      "candidate_energy": -0.35000000000000003,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "global_energy": -0.85,
+      "is_optimal": false,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "unconstrained_energy": -0.85,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160747_sweep_20260703_160736_45385d30_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.35,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 358.4
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1783094867.8697271,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 1,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 20,
+      "top_k": 1
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 0.0875,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 101,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "default",
+      "run_annealing_baseline": false
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160747_sweep_20260703_160736_45385d30_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260703_160736_45385d30",
+  "scenario_file": "src/experiments/scenarios/research_mixer_optimizer_budget_boundary.toml",
+  "scenario_id": "MX3.51",
+  "scenario_name": "Mixer optimizer-budget boundary at top-k one [51/240]",
+  "scenario_stem": "research_mixer_optimizer_budget_boundary",
+  "started_at_epoch": 1783094867.8696244,
+  "started_at_utc": "20260703_160747",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

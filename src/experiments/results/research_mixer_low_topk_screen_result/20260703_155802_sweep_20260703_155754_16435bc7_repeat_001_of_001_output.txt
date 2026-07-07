@@ -1,0 +1,115 @@
+========================================================================================
+EXPERIMENT RESULT: research_mixer_low_topk_screen (MX1.7)
+========================================================================================
+Run id:        sweep_20260703_155754_16435bc7
+Repeat:        1/1
+Status:        success
+Started UTC:   20260703_155802
+Duration:      0.767s
+Scenario file: src/experiments/scenarios/research_mixer_low_topk_screen.toml
+JSON result:   src/experiments/results/research_mixer_low_topk_screen_result/20260703_155802_sweep_20260703_155754_16435bc7_repeat_001_of_001_result.json
+Output file:   src/experiments/results/research_mixer_low_topk_screen_result/20260703_155802_sweep_20260703_155754_16435bc7_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -0.35000000000000003
+feasible: true
+optimal: false
+optimality_gap: 0.4999999999994999
+solve_time_ms: 761.7059300000619
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.06479720179641799
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 4.1141510009765625
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 766.6342100001202, "qaoa_ms": 762.2426719999567, "qubo_build_ms": 0.03957999979320448, "reconstruction_ms": 0.0, "validation_ms": 4.34585800030618, "workload_ms": 0.006100000064179767}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 1
+1001 -> 1
+1002 -> 1
+1003 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 4.1141510009765625,
+  "candidate_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 1,
+    "1003": 1
+  },
+  "candidate_energy": -0.35000000000000003,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -0.85,
+  "is_optimal": false,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -0.85,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.0875
+QAOA CFG:   Layers (p) = 1 | Steps = 60 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 16:58:02 2026 ---
+Workload ID: None
+Entities: [(1000, 0.15), (1001, 0.35), (1002, 0.25), (1003, 0.25)]
+Building QUBO...
+QUBO Matrix completed in 3.957999979320448e-05
+QUBO solved in 0.7622426719999567
+
+Core Assignment - Energy: -0.3500
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 1, 1003: 1}
+Core Assignment - Solve time: 761.7ms
+Validated in 0.00434585800030618
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -0.8500
+
+--- Final Schedule ---
+  Entity 1000 (w=0.150) → core 1
+  Entity 1001 (w=0.350) → core 1
+  Entity 1002 (w=0.250) → core 1
+  Entity 1003 (w=0.250) → core 1
+
+Total solve time: 761.706ms
+

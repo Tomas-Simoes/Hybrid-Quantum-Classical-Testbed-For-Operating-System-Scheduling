@@ -1,0 +1,122 @@
+========================================================================================
+EXPERIMENT RESULT: research_mixer_optimizer_budget_boundary (MX3.114)
+========================================================================================
+Run id:        sweep_20260703_160736_45385d30
+Repeat:        1/1
+Status:        success
+Started UTC:   20260703_160802
+Duration:      0.294s
+Scenario file: src/experiments/scenarios/research_mixer_optimizer_budget_boundary.toml
+JSON result:   src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160802_sweep_20260703_160736_45385d30_repeat_001_of_001_result.json
+Output file:   src/experiments/results/research_mixer_optimizer_budget_boundary_result/20260703_160802_sweep_20260703_160736_45385d30_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -1.4
+feasible: true
+optimal: false
+optimality_gap: 0.2631578947367036
+solve_time_ms: 283.3072289995471
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.1265271974768206
+feasible_probability_mass: 0.9999999999999988
+invalid_probability_mass: 1.2212453270876722e-15
+top_state_feasible: true
+first_feasible_rank: 1
+first_optimal_rank: 7
+optimal_probability_mass: 0.11587763267956276
+feasible_candidates_in_top_k: 1
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 6.083965301513672
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 290.3011590005917, "qaoa_ms": 283.89892100130965, "qubo_build_ms": 0.04045999958179891, "reconstruction_ms": 0.0, "validation_ms": 6.355867999445763, "workload_ms": 0.00591000025451649}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 0
+1002 -> 0
+1003 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 6.083965301513672,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 0,
+    "1002": 0,
+    "1003": 0
+  },
+  "candidate_energy": -1.4,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -1.9,
+  "is_optimal": false,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -1.9,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.35
+QAOA CFG:   Layers (p) = 1 | Steps = 20 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 17:08:02 2026 ---
+Workload ID: None
+Entities: [(1000, 0.15), (1001, 0.35), (1002, 0.25), (1003, 0.25)]
+Building QUBO...
+QUBO Matrix completed in 4.045999958179891e-05
+QUBO solved in 0.28389892100130965
+
+Core Assignment - Energy: -1.4000
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 0, 1002: 0, 1003: 0}
+Core Assignment - Solve time: 283.3ms
+Validated in 0.006355867999445763
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -1.9000
+
+--- Final Schedule ---
+  Entity 1000 (w=0.150) → core 0
+  Entity 1001 (w=0.350) → core 0
+  Entity 1002 (w=0.250) → core 0
+  Entity 1003 (w=0.250) → core 0
+
+Total solve time: 283.307ms
+

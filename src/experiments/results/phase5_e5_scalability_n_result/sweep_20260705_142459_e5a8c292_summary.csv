@@ -1,0 +1,3 @@
+N,runs,successful_runs,comparable_runs,optimal_rate_percent,gap_relativo_mean,tempo_total_ms_mean,tempo_total_ms_std,tempo_qaoa_ms_mean,tempo_overhead_ms_mean,num_subqubos_mean,baseline_methods,uncertified_runs,unstable_annealing_runs
+10,20,20,20,0.0,8.767501085667876e-05,6040.705805049583,114.6251084310955,6034.42514469989,6.28066034969379,3.0,bruteforce,0,0
+15,20,20,20,0.0,1.3629691880757838e-05,9135.71081429941,277.7135445826475,8953.73795079986,181.97286349954993,4.0,bruteforce,0,0

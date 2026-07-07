@@ -1,0 +1,399 @@
+{
+  "category": "phase4_adversarial_clustering",
+  "config": {
+    "category": "phase4_adversarial_clustering",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 10.0,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 10.0
+    },
+    "description": "A deterministic six-process snapshot is clustered for three io_alpha values and solved with QAOA, brute-force, and SA.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E1c.22",
+    "metadata": {
+      "instance": "io05",
+      "structure": "cpu_io_profiles"
+    },
+    "name": "Synthetic CPU and IO profile clustering [22/60]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 1,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 100,
+      "top_k": 3
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "load_imbalance",
+        "experiment_metadata",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "decomposition.io_alpha": "decomposition.io_alpha",
+        "layers": "qaoa.layers",
+        "metadata.instance": "metadata.instance",
+        "metadata.structure": "metadata.structure",
+        "random_seed": "qaoa.random_seed",
+        "top_k": "qaoa.top_k"
+      },
+      "values": {
+        "case": "io_alpha_05",
+        "decomposition.io_alpha": 0.5,
+        "layers": 1,
+        "metadata.instance": "io05",
+        "metadata.structure": "cpu_io_profiles",
+        "random_seed": 102,
+        "top_k": 3
+      },
+      "variant_count": 60,
+      "variant_index": 22
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 0,
+      "live_mode": false,
+      "min_cpu": 0.0,
+      "min_rss": 0.0,
+      "num_samples": 1
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "synthetic_cluster",
+      "num_cores": 2,
+      "num_processes": 6,
+      "processes": [
+        {
+          "command": "cpu_bound_1",
+          "cpu_weight": 0.3,
+          "io_wait_ratio": 0.05,
+          "pid": 2101,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "cpu_bound_2",
+          "cpu_weight": 0.28,
+          "io_wait_ratio": 0.05,
+          "pid": 2102,
+          "rss_mb": 240.0
+        },
+        {
+          "command": "cpu_bound_3",
+          "cpu_weight": 0.26,
+          "io_wait_ratio": 0.1,
+          "pid": 2103,
+          "rss_mb": 224.0
+        },
+        {
+          "command": "io_bound_1",
+          "cpu_weight": 0.12,
+          "io_wait_ratio": 0.85,
+          "pid": 2201,
+          "rss_mb": 2048.0
+        },
+        {
+          "command": "io_bound_2",
+          "cpu_weight": 0.1,
+          "io_wait_ratio": 0.9,
+          "pid": 2202,
+          "rss_mb": 1920.0
+        },
+        {
+          "command": "io_bound_3",
+          "cpu_weight": 0.08,
+          "io_wait_ratio": 0.95,
+          "pid": 2203,
+          "rss_mb": 1792.0
+        }
+      ],
+      "snapshot_id": "phase4-e1c-synthetic"
+    }
+  },
+  "duration_s": 0.7552239894866943,
+  "ended_at_epoch": 1782581889.727274,
+  "log_path": "src/experiments/results/phase4/phase4_e1c_synthetic_clustering_result/20260627_173808_sweep_20260627_173015_a8b15101_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": -10.26975,
+    "annealing_gap": 0.0,
+    "annealing_solve_time_ms": 124.42491699948732,
+    "assignments": {
+      "0": 1,
+      "1": 0
+    },
+    "beats_annealing": true,
+    "brute_force_solve_time_ms": 0.1628398895263672,
+    "component_timings_ms": {
+      "clustering_ms": 4.128131999095785,
+      "decomposition_ms": 0.010300000212737359,
+      "instrumented_total_ms": 754.194204999294,
+      "qaoa_ms": 625.3091739999945,
+      "qubo_build_ms": 0.06354999823088292,
+      "reconstruction_ms": 0.025891000404953957,
+      "validation_ms": 124.65715800135513,
+      "workload_ms": 0.0
+    },
+    "convergence_steps_recorded": 100,
+    "energy": -10.26975,
+    "experiment_metadata": {
+      "clustering": {
+        "affinity_alpha": 0.8,
+        "bundles": [
+          {
+            "aggregate_cpu_weight": 0.8125,
+            "aggregate_rss_mb": 720.0,
+            "bundle_id": 0,
+            "member_commands": [
+              "cpu_bound_1",
+              "cpu_bound_2",
+              "cpu_bound_3"
+            ],
+            "member_pids": [
+              2101,
+              2102,
+              2103
+            ]
+          },
+          {
+            "aggregate_cpu_weight": 0.166,
+            "aggregate_rss_mb": 5760.0,
+            "bundle_id": 1,
+            "member_commands": [
+              "io_bound_1",
+              "io_bound_2",
+              "io_bound_3"
+            ],
+            "member_pids": [
+              2201,
+              2202,
+              2203
+            ]
+          }
+        ],
+        "inter_cluster_coupling": {
+          "count": 9,
+          "mean": 0.2936216396226397,
+          "sum": 2.6425947566037573
+        },
+        "intra_cluster_coupling": {
+          "count": 6,
+          "mean": 0.9836319003999753,
+          "sum": 5.9017914023998514
+        },
+        "io_alpha": 0.5,
+        "num_bundles": 2,
+        "num_input_processes": 6
+      }
+    },
+    "feasible": true,
+    "final_phi": [
+      0.166,
+      0.8125
+    ],
+    "load_imbalance": 0.6465,
+    "max_subqubo_convergence_iterations_to_final_tol": 3,
+    "num_cores": 2,
+    "num_entities": 2,
+    "num_feasible_sub_qubos": 1,
+    "num_sub_qubos": 1,
+    "num_variables": 4,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "sa_energy_match": true,
+    "solve_time_ms": 624.9829230000614,
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.010300000212737359,
+        "qaoa_ms": 625.3091739999945,
+        "qubo_build_ms": 0.06354999823088292,
+        "reconstruction_ms": 0.025891000404953957,
+        "validation_ms": 124.65715800135513
+      },
+      "sub_qubos": 1
+    },
+    "validation": {
+      "annealing_assignments": {
+        "0": 1,
+        "1": 0
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -10.26975,
+      "annealing_error": null,
+      "annealing_gap": 0.0,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 124.42491699948732,
+      "beats_annealing": true,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 0.1628398895263672,
+      "candidate_assignments": {
+        "0": 1,
+        "1": 0
+      },
+      "candidate_energy": -10.26975,
+      "errors": [],
+      "global_assignments": {
+        "0": 1,
+        "1": 0
+      },
+      "global_energy": -10.26975,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "0": 1,
+        "1": 0
+      },
+      "unconstrained_energy": -10.26975,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e1c_synthetic_clustering_result/20260627_173808_sweep_20260627_173015_a8b15101_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 10.0,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 10.0
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "cpu_bound_1",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": 0.05,
+          "pid": 2101,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 256.0
+        },
+        {
+          "command": "cpu_bound_2",
+          "cpu_weight": 0.28,
+          "current_core": 0,
+          "io_wait_ratio": 0.05,
+          "pid": 2102,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 240.0
+        },
+        {
+          "command": "cpu_bound_3",
+          "cpu_weight": 0.26,
+          "current_core": 0,
+          "io_wait_ratio": 0.1,
+          "pid": 2103,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 224.0
+        },
+        {
+          "command": "io_bound_1",
+          "cpu_weight": 0.12,
+          "current_core": 0,
+          "io_wait_ratio": 0.85,
+          "pid": 2201,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 2048.0
+        },
+        {
+          "command": "io_bound_2",
+          "cpu_weight": 0.1,
+          "current_core": 0,
+          "io_wait_ratio": 0.9,
+          "pid": 2202,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 1920.0
+        },
+        {
+          "command": "io_bound_3",
+          "cpu_weight": 0.08,
+          "current_core": 0,
+          "io_wait_ratio": 0.95,
+          "pid": 2203,
+          "priority": 20,
+          "priority_class": "BE",
+          "rss_mb": 1792.0
+        }
+      ],
+      "snapshot_id": "phase4-e1c-synthetic",
+      "timestamp": 1782581888.9721427,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 1,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 100,
+      "top_k": 3
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 102,
+      "cluster_preset_snapshot": true,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 0,
+      "live_mode": false,
+      "min_cpu": 0.0,
+      "min_rss": 0.0,
+      "num_samples": 1
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e1c_synthetic_clustering_result/20260627_173808_sweep_20260627_173015_a8b15101_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_173015_a8b15101",
+  "scenario_file": "src/experiments/scenarios/phase4_e1c_synthetic_clustering.toml",
+  "scenario_id": "E1c.22",
+  "scenario_name": "Synthetic CPU and IO profile clustering [22/60]",
+  "scenario_stem": "phase4_e1c_synthetic_clustering",
+  "started_at_epoch": 1782581888.97205,
+  "started_at_utc": "20260627_173808",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

@@ -1,0 +1,64 @@
+
+--- Iterative Run Started at Sun Jul  5 16:27:59 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0005s
+Partitioning in Sub-QUBOs...
+8 sub-QUBOs | sizes: [4, 4, 4, 4, 4, 4, 4, 2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/8] 4 entities | weight=3.8879
+  phi before: [0. 0.]
+  residual capacity: [8.9976 8.9976]
+  Solved in 2217.7ms | energy=-82.405941 | feasible=True
+  phi after:  [1.9452 1.9427]
+
+[Sub-QUBO 2/8] 4 entities | weight=3.7171
+  phi before: [1.9452 1.9427]
+  residual capacity: [7.0524 7.0549]
+  Solved in 2299.6ms | energy=-65.529626 | feasible=True
+  phi after:  [3.7904 3.8146]
+
+[Sub-QUBO 3/8] 4 entities | weight=3.1673
+  phi before: [3.7904 3.8146]
+  residual capacity: [5.2072 5.1831]
+  Solved in 2187.9ms | energy=-47.893633 | feasible=True
+  phi after:  [5.3813 5.3911]
+
+[Sub-QUBO 4/8] 4 entities | weight=2.4258
+  phi before: [5.3813 5.3911]
+  residual capacity: [3.6163 3.6066]
+  Solved in 2233.5ms | energy=-34.579059 | feasible=True
+  phi after:  [6.5975 6.6007]
+
+[Sub-QUBO 5/8] 4 entities | weight=2.0030
+  phi before: [6.5975 6.6007]
+  residual capacity: [2.4001 2.397 ]
+  Solved in 2202.1ms | energy=-27.602628 | feasible=True
+  phi after:  [7.6025 7.5988]
+
+[Sub-QUBO 6/8] 4 entities | weight=1.6539
+  phi before: [7.6025 7.5988]
+  residual capacity: [1.3952 1.3989]
+  Solved in 2286.8ms | energy=-23.252650 | feasible=True
+  phi after:  [8.4094 8.4456]
+
+[Sub-QUBO 7/8] 4 entities | weight=0.9259
+  phi before: [8.4094 8.4456]
+  residual capacity: [0.5882 0.552 ]
+  Solved in 2299.9ms | energy=-20.623924 | feasible=True
+  phi after:  [8.9339 8.8471]
+
+[Sub-QUBO 8/8] 2 entities | weight=0.2142
+  phi before: [8.9339 8.8471]
+  residual capacity: [0.0637 0.1505]
+  Solved in 1062.0ms | energy=-10.026128 | feasible=True
+  phi after:  [9.0147 8.9805]
+
+--- Run Complete ---
+Final core loads: [9.0147 8.9805]
+Load imbalance:   0.034238  (L_avg=8.9976)
+Movable entities assigned: 30/30 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -311.913591
+Global brute-force skipped: None

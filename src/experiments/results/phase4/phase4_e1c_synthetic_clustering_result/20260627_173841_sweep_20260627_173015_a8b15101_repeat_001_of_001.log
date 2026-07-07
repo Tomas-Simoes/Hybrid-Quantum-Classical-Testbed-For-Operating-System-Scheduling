@@ -1,0 +1,44 @@
+INITIATING ADAPTIVE CLUSTERING FOR PRESET SNAPSHOT
+
+================================================================================
+ ADAPTIVE CLUSTERING RESULT 
+ Source ID: phase4-e1c-synthetic | Bundles: 2
+================================================================================
+ B_ID |   AGG CPU% |  AGG MEM(MB) | MEMBERS (PIDs)
+--------------------------------------------------
+    0 |      79.1% |       720.0 | [2101, 2102, 2103]
+    1 |       5.9% |      5760.0 | [2201, 2202, 2203]
+================================================================================
+
+----------------------------------------
+
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   2 processes on 2 cores
+WEIGHTS:    0.849 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sat Jun 27 18:38:41 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+1 sub-QUBOs | sizes: [2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/1] 2 entities | weight=0.8493
+  phi before: [0. 0.]
+  residual capacity: [0.4246 0.4246]
+  Solved in 792.8ms | energy=-10.092963 | feasible=True
+  phi after:  [0.0588 0.7905]
+
+--- Run Complete ---
+Final core loads: [0.0588 0.7905]
+Load imbalance:   0.731700  (L_avg=0.4247)
+Movable entities assigned: 2/2 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -10.092963
+Global optimum energy:     -10.092963
+Globally optimal:          True

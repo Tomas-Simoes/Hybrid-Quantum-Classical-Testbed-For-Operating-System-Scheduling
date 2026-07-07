@@ -1,0 +1,122 @@
+========================================================================================
+EXPERIMENT RESULT: research_mixer_probability_boundary (MX2.59)
+========================================================================================
+Run id:        sweep_20260703_160211_a5d61eec
+Repeat:        1/1
+Status:        success
+Started UTC:   20260703_160415
+Duration:      2.677s
+Scenario file: src/experiments/scenarios/research_mixer_probability_boundary.toml
+JSON result:   src/experiments/results/research_mixer_probability_boundary_result/20260703_160415_sweep_20260703_160211_a5d61eec_repeat_001_of_001_result.json
+Output file:   src/experiments/results/research_mixer_probability_boundary_result/20260703_160415_sweep_20260703_160211_a5d61eec_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -1.9
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 2669.37558599966
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.06292794471250722
+feasible_probability_mass: 0.9999999999999999
+invalid_probability_mass: 1.1102230246251565e-16
+top_state_feasible: true
+first_feasible_rank: 1
+first_optimal_rank: 8
+optimal_probability_mass: 0.12499900413166945
+feasible_candidates_in_top_k: 16
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 3.993988037109375
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 2674.237726001593, "qaoa_ms": 2669.9779579994356, "qubo_build_ms": 0.03243000173824839, "reconstruction_ms": 0.0, "validation_ms": 4.220368000460439, "workload_ms": 0.006969999958528206}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 0
+1002 -> 1
+1003 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 3.993988037109375,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 0,
+    "1002": 1,
+    "1003": 1
+  },
+  "candidate_energy": -1.9,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -1.9,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -1.9,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.35
+QAOA CFG:   Layers (p) = 3 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 17:04:15 2026 ---
+Workload ID: None
+Entities: [(1000, 0.15), (1001, 0.35), (1002, 0.25), (1003, 0.25)]
+Building QUBO...
+QUBO Matrix completed in 3.243000173824839e-05
+QUBO solved in 2.6699779579994356
+
+Core Assignment - Energy: -1.9000
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 0, 1002: 1, 1003: 1}
+Core Assignment - Solve time: 2669.4ms
+Validated in 0.004220368000460439
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -1.9000
+
+--- Final Schedule ---
+  Entity 1000 (w=0.150) → core 0
+  Entity 1001 (w=0.350) → core 0
+  Entity 1002 (w=0.250) → core 1
+  Entity 1003 (w=0.250) → core 1
+
+Total solve time: 2669.376ms
+

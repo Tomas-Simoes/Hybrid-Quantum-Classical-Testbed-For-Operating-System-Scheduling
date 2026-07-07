@@ -1,0 +1,129 @@
+========================================================================================
+EXPERIMENT RESULT: phase4_e3_uniform_top_k (E3U.56)
+========================================================================================
+Run id:        sweep_20260627_180326_a1a3c8cb
+Repeat:        1/1
+Status:        success
+Started UTC:   20260627_180937
+Duration:      2.570s
+Scenario file: src/experiments/scenarios/phase4_e3_uniform_top_k.toml
+JSON result:   src/experiments/results/phase4/phase4_e3_uniform_top_k_result/20260627_180937_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_result.json
+Output file:   src/experiments/results/phase4/phase4_e3_uniform_top_k_result/20260627_180937_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: -20.5
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 2367.7807790008956
+annealing_energy: -20.5
+annealing_gap: 0.0
+beats_annealing: true
+annealing_solve_time_ms: 196.0958359995857
+brute_force_solve_time_ms: 3.7491321563720703
+sa_energy_match: true
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.01227999928232748, "instrumented_total_ms": 2568.835488998957, "qaoa_ms": 2368.724960999316, "qubo_build_ms": 0.12821000018448103, "reconstruction_ms": 0.03705000017362181, "validation_ms": 199.9273279998306, "workload_ms": 0.005660000169882551}
+experiment_metadata: {}
+num_sub_qubos: 2
+num_feasible_sub_qubos: 2
+all_sub_qubos_feasible: true
+load_imbalance: 0.0
+final_phi: [0.5, 0.5]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 1
+1002 -> 1
+1003 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 0,
+    "1003": 1
+  },
+  "annealing_backend": "simulated_annealing_one_hot",
+  "annealing_energy": -20.5,
+  "annealing_error": null,
+  "annealing_gap": 0.0,
+  "annealing_is_feasible": true,
+  "annealing_solve_time_ms": 196.0958359995857,
+  "beats_annealing": true,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 3.7491321563720703,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 1,
+    "1003": 0
+  },
+  "candidate_energy": -20.5,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -20.5,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -20.5,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sat Jun 27 19:09:37 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0000s
+Partitioning in Sub-QUBOs...
+2 sub-QUBOs | sizes: [3, 1]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/2] 3 entities | weight=0.7500
+  phi before: [0. 0.]
+  residual capacity: [0.5 0.5]
+  Solved in 1652.9ms | energy=-15.437500 | feasible=True
+  phi after:  [0.25 0.5 ]
+
+[Sub-QUBO 2/2] 1 entities | weight=0.2500
+  phi before: [0.25 0.5 ]
+  residual capacity: [0.25 0.  ]
+  Solved in 714.9ms | energy=-5.062500 | feasible=True
+  phi after:  [0.5 0.5]
+
+--- Run Complete ---
+Final core loads: [0.5 0.5]
+Load imbalance:   0.000000  (L_avg=0.5000)
+Movable entities assigned: 4/4 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -20.500000
+Global optimum energy:     -20.500000
+Globally optimal:          True
+

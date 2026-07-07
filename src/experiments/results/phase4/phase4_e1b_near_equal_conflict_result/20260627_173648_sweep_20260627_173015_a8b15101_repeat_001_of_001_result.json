@@ -1,0 +1,309 @@
+{
+  "category": "phase4_adversarial",
+  "config": {
+    "category": "phase4_adversarial",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Four N=4 workloads with increasingly separated near-equal weights, crossed with depth, top-k, and five random seeds.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E1b.52",
+    "metadata": {
+      "instance": "near010",
+      "max_weight_difference": 0.1,
+      "structure": "near_equal"
+    },
+    "name": "Adversarial near-equal weight conflicts [52/80]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 100,
+      "top_k": 3
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "load_imbalance",
+        "annealing_gap",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "layers": "qaoa.layers",
+        "metadata.instance": "metadata.instance",
+        "metadata.max_weight_difference": "metadata.max_weight_difference",
+        "metadata.structure": "metadata.structure",
+        "random_seed": "qaoa.random_seed",
+        "top_k": "qaoa.top_k",
+        "workload.weights": "workload.weights"
+      },
+      "values": {
+        "case": "spread_010",
+        "layers": 2,
+        "metadata.instance": "near010",
+        "metadata.max_weight_difference": 0.1,
+        "metadata.structure": "near_equal",
+        "random_seed": 102,
+        "top_k": 3,
+        "workload.weights": [
+          0.2,
+          0.24,
+          0.27,
+          0.3
+        ]
+      },
+      "variant_count": 80,
+      "variant_index": 52
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 4,
+      "weights": [
+        0.2,
+        0.24,
+        0.27,
+        0.3
+      ]
+    }
+  },
+  "duration_s": 2.381443500518799,
+  "ended_at_epoch": 1782581810.7972593,
+  "log_path": "src/experiments/results/phase4/phase4_e1b_near_equal_conflict_result/20260627_173648_sweep_20260627_173015_a8b15101_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": -20.51,
+    "annealing_gap": 0.002400000000001512,
+    "annealing_solve_time_ms": 197.2021080000559,
+    "assignments": {
+      "1000": 0,
+      "1001": 1,
+      "1002": 0,
+      "1003": 1
+    },
+    "beats_annealing": false,
+    "brute_force_solve_time_ms": 3.6742687225341797,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.016889998732949607,
+      "instrumented_total_ms": 2380.368461999751,
+      "qaoa_ms": 2179.2330120006227,
+      "qubo_build_ms": 0.12806099948647898,
+      "reconstruction_ms": 0.03355000080773607,
+      "validation_ms": 200.95047900031204,
+      "workload_ms": 0.006469999789260328
+    },
+    "convergence_steps_recorded": 200,
+    "energy": -20.5076,
+    "experiment_metadata": {},
+    "feasible": true,
+    "final_phi": [
+      0.47000000000000003,
+      0.54
+    ],
+    "load_imbalance": 0.07,
+    "max_subqubo_convergence_iterations_to_final_tol": 12,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_feasible_sub_qubos": 2,
+    "num_sub_qubos": 2,
+    "num_variables": 8,
+    "optimal": false,
+    "optimality_gap": 0.00011701608971240346,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "sa_energy_match": false,
+    "solve_time_ms": 2178.570669999317,
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.016889998732949607,
+        "qaoa_ms": 2179.2330120006227,
+        "qubo_build_ms": 0.12806099948647898,
+        "reconstruction_ms": 0.03355000080773607,
+        "validation_ms": 200.95047900031204
+      },
+      "sub_qubos": 2
+    },
+    "validation": {
+      "annealing_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 1,
+        "1003": 0
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -20.51,
+      "annealing_error": null,
+      "annealing_gap": 0.002400000000001512,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 197.2021080000559,
+      "beats_annealing": false,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 3.6742687225341797,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 0,
+        "1003": 1
+      },
+      "candidate_energy": -20.5076,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1
+      },
+      "global_energy": -20.51,
+      "is_optimal": false,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1
+      },
+      "unconstrained_energy": -20.51,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e1b_near_equal_conflict_result/20260627_173648_sweep_20260627_173015_a8b15101_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.2,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 204.8
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.24,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 245.76
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.27,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 276.48
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782581808.4159331,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 100,
+      "top_k": 3
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 102,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e1b_near_equal_conflict_result/20260627_173648_sweep_20260627_173015_a8b15101_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_173015_a8b15101",
+  "scenario_file": "src/experiments/scenarios/phase4_e1b_near_equal_conflict.toml",
+  "scenario_id": "E1b.52",
+  "scenario_name": "Adversarial near-equal weight conflicts [52/80]",
+  "scenario_stem": "phase4_e1b_near_equal_conflict",
+  "started_at_epoch": 1782581808.4158158,
+  "started_at_utc": "20260627_173648",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

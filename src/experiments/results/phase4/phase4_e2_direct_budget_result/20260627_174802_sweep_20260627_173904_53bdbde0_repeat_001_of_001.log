@@ -1,0 +1,34 @@
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   8 processes on 2 cores
+WEIGHTS:    1.360 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 3 | Steps = 200 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Sat Jun 27 18:48:02 2026 ---
+Workload ID: None
+Entities: [(1000, 0.3), (1001, 0.27), (1002, 0.22), (1003, 0.18), (1004, 0.15), (1005, 0.11), (1006, 0.08), (1007, 0.05)]
+Building QUBO...
+QUBO Matrix completed in 6.534999920404516e-05
+QUBO solved in 20.176676724000572
+
+Core Assignment - Energy: -40.9006
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 1, 1001: 1, 1002: 0, 1003: 0, 1004: 0, 1005: 0, 1006: 0, 1007: 0}
+Core Assignment - Solve time: 20176.0ms
+Validated in 2.141017321999243
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -40.9248
+
+--- Final Schedule ---
+  Entity 1000 (w=0.300) → core 1
+  Entity 1001 (w=0.270) → core 1
+  Entity 1002 (w=0.220) → core 0
+  Entity 1003 (w=0.180) → core 0
+  Entity 1004 (w=0.150) → core 0
+  Entity 1005 (w=0.110) → core 0
+  Entity 1006 (w=0.080) → core 0
+  Entity 1007 (w=0.050) → core 0
+
+Total solve time: 20176.047ms

@@ -1,0 +1,285 @@
+{
+  "category": "qaoa_parameterization",
+  "config": {
+    "category": "qaoa_parameterization",
+    "checks": {
+      "expected_pipeline": "default",
+      "global_optimum_available": true,
+      "no_crash": true,
+      "qaoa_feasible": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "N=4, K=2 reference workload. Sweeps p, initial gamma, and initial beta to test whether gamma=beta=0.5 is a local-minimum-sensitive choice.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "B3.31",
+    "name": "QAOA gamma beta initialization grid [31/50]",
+    "qaoa": {
+      "init_beta": 0.1,
+      "init_gamma": 0.3,
+      "init_strategy": "fixed",
+      "layers": 3,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "convergence_final_objective"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "init_beta": "qaoa.init_beta",
+        "init_gamma": "qaoa.init_gamma",
+        "layers": "qaoa.layers"
+      },
+      "values": {
+        "init_beta": 0.1,
+        "init_gamma": 0.3,
+        "layers": 3
+      },
+      "variant_count": 50,
+      "variant_index": 31
+    },
+    "tier": 6,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 4,
+      "weights": [
+        0.15,
+        0.35,
+        0.25,
+        0.25
+      ]
+    }
+  },
+  "duration_s": 2.687666654586792,
+  "ended_at_epoch": 1782492231.5497239,
+  "log_path": "src/experiments/results/research_b3_init_grid_sweep_result/20260626_164348_sweep_20260626_163548_3b2fdff6_repeat_001_of_001.log",
+  "metrics": {
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 0,
+      "1001": 0,
+      "1002": 1,
+      "1003": 1
+    },
+    "beats_annealing": null,
+    "convergence_final_objective": -20.36499847575026,
+    "convergence_initial_objective": -20.314934289774556,
+    "convergence_iterations_to_final_tol": 9,
+    "convergence_steps_recorded": 100,
+    "energy": -20.5,
+    "feasible": true,
+    "max_probability": 0.06257034020006393,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_variables": 8,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "solve_time_ms": 2682.7951650002433,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "solver_params": {
+      "device": "lightning.gpu",
+      "final_beta": [
+        0.12906394738401608,
+        0.13460169590705254,
+        0.12910374973855435
+      ],
+      "final_gamma": [
+        0.30000019268721634,
+        -0.00044938508090003717,
+        -0.00045135806788305043
+      ],
+      "init_beta": 0.1,
+      "init_gamma": 0.3,
+      "init_strategy": "fixed",
+      "initial_beta": [
+        0.1,
+        0.1,
+        0.1
+      ],
+      "initial_gamma": [
+        0.3,
+        0.3,
+        0.3
+      ],
+      "mixer_type": "xy",
+      "opt_steps": 100,
+      "p_layers": 3,
+      "random_seed": null,
+      "selection_pool": "top_k_probable_states",
+      "top_k": 32
+    },
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_solve_time_ms": null,
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 0,
+        "1002": 1,
+        "1003": 1
+      },
+      "candidate_energy": -20.5,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "global_energy": -20.5,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "unconstrained_energy": -20.5,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/research_b3_init_grid_sweep_result/20260626_164348_sweep_20260626_163548_3b2fdff6_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.35,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 358.4
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782492228.8621423,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.1,
+      "init_gamma": 0.3,
+      "init_strategy": "fixed",
+      "layers": 3,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "random_seed": null,
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/research_b3_init_grid_sweep_result/20260626_164348_sweep_20260626_163548_3b2fdff6_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260626_163548_3b2fdff6",
+  "scenario_file": "src/experiments/scenarios/research_b3_init_grid_sweep.toml",
+  "scenario_id": "B3.31",
+  "scenario_name": "QAOA gamma beta initialization grid [31/50]",
+  "scenario_stem": "research_b3_init_grid_sweep",
+  "started_at_epoch": 1782492228.8620572,
+  "started_at_utc": "20260626_164348",
+  "status": "success",
+  "tier": 6,
+  "warnings": []
+}

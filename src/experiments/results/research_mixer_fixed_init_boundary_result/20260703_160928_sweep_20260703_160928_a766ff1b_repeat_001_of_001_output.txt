@@ -1,0 +1,120 @@
+========================================================================================
+EXPERIMENT RESULT: research_mixer_fixed_init_boundary (MX4.1)
+========================================================================================
+Run id:        sweep_20260703_160928_a766ff1b
+Repeat:        1/1
+Status:        success
+Started UTC:   20260703_160928
+Duration:      2.029s
+Scenario file: src/experiments/scenarios/research_mixer_fixed_init_boundary.toml
+JSON result:   src/experiments/results/research_mixer_fixed_init_boundary_result/20260703_160928_sweep_20260703_160928_a766ff1b_repeat_001_of_001_result.json
+Output file:   src/experiments/results/research_mixer_fixed_init_boundary_result/20260703_160928_sweep_20260703_160928_a766ff1b_repeat_001_of_001_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 4
+num_cores: 2
+num_variables: 8
+energy: 8.326672684688674e-17
+feasible: false
+optimal: false
+optimality_gap: 0.9999999999994736
+solve_time_ms: 349.24645600040094
+solver_backend: "qaoa_pennylane_lightning.gpu_x_mixer"
+max_probability: 0.00696504017433011
+feasible_probability_mass: 0.0421845362237915
+invalid_probability_mass: 0.9578154637762085
+top_state_feasible: false
+first_feasible_rank: 205
+first_optimal_rank: 255
+optimal_probability_mass: 0.004951455949644434
+feasible_candidates_in_top_k: 0
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 3.866434097290039
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.0, "instrumented_total_ms": 353.49009499987005, "qaoa_ms": 349.34093599986227, "qubo_build_ms": 0.05027100087318104, "reconstruction_ms": 0.0, "validation_ms": 4.085548000148265, "workload_ms": 0.013339998986339197}
+experiment_metadata: {}
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 3.866434097290039,
+  "candidate_assignments": {},
+  "candidate_energy": 8.326672684688674e-17,
+  "errors": [
+    "Entity 1000 assigned to 2 options",
+    "Entity 1001 assigned to 2 options",
+    "Entity 1002 assigned to 2 options",
+    "Entity 1003 assigned to 2 options"
+  ],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "global_energy": -1.9,
+  "is_optimal": false,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0
+  },
+  "unconstrained_energy": -1.9,
+  "unconstrained_is_feasible": true,
+  "valid": false
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.35
+QAOA CFG:   Layers (p) = 1 | Steps = 1 | η = 0.1 | Mixer = x | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 17:09:29 2026 ---
+Workload ID: None
+Entities: [(1000, 0.15), (1001, 0.35), (1002, 0.25), (1003, 0.25)]
+Building QUBO...
+QUBO Matrix completed in 5.027100087318104e-05
+QUBO solved in 0.34934093599986227
+
+Core Assignment - Energy: 0.0000
+Core Assignment - Feasible: False
+Core Assignment - Assignments: {}
+Core Assignment - Solve time: 349.2ms
+WARNING: Infeasible core assignment — increase penalty P
+Validated in 0.004085548000148265
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -1.9000
+Core Assignment - Errors: ['Entity 1000 assigned to 2 options', 'Entity 1001 assigned to 2 options', 'Entity 1002 assigned to 2 options', 'Entity 1003 assigned to 2 options']
+
+--- Final Schedule ---
+  Entity 1000 (w=0.150) → core ?
+  Entity 1001 (w=0.350) → core ?
+  Entity 1002 (w=0.250) → core ?
+  Entity 1003 (w=0.250) → core ?
+
+Total solve time: 349.246ms
+

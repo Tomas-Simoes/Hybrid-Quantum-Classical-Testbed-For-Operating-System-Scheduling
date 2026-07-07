@@ -1,0 +1,308 @@
+{
+  "category": "phase4_top_k_generalization",
+  "config": {
+    "category": "phase4_top_k_generalization",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Adds top_k=1 and top_k=5 for the nine dominant and near-equal workloads; E1 supplies top_k=3 and 10 at p=2.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E3A.71",
+    "metadata": {
+      "difficulty": 0.1,
+      "instance": "near010",
+      "structure": "near_equal"
+    },
+    "name": "Top-k extremes across adversarial workloads [71/90]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 1
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "load_imbalance",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "metadata.difficulty": "metadata.difficulty",
+        "metadata.instance": "metadata.instance",
+        "metadata.structure": "metadata.structure",
+        "random_seed": "qaoa.random_seed",
+        "top_k": "qaoa.top_k",
+        "workload.num_processes": "workload.num_processes",
+        "workload.weights": "workload.weights"
+      },
+      "values": {
+        "case": "near_010",
+        "metadata.difficulty": 0.1,
+        "metadata.instance": "near010",
+        "metadata.structure": "near_equal",
+        "random_seed": 101,
+        "top_k": 1,
+        "workload.num_processes": 4,
+        "workload.weights": [
+          0.2,
+          0.24,
+          0.27,
+          0.3
+        ]
+      },
+      "variant_count": 90,
+      "variant_index": 71
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 4,
+      "weights": [
+        0.2,
+        0.24,
+        0.27,
+        0.3
+      ]
+    }
+  },
+  "duration_s": 2.594066858291626,
+  "ended_at_epoch": 1782583637.2945528,
+  "log_path": "src/experiments/results/phase4/phase4_e3_adversarial_top_k_result/20260627_180714_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": -20.51,
+    "annealing_gap": 0.1860000000000035,
+    "annealing_solve_time_ms": 202.66972700119368,
+    "assignments": {
+      "1000": 0,
+      "1001": 1,
+      "1002": 1,
+      "1003": 1
+    },
+    "beats_annealing": false,
+    "brute_force_solve_time_ms": 3.66973876953125,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.012659998901654035,
+      "instrumented_total_ms": 2593.0485490007413,
+      "qaoa_ms": 2386.4585290011746,
+      "qubo_build_ms": 0.11792100121965632,
+      "reconstruction_ms": 0.03477999780443497,
+      "validation_ms": 206.41894900109037,
+      "workload_ms": 0.005710000550607219
+    },
+    "convergence_steps_recorded": 200,
+    "energy": -20.323999999999998,
+    "experiment_metadata": {},
+    "feasible": true,
+    "final_phi": [
+      0.2,
+      0.81
+    ],
+    "load_imbalance": 0.6100000000000001,
+    "max_subqubo_convergence_iterations_to_final_tol": 2,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_feasible_sub_qubos": 2,
+    "num_sub_qubos": 2,
+    "num_variables": 8,
+    "optimal": false,
+    "optimality_gap": 0.009068746952705726,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "sa_energy_match": false,
+    "solve_time_ms": 2385.742026999651,
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.012659998901654035,
+        "qaoa_ms": 2386.4585290011746,
+        "qubo_build_ms": 0.11792100121965632,
+        "reconstruction_ms": 0.03477999780443497,
+        "validation_ms": 206.41894900109037
+      },
+      "sub_qubos": 2
+    },
+    "validation": {
+      "annealing_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -20.51,
+      "annealing_error": null,
+      "annealing_gap": 0.1860000000000035,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 202.66972700119368,
+      "beats_annealing": false,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 3.66973876953125,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1
+      },
+      "candidate_energy": -20.323999999999998,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1
+      },
+      "global_energy": -20.51,
+      "is_optimal": false,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1
+      },
+      "unconstrained_energy": -20.51,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e3_adversarial_top_k_result/20260627_180714_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.2,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 204.8
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.24,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 245.76
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.27,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 276.48
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782583634.700573,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 1
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 101,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e3_adversarial_top_k_result/20260627_180714_sweep_20260627_180326_a1a3c8cb_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_180326_a1a3c8cb",
+  "scenario_file": "src/experiments/scenarios/phase4_e3_adversarial_top_k.toml",
+  "scenario_id": "E3A.71",
+  "scenario_name": "Top-k extremes across adversarial workloads [71/90]",
+  "scenario_stem": "phase4_e3_adversarial_top_k",
+  "started_at_epoch": 1782583634.700486,
+  "started_at_utc": "20260627_180714",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

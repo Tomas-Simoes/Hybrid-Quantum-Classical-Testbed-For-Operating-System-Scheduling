@@ -1,0 +1,308 @@
+{
+  "category": "decomposition_scaling",
+  "config": {
+    "category": "decomposition_scaling",
+    "checks": {
+      "global_assignment_feasible": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Generated uniform-total workloads with K=2 and qubit_max=6. N*K <= qubit_max uses DefaultPipeline; larger N uses IterativePipeline.",
+    "execution": {
+      "pipeline": "auto",
+      "repeats": 5,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "D1.6",
+    "name": "Sweep N with fixed K and qubit_max [6/7]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "fixed",
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "num_sub_qubos",
+        "load_imbalance",
+        "annealing_gap"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "num_processes": "workload.num_processes"
+      },
+      "values": {
+        "num_processes": 8
+      },
+      "variant_count": 7,
+      "variant_index": 6
+    },
+    "tier": 6,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "generated",
+      "num_cores": 2,
+      "num_processes": 8,
+      "total_weight": 1.0,
+      "weight_strategy": "uniform_total"
+    }
+  },
+  "duration_s": 6.7388036251068115,
+  "ended_at_epoch": 1782492588.916118,
+  "log_path": "src/experiments/results/research_d1_sweep_n_result/20260626_164942_sweep_20260626_163548_3b2fdff6_repeat_003_of_005.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 1,
+      "1001": 1,
+      "1002": 0,
+      "1003": 0,
+      "1004": 0,
+      "1005": 1,
+      "1006": 0,
+      "1007": 1
+    },
+    "beats_annealing": null,
+    "convergence_steps_recorded": 300,
+    "energy": -40.5,
+    "feasible": true,
+    "final_phi": [
+      0.5,
+      0.5
+    ],
+    "load_imbalance": 0.0,
+    "max_subqubo_convergence_iterations_to_final_tol": 4,
+    "num_cores": 2,
+    "num_entities": 8,
+    "num_feasible_sub_qubos": 3,
+    "num_sub_qubos": 3,
+    "num_variables": 16,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "solve_time_ms": 4179.508546999841,
+    "solver_params": {
+      "sub_qubos": 3
+    },
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_solve_time_ms": null,
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 1
+      },
+      "candidate_energy": -40.5,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 0,
+        "1005": 0,
+        "1006": 0,
+        "1007": 0
+      },
+      "global_energy": -40.5,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 0,
+        "1005": 0,
+        "1006": 0,
+        "1007": 0
+      },
+      "unconstrained_energy": -40.5,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/research_d1_sweep_n_result/20260626_164942_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_output.txt",
+  "repeat_count": 5,
+  "repeat_index": 2,
+  "repeat_number": 3,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 6,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.125,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 128.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782492582.177407,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "fixed",
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "random_seed": null,
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/research_d1_sweep_n_result/20260626_164942_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_result.json",
+  "run_id": "sweep_20260626_163548_3b2fdff6",
+  "scenario_file": "src/experiments/scenarios/research_d1_sweep_n.toml",
+  "scenario_id": "D1.6",
+  "scenario_name": "Sweep N with fixed K and qubit_max [6/7]",
+  "scenario_stem": "research_d1_sweep_n",
+  "started_at_epoch": 1782492582.1773143,
+  "started_at_utc": "20260626_164942",
+  "status": "success",
+  "tier": 6,
+  "warnings": []
+}

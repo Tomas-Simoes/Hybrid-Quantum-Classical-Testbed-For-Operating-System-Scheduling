@@ -1,0 +1,330 @@
+{
+  "category": "mixer_adversarial",
+  "config": {
+    "category": "mixer_adversarial",
+    "checks": {
+      "expected_pipeline": "default",
+      "global_optimum_available": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Paired X/XY comparison with practical top-k values, sufficient optimizer budget and random initializations.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "MX5.56",
+    "metadata": {
+      "workload": "reference"
+    },
+    "name": "Balanced top-k mixer comparison [56/160]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 0.35
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "max_probability"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "layers": "qaoa.layers",
+        "metadata.workload": "metadata.workload",
+        "qaoa.mixer_type": "qaoa.mixer_type",
+        "qubo.penalty": "qubo.penalty",
+        "random_seed": "qaoa.random_seed",
+        "top_k": "qaoa.top_k",
+        "workload.weights": "workload.weights"
+      },
+      "values": {
+        "case": "reference_xy",
+        "layers": 2,
+        "metadata.workload": "reference",
+        "qaoa.mixer_type": "xy",
+        "qubo.penalty": 0.35,
+        "random_seed": 101,
+        "top_k": 10,
+        "workload.weights": [
+          0.15,
+          0.35,
+          0.25,
+          0.25
+        ]
+      },
+      "variant_count": 160,
+      "variant_index": 56
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 4,
+      "weights": [
+        0.15,
+        0.35,
+        0.25,
+        0.25
+      ]
+    }
+  },
+  "duration_s": 1.8406634330749512,
+  "ended_at_epoch": 1783095539.9551904,
+  "log_path": "src/experiments/results/research_mixer_balanced_topk_result/20260703_161858_sweep_20260703_161638_263cfb4f_repeat_001_of_001.log",
+  "metrics": {
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 1,
+      "1001": 1,
+      "1002": 0,
+      "1003": 0
+    },
+    "beats_annealing": null,
+    "brute_force_solve_time_ms": 4.4612884521484375,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.0,
+      "instrumented_total_ms": 1837.9158720017585,
+      "qaoa_ms": 1833.22063200103,
+      "qubo_build_ms": 0.034130000130971894,
+      "reconstruction_ms": 0.0,
+      "validation_ms": 4.654770000342978,
+      "workload_ms": 0.0063400002545677125
+    },
+    "convergence_final_objective": -1.764999884311526,
+    "convergence_initial_objective": -1.580102068467076,
+    "convergence_iterations_to_final_tol": 35,
+    "convergence_steps_recorded": 100,
+    "energy": -1.9,
+    "experiment_metadata": {},
+    "feasible": true,
+    "feasible_candidates_in_top_k": 10,
+    "feasible_probability_mass": 1.000000000000001,
+    "first_feasible_rank": 1,
+    "first_optimal_rank": 8,
+    "invalid_probability_mass": 0.0,
+    "max_probability": 0.0631652865972932,
+    "num_cores": 2,
+    "num_entities": 4,
+    "num_variables": 8,
+    "optimal": true,
+    "optimal_probability_mass": 0.12499824331659853,
+    "optimality_gap": 0.0,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "sa_energy_match": null,
+    "solve_time_ms": 1832.720808999511,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.0,
+        "qaoa_ms": 1833.22063200103,
+        "qubo_build_ms": 0.034130000130971894,
+        "reconstruction_ms": 0.0,
+        "validation_ms": 4.654770000342978
+      },
+      "device": "lightning.gpu",
+      "final_beta": [
+        0.6897470446373009,
+        0.48768755206518327
+      ],
+      "final_gamma": [
+        0.9435325152195969,
+        0.00033332792853873116
+      ],
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "initial_beta": [
+        0.7848054119699771,
+        0.5912781852294118
+      ],
+      "initial_gamma": [
+        0.9435325056105539,
+        0.35942103334157316
+      ],
+      "mixer_type": "xy",
+      "opt_steps": 100,
+      "p_layers": 2,
+      "random_seed": 101,
+      "selection_pool": "top_k_probable_states",
+      "top_k": 10
+    },
+    "top_state_feasible": true,
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_solve_time_ms": null,
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 4.4612884521484375,
+      "candidate_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "candidate_energy": -1.9,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "global_energy": -1.9,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0
+      },
+      "unconstrained_energy": -1.9,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/research_mixer_balanced_topk_result/20260703_161858_sweep_20260703_161638_263cfb4f_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.35,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 358.4
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.25,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 256.0
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1783095538.114623,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 101,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 0.35,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 101,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "default",
+      "run_annealing_baseline": false
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/research_mixer_balanced_topk_result/20260703_161858_sweep_20260703_161638_263cfb4f_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260703_161638_263cfb4f",
+  "scenario_file": "src/experiments/scenarios/research_mixer_balanced_topk.toml",
+  "scenario_id": "MX5.56",
+  "scenario_name": "Balanced top-k mixer comparison [56/160]",
+  "scenario_stem": "research_mixer_balanced_topk",
+  "started_at_epoch": 1783095538.114527,
+  "started_at_utc": "20260703_161858",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

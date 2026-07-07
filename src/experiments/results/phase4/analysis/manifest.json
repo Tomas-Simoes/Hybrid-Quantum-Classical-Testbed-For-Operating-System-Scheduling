@@ -1,0 +1,30 @@
+{
+  "figures": [
+    "e1_adversarial_optimality.png",
+    "e1c_clustering_quality.png",
+    "e2_direct_budget.png",
+    "e2_tradeoff_vs_decomposition.png",
+    "e3_top_k_generalization.png",
+    "e4_operational_timing_breakdown.png"
+  ],
+  "input_files": [
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/phase4/sweep_20260627_173015_a8b15101_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/phase4/sweep_20260627_173904_53bdbde0_results.jsonl",
+    "/home/simoes/dev/projects/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling/src/experiments/results/phase4/sweep_20260627_180326_a1a3c8cb_results.jsonl"
+  ],
+  "input_records": 530,
+  "phase": 4,
+  "recorded_optimal_records": 385,
+  "sa_strict_optimal_records": 530,
+  "strict_optimal_records": 374,
+  "strict_optimality_tolerance": 1e-09,
+  "successful_records": 530,
+  "tables": [
+    "phase4_runs.csv",
+    "e1_adversarial_summary.csv",
+    "e2_direct_budget_summary.csv",
+    "e2_with_historical_d2.csv",
+    "e3_top_k_summary.csv",
+    "e4_timing_summary.csv"
+  ]
+}

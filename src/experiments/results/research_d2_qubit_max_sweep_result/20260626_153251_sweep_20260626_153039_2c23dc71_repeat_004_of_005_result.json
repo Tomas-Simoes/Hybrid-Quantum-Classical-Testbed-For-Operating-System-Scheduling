@@ -1,0 +1,308 @@
+{
+  "category": "decomposition_scaling",
+  "config": {
+    "category": "decomposition_scaling",
+    "checks": {
+      "expected_trend": "larger qubit_max should not be assumed monotonic until measured.",
+      "global_assignment_feasible": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 10,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "N=8, K=2 workload. Sweeps qubit_max to trace the quality/runtime curve used in the hardware-budget argument.",
+    "execution": {
+      "pipeline": "auto",
+      "repeats": 5,
+      "solvers": [
+        "qaoa",
+        "brute_force"
+      ]
+    },
+    "id": "D2.4",
+    "name": "Fixed N sweep qubit_max [4/6]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "num_sub_qubos",
+        "load_imbalance"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "qubit_max": "decomposition.qubit_max"
+      },
+      "values": {
+        "qubit_max": 10
+      },
+      "variant_count": 6,
+      "variant_index": 4
+    },
+    "tier": 6,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 8,
+      "weights": [
+        0.3,
+        0.27,
+        0.22,
+        0.18,
+        0.15,
+        0.11,
+        0.08,
+        0.05
+      ]
+    }
+  },
+  "duration_s": 7.601982355117798,
+  "ended_at_epoch": 1782487979.3110886,
+  "log_path": "src/experiments/results/research_d2_qubit_max_sweep_result/20260626_153251_sweep_20260626_153039_2c23dc71_repeat_004_of_005.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 0,
+      "1001": 0,
+      "1002": 1,
+      "1003": 1,
+      "1004": 1,
+      "1005": 0,
+      "1006": 1,
+      "1007": 1
+    },
+    "beats_annealing": null,
+    "energy": -40.924800000000005,
+    "feasible": true,
+    "final_phi": [
+      0.68,
+      0.68
+    ],
+    "load_imbalance": 0.0,
+    "num_cores": 2,
+    "num_entities": 8,
+    "num_feasible_sub_qubos": 2,
+    "num_sub_qubos": 2,
+    "num_variables": 16,
+    "optimal": true,
+    "optimality_gap": 0.0,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "solve_time_ms": 5048.974843999986,
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_solve_time_ms": null,
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 0,
+        "1002": 1,
+        "1003": 1,
+        "1004": 1,
+        "1005": 0,
+        "1006": 1,
+        "1007": 1
+      },
+      "candidate_energy": -40.924800000000005,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "global_energy": -40.924800000000005,
+      "is_optimal": true,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "unconstrained_energy": -40.924800000000005,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/research_d2_qubit_max_sweep_result/20260626_153251_sweep_20260626_153039_2c23dc71_repeat_004_of_005_output.txt",
+  "repeat_count": 5,
+  "repeat_index": 3,
+  "repeat_number": 4,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 10,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.27,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 276.48
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.22,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 225.28
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.18,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 184.32
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.11,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 112.64
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.08,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 81.92
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.05,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 51.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782487971.7091968,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "layers": 2,
+      "learning_rate": 0.05,
+      "mixer_type": "xy",
+      "steps": 100,
+      "top_k": 32
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/research_d2_qubit_max_sweep_result/20260626_153251_sweep_20260626_153039_2c23dc71_repeat_004_of_005_result.json",
+  "run_id": "sweep_20260626_153039_2c23dc71",
+  "scenario_file": "src/experiments/scenarios/research_d2_qubit_max_sweep.toml",
+  "scenario_id": "D2.4",
+  "scenario_name": "Fixed N sweep qubit_max [4/6]",
+  "scenario_stem": "research_d2_qubit_max_sweep",
+  "started_at_epoch": 1782487971.7091062,
+  "started_at_utc": "20260626_153251",
+  "status": "success",
+  "tier": 6,
+  "warnings": []
+}

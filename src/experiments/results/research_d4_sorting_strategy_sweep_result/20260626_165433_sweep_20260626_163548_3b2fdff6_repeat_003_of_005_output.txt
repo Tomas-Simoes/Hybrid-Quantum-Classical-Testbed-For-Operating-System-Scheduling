@@ -1,0 +1,141 @@
+========================================================================================
+EXPERIMENT RESULT: research_d4_sorting_strategy_sweep (D4.2)
+========================================================================================
+Run id:        sweep_20260626_163548_3b2fdff6
+Repeat:        3/5
+Status:        success
+Started UTC:   20260626_165433
+Duration:      7.168s
+Scenario file: src/experiments/scenarios/research_d4_sorting_strategy_sweep.toml
+JSON result:   src/experiments/results/research_d4_sorting_strategy_sweep_result/20260626_165433_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_result.json
+Output file:   src/experiments/results/research_d4_sorting_strategy_sweep_result/20260626_165433_sweep_20260626_163548_3b2fdff6_repeat_003_of_005_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 8
+num_cores: 2
+num_variables: 16
+energy: -40.9248
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 4526.515089999975
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+num_sub_qubos: 3
+num_feasible_sub_qubos: 3
+all_sub_qubos_feasible: true
+load_imbalance: 1.1102230246251565e-16
+final_phi: [0.68, 0.6799999999999999]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 1
+1002 -> 1
+1003 -> 0
+1004 -> 0
+1005 -> 1
+1006 -> 1
+1007 -> 0
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 1,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 1,
+    "1007": 0
+  },
+  "candidate_energy": -40.9248,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0
+  },
+  "global_energy": -40.924800000000005,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 0,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0
+  },
+  "unconstrained_energy": -40.924800000000005,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   8 processes on 2 cores
+WEIGHTS:    1.360 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Fri Jun 26 17:54:33 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0001s
+Partitioning in Sub-QUBOs...
+3 sub-QUBOs | sizes: [3, 3, 2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/3] 3 entities | weight=0.7900
+  phi before: [0. 0.]
+  residual capacity: [0.68 0.68]
+  Solved in 1737.0ms | energy=-15.744300 | feasible=True
+  phi after:  [0.3  0.49]
+
+[Sub-QUBO 2/3] 3 entities | weight=0.4400
+  phi before: [0.3  0.49]
+  residual capacity: [0.38 0.19]
+  Solved in 1577.2ms | energy=-15.171600 | feasible=True
+  phi after:  [0.63 0.6 ]
+
+[Sub-QUBO 3/3] 2 entities | weight=0.1300
+  phi before: [0.63 0.6 ]
+  residual capacity: [0.05 0.08]
+  Solved in 1212.3ms | energy=-10.008900 | feasible=True
+  phi after:  [0.68 0.68]
+
+--- Run Complete ---
+Final core loads: [0.68 0.68]
+Load imbalance:   0.000000  (L_avg=0.6800)
+Movable entities assigned: 8/8 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -40.924800
+Global optimum energy:     -40.924800
+Globally optimal:          True
+

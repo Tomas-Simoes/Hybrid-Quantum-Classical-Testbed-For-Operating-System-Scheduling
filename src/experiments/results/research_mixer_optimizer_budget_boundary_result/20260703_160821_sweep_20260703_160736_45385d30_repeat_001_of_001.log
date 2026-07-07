@@ -1,0 +1,32 @@
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   4 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 0.7
+QAOA CFG:   Layers (p) = 1 | Steps = 5 | η = 0.1 | Mixer = x | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jul  3 17:08:21 2026 ---
+Workload ID: None
+Entities: [(1000, 0.7), (1001, 0.1), (1002, 0.1), (1003, 0.1)]
+Building QUBO...
+QUBO Matrix completed in 4.583000009006355e-05
+QUBO solved in 0.10431858599986299
+
+Core Assignment - Energy: 0.0000
+Core Assignment - Feasible: False
+Core Assignment - Assignments: {}
+Core Assignment - Solve time: 103.8ms
+WARNING: Infeasible core assignment — increase penalty P
+Validated in 0.004024977000881336
+Core Assignment - Optimal: False
+Core Assignment - Global energy: -3.2200
+Core Assignment - Errors: ['Entity 1000 assigned to 2 options', 'Entity 1001 assigned to 2 options', 'Entity 1002 assigned to 2 options', 'Entity 1003 assigned to 2 options']
+
+--- Final Schedule ---
+  Entity 1000 (w=0.700) → core ?
+  Entity 1001 (w=0.100) → core ?
+  Entity 1002 (w=0.100) → core ?
+  Entity 1003 (w=0.100) → core ?
+
+Total solve time: 103.831ms

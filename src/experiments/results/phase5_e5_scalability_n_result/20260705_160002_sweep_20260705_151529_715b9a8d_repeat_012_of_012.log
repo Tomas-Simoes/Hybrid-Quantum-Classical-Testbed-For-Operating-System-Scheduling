@@ -1,0 +1,118 @@
+
+--- Iterative Run Started at Sun Jul  5 17:00:02 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0020s
+Partitioning in Sub-QUBOs...
+17 sub-QUBOs | sizes: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/17] 4 entities | weight=3.8539
+  phi before: [0. 0.]
+  residual capacity: [14.4081 14.4081]
+  Solved in 2342.1ms | energy=-123.628021 | feasible=True
+  phi after:  [1.9292 1.9246]
+
+[Sub-QUBO 2/17] 4 entities | weight=3.5708
+  phi before: [1.9292 1.9246]
+  residual capacity: [12.4788 12.4834]
+  Solved in 2209.2ms | energy=-102.760703 | feasible=True
+  phi after:  [3.7027 3.722 ]
+
+[Sub-QUBO 3/17] 4 entities | weight=3.3040
+  phi before: [3.7027 3.722 ]
+  residual capacity: [10.7054 10.6861]
+  Solved in 2205.7ms | energy=-85.218406 | feasible=True
+  phi after:  [5.3653 5.3633]
+
+[Sub-QUBO 4/17] 4 entities | weight=2.9157
+  phi before: [5.3653 5.3633]
+  residual capacity: [9.0427 9.0447]
+  Solved in 2181.4ms | energy=-68.485971 | feasible=True
+  phi after:  [6.8019 6.8424]
+
+[Sub-QUBO 5/17] 4 entities | weight=2.6284
+  phi before: [6.8019 6.8424]
+  residual capacity: [7.6061 7.5656]
+  Solved in 2293.0ms | energy=-56.424703 | feasible=True
+  phi after:  [8.1351 8.1377]
+
+[Sub-QUBO 6/17] 4 entities | weight=2.3347
+  phi before: [8.1351 8.1377]
+  residual capacity: [6.2729 6.2704]
+  Solved in 2274.0ms | energy=-46.559332 | feasible=True
+  phi after:  [9.3146 9.2929]
+
+[Sub-QUBO 7/17] 4 entities | weight=2.0721
+  phi before: [9.3146 9.2929]
+  residual capacity: [5.0935 5.1152]
+  Solved in 2271.8ms | energy=-39.006933 | feasible=True
+  phi after:  [10.3384 10.3413]
+
+[Sub-QUBO 8/17] 4 entities | weight=1.8859
+  phi before: [10.3384 10.3413]
+  residual capacity: [4.0697 4.0668]
+  Solved in 2327.8ms | energy=-33.566317 | feasible=True
+  phi after:  [11.2883 11.2772]
+
+[Sub-QUBO 9/17] 4 entities | weight=1.6119
+  phi before: [11.2883 11.2772]
+  residual capacity: [3.1198 3.1308]
+  Solved in 2240.6ms | energy=-28.776425 | feasible=True
+  phi after:  [12.0873 12.0902]
+
+[Sub-QUBO 10/17] 4 entities | weight=1.3112
+  phi before: [12.0873 12.0902]
+  residual capacity: [2.3208 2.3178]
+  Solved in 2316.8ms | energy=-25.222440 | feasible=True
+  phi after:  [12.744  12.7447]
+
+[Sub-QUBO 11/17] 4 entities | weight=1.0049
+  phi before: [12.744  12.7447]
+  residual capacity: [1.6641 1.6634]
+  Solved in 2251.9ms | energy=-22.838759 | feasible=True
+  phi after:  [13.2383 13.2553]
+
+[Sub-QUBO 12/17] 4 entities | weight=0.7802
+  phi before: [13.2383 13.2553]
+  residual capacity: [1.1698 1.1528]
+  Solved in 2252.2ms | energy=-21.507737 | feasible=True
+  phi after:  [13.6435 13.6302]
+
+[Sub-QUBO 13/17] 4 entities | weight=0.5934
+  phi before: [13.6435 13.6302]
+  residual capacity: [0.7645 0.7779]
+  Solved in 2348.3ms | energy=-20.739283 | feasible=True
+  phi after:  [13.9294 13.9377]
+
+[Sub-QUBO 14/17] 4 entities | weight=0.5143
+  phi before: [13.9294 13.9377]
+  residual capacity: [0.4786 0.4704]
+  Solved in 2198.9ms | energy=-20.355854 | feasible=True
+  phi after:  [14.188  14.1935]
+
+[Sub-QUBO 15/17] 4 entities | weight=0.2974
+  phi before: [14.188  14.1935]
+  residual capacity: [0.2201 0.2146]
+  Solved in 2360.5ms | energy=-20.084969 | feasible=True
+  phi after:  [14.3319 14.347 ]
+
+[Sub-QUBO 16/17] 4 entities | weight=0.1204
+  phi before: [14.3319 14.347 ]
+  residual capacity: [0.0762 0.0611]
+  Solved in 2255.3ms | energy=-20.009344 | feasible=True
+  phi after:  [14.3946 14.4047]
+
+[Sub-QUBO 17/17] 1 entities | weight=0.0169
+  phi before: [14.3946 14.4047]
+  residual capacity: [0.0135 0.0034]
+  Solved in 711.9ms | energy=-5.000170 | feasible=True
+  phi after:  [14.4115 14.4047]
+
+--- Run Complete ---
+Final core loads: [14.4115 14.4047]
+Load imbalance:   0.006817  (L_avg=14.4081)
+Movable entities assigned: 65/65 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -740.185368
+Global brute-force skipped: None

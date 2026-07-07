@@ -1,0 +1,105 @@
+========================================================================================
+EXPERIMENT RESULT: research_d1_sweep_n (D1.2)
+========================================================================================
+Run id:        sweep_20260626_163548_3b2fdff6
+Repeat:        1/5
+Status:        success
+Started UTC:   20260626_164825
+Duration:      1.262s
+Scenario file: src/experiments/scenarios/research_d1_sweep_n.toml
+JSON result:   src/experiments/results/research_d1_sweep_n_result/20260626_164825_sweep_20260626_163548_3b2fdff6_repeat_001_of_005_result.json
+Output file:   src/experiments/results/research_d1_sweep_n_result/20260626_164825_sweep_20260626_163548_3b2fdff6_repeat_001_of_005_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "default"
+output_type: "SchedulingOutput"
+num_entities: 3
+num_cores: 2
+num_variables: 6
+energy: -15.444444444444446
+feasible: true
+optimal: true
+optimality_gap: 0.0
+solve_time_ms: 1259.9530460001915
+solver_backend: "qaoa_pennylane_lightning.gpu_xy_mixer"
+max_probability: 0.12559750288174026
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 1
+1002 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_solve_time_ms": null,
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 1
+  },
+  "candidate_energy": -15.444444444444446,
+  "errors": [],
+  "global_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0
+  },
+  "global_energy": -15.444444444444446,
+  "is_optimal": true,
+  "unconstrained_assignments": {
+    "1000": 1,
+    "1001": 1,
+    "1002": 0
+  },
+  "unconstrained_energy": -15.444444444444446,
+  "unconstrained_is_feasible": true,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   3 processes on 2 cores
+WEIGHTS:    1.000 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.05 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Raw Run Started at Fri Jun 26 17:48:25 2026 ---
+Workload ID: None
+Entities: [(1000, 0.3333333333333333), (1001, 0.3333333333333333), (1002, 0.3333333333333333)]
+Building QUBO...
+QUBO Matrix completed in 2.8371810913085938e-05
+QUBO solved in 1.2602958679199219
+
+Core Assignment - Energy: -15.4444
+Core Assignment - Feasible: True
+Core Assignment - Assignments: {1000: 0, 1001: 1, 1002: 1}
+Core Assignment - Solve time: 1260.0ms
+Validated in 0.0009715557098388672
+Core Assignment - Optimal: True
+Core Assignment - Global energy: -15.4444
+
+--- Final Schedule ---
+  Entity 1000 (w=0.333) → core 0
+  Entity 1001 (w=0.333) → core 1
+  Entity 1002 (w=0.333) → core 1
+
+Total solve time: 1259.953ms
+

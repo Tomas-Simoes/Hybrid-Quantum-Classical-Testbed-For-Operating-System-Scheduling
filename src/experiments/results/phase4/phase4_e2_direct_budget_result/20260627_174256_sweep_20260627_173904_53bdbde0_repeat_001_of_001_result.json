@@ -1,0 +1,374 @@
+{
+  "category": "phase4_direct_budget",
+  "config": {
+    "category": "phase4_direct_budget",
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 16,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Follow-up to D2 at qubit_max=16 with four depths, three step budgets, and five random seeds.",
+    "execution": {
+      "pipeline": "default",
+      "repeats": 1,
+      "visualization": false
+    },
+    "id": "E2.22",
+    "name": "Direct 16-variable QAOA budget follow-up [22/60]",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 200,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "energy",
+        "optimality_gap",
+        "feasible",
+        "solve_time_ms",
+        "convergence_iterations_to_final_tol",
+        "component_timings_ms"
+      ]
+    },
+    "scenario_version": 1,
+    "sweep_context": {
+      "paths": {
+        "layers": "qaoa.layers",
+        "random_seed": "qaoa.random_seed",
+        "steps": "qaoa.steps"
+      },
+      "values": {
+        "layers": 2,
+        "random_seed": 102,
+        "steps": 200
+      },
+      "variant_count": 60,
+      "variant_index": 22
+    },
+    "tier": 7,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": true
+    },
+    "workload": {
+      "mode": "preset",
+      "num_cores": 2,
+      "num_processes": 8,
+      "weights": [
+        0.3,
+        0.27,
+        0.22,
+        0.18,
+        0.15,
+        0.11,
+        0.08,
+        0.05
+      ]
+    }
+  },
+  "duration_s": 14.685249328613281,
+  "ended_at_epoch": 1782582190.9007864,
+  "log_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_174256_sweep_20260627_173904_53bdbde0_repeat_001_of_001.log",
+  "metrics": {
+    "annealing_energy": -40.924800000000005,
+    "annealing_gap": 0.024200000000000443,
+    "annealing_solve_time_ms": 409.98013200078276,
+    "assignments": {
+      "1000": 1,
+      "1001": 1,
+      "1002": 0,
+      "1003": 0,
+      "1004": 0,
+      "1005": 0,
+      "1006": 0,
+      "1007": 0
+    },
+    "beats_annealing": false,
+    "brute_force_solve_time_ms": 1527.0144939422607,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.0,
+      "instrumented_total_ms": 14684.79072000082,
+      "qaoa_ms": 12747.470489999614,
+      "qubo_build_ms": 0.05867999971087556,
+      "reconstruction_ms": 0.0,
+      "validation_ms": 1937.2536390001187,
+      "workload_ms": 0.007911001375759952
+    },
+    "convergence_final_objective": -40.78119999996039,
+    "convergence_initial_objective": -40.738863694252686,
+    "convergence_iterations_to_final_tol": 12,
+    "convergence_steps_recorded": 200,
+    "energy": -40.900600000000004,
+    "experiment_metadata": {},
+    "feasible": true,
+    "max_probability": 0.0039068367853241515,
+    "num_cores": 2,
+    "num_entities": 8,
+    "num_variables": 16,
+    "optimal": false,
+    "optimality_gap": 0.0005913284854171517,
+    "output_type": "SchedulingOutput",
+    "pipeline": "default",
+    "sa_energy_match": false,
+    "solve_time_ms": 12746.898809000413,
+    "solver_backend": "qaoa_pennylane_lightning.gpu_xy_mixer",
+    "solver_params": {
+      "component_timings_ms": {
+        "decomposition_ms": 0.0,
+        "qaoa_ms": 12747.470489999614,
+        "qubo_build_ms": 0.05867999971087556,
+        "reconstruction_ms": 0.0,
+        "validation_ms": 1937.2536390001187
+      },
+      "device": "lightning.gpu",
+      "final_beta": [
+        0.7854038773443792,
+        0.39269824931119873
+      ],
+      "final_gamma": [
+        0.16000823262797761,
+        0.6045571713888563
+      ],
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "initial_beta": [
+        0.8238367771828463,
+        0.2972602367602962
+      ],
+      "initial_gamma": [
+        0.15999114500430367,
+        0.5859435148402273
+      ],
+      "mixer_type": "xy",
+      "opt_steps": 200,
+      "p_layers": 2,
+      "random_seed": 102,
+      "selection_pool": "top_k_probable_states",
+      "top_k": 10
+    },
+    "validation": {
+      "annealing_assignments": {
+        "1000": 1,
+        "1001": 0,
+        "1002": 1,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 1
+      },
+      "annealing_backend": "simulated_annealing_one_hot",
+      "annealing_energy": -40.924800000000005,
+      "annealing_error": null,
+      "annealing_gap": 0.024200000000000443,
+      "annealing_is_feasible": true,
+      "annealing_solve_time_ms": 409.98013200078276,
+      "beats_annealing": false,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 1527.0144939422607,
+      "candidate_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 0,
+        "1006": 0,
+        "1007": 0
+      },
+      "candidate_energy": -40.900600000000004,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "global_energy": -40.924800000000005,
+      "is_optimal": false,
+      "unconstrained_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 0
+      },
+      "unconstrained_energy": -40.924800000000005,
+      "unconstrained_is_feasible": true,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_174256_sweep_20260627_173904_53bdbde0_repeat_001_of_001_output.txt",
+  "repeat_count": 1,
+  "repeat_index": 0,
+  "repeat_number": 1,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 16,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.3,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 307.2
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.27,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 276.48
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.22,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 225.28
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.18,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 184.32
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.15,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 153.6
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.11,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 112.64
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.08,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 81.92
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.05,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 51.2
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1782582176.2156203,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 102,
+      "steps": 200,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "runtime_options": {
+      "annealing_seed": 102,
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "default",
+      "run_annealing_baseline": true
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    }
+  },
+  "result_path": "src/experiments/results/phase4/phase4_e2_direct_budget_result/20260627_174256_sweep_20260627_173904_53bdbde0_repeat_001_of_001_result.json",
+  "run_id": "sweep_20260627_173904_53bdbde0",
+  "scenario_file": "src/experiments/scenarios/phase4_e2_direct_budget.toml",
+  "scenario_id": "E2.22",
+  "scenario_name": "Direct 16-variable QAOA budget follow-up [22/60]",
+  "scenario_stem": "phase4_e2_direct_budget",
+  "started_at_epoch": 1782582176.215537,
+  "started_at_utc": "20260627_174256",
+  "status": "success",
+  "tier": 7,
+  "warnings": []
+}

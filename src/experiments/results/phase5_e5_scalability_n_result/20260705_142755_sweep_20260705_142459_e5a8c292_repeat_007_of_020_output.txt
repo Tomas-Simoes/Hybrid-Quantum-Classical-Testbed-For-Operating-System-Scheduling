@@ -1,0 +1,177 @@
+========================================================================================
+EXPERIMENT RESULT: phase5_e5_scalability_n (E5.coarse.15)
+========================================================================================
+Run id:        sweep_20260705_142459_e5a8c292
+Repeat:        7/20
+Status:        success
+Started UTC:   20260705_142755
+Duration:      8.920s
+Scenario file: src/experiments/scenarios/phase5_e5_scalability_n.toml
+JSON result:   src/experiments/results/phase5_e5_scalability_n_result/20260705_142755_sweep_20260705_142459_e5a8c292_repeat_007_of_020_result.json
+Output file:   src/experiments/results/phase5_e5_scalability_n_result/20260705_142755_sweep_20260705_142459_e5a8c292_repeat_007_of_020_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 15
+num_cores: 2
+num_variables: 30
+energy: -105.17671466059834
+feasible: true
+optimal: false
+optimality_gap: 1.6095902431120968e-05
+solve_time_ms: 8734.577066001293
+annealing_energy: null
+annealing_gap: null
+beats_annealing: null
+annealing_solve_time_ms: null
+brute_force_solve_time_ms: 181.17767200055823
+sa_energy_match: null
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 0.053789999583386816, "instrumented_total_ms": 8917.993166998713, "qaoa_ms": 8736.155902999599, "qubo_build_ms": 0.4660320009861607, "reconstruction_ms": 0.07415999880322488, "validation_ms": 181.23338199984573, "workload_ms": 0.009899999895424116}
+experiment_metadata: {}
+num_sub_qubos: 4
+num_feasible_sub_qubos: 4
+all_sub_qubos_feasible: true
+load_imbalance: 0.05818972006533363
+final_phi: [3.9135773019005, 3.855387581835166]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 1
+1002 -> 0
+1003 -> 0
+1004 -> 1
+1005 -> 1
+1006 -> 1
+1007 -> 1
+1008 -> 0
+1009 -> 0
+1010 -> 1
+1011 -> 0
+1012 -> 1
+1013 -> 0
+1014 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {},
+  "annealing_backend": null,
+  "annealing_best_energy_hit_fraction": null,
+  "annealing_energy": null,
+  "annealing_error": null,
+  "annealing_gap": null,
+  "annealing_is_feasible": null,
+  "annealing_restart_best_energies": null,
+  "annealing_restart_energy_range": null,
+  "annealing_restart_energy_std": null,
+  "annealing_restarts_stable": null,
+  "annealing_solve_time_ms": null,
+  "baseline_certified": true,
+  "baseline_energy": -105.17840760198496,
+  "baseline_method": "bruteforce",
+  "baseline_method_requested": "auto",
+  "beats_annealing": null,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": 181.17767200055823,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 1,
+    "1002": 0,
+    "1003": 0,
+    "1004": 1,
+    "1005": 1,
+    "1006": 1,
+    "1007": 1,
+    "1008": 0,
+    "1009": 0,
+    "1010": 1,
+    "1011": 0,
+    "1012": 1,
+    "1013": 0,
+    "1014": 1
+  },
+  "candidate_energy": -105.17671466059834,
+  "errors": [],
+  "global_assignments": {
+    "1000": 0,
+    "1001": 0,
+    "1002": 0,
+    "1003": 1,
+    "1004": 1,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0,
+    "1008": 0,
+    "1009": 0,
+    "1010": 1,
+    "1011": 1,
+    "1012": 1,
+    "1013": 1,
+    "1014": 0
+  },
+  "global_energy": -105.17840760198496,
+  "is_optimal": false,
+  "optimality_atol": 1e-09,
+  "optimality_rtol": 1e-09,
+  "pipeline_energy": -105.17671466059834,
+  "relative_gap": 1.6095902431121117e-05,
+  "unconstrained_assignments": {},
+  "unconstrained_energy": null,
+  "unconstrained_is_feasible": null,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+INITIATING QAOA SCHEDULING JOB
+WORKLOAD:   15 processes on 2 cores
+WEIGHTS:    7.769 total CPU load
+QUBO CFG:   Penalty (P) = 5.0
+QAOA CFG:   Layers (p) = 2 | Steps = 100 | η = 0.1 | Mixer = xy | Init γ/β = 0.5/0.5
+----------------------------------------
+
+
+--- Iterative Run Started at Sun Jul  5 15:27:55 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0002s
+Partitioning in Sub-QUBOs...
+4 sub-QUBOs | sizes: [4, 4, 4, 3]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/4] 4 entities | weight=3.6434
+  phi before: [0. 0.]
+  residual capacity: [3.8845 3.8845]
+  Solved in 2442.7ms | energy=-41.668188 | feasible=True
+  phi after:  [1.829  1.8144]
+
+[Sub-QUBO 2/4] 4 entities | weight=2.5252
+  phi before: [1.829  1.8144]
+  residual capacity: [2.0555 2.07  ]
+  Solved in 2395.6ms | energy=-27.226812 | feasible=True
+  phi after:  [3.047  3.1215]
+
+[Sub-QUBO 3/4] 4 entities | weight=1.4168
+  phi before: [3.047  3.1215]
+  residual capacity: [0.8374 0.763 ]
+  Solved in 2284.6ms | energy=-21.266545 | feasible=True
+  phi after:  [3.7906 3.7948]
+
+[Sub-QUBO 4/4] 3 entities | weight=0.1836
+  phi before: [3.7906 3.7948]
+  residual capacity: [0.0939 0.0897]
+  Solved in 1611.6ms | energy=-15.015170 | feasible=True
+  phi after:  [3.9136 3.8554]
+
+--- Run Complete ---
+Final core loads: [3.9136 3.8554]
+Load imbalance:   0.058190  (L_avg=3.8845)
+Movable entities assigned: 15/15 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -105.176715
+Global optimum energy:     -105.178408
+Globally optimal:          False
+
