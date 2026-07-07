@@ -62,12 +62,6 @@ Run the CLI:
 make run
 ```
 
-Run the Streamlit UI:
-
-```bash
-make ui
-```
-
 ## Commands
 
 | Command | Description |
@@ -75,7 +69,6 @@ make ui
 | `make` | List available commands |
 | `make install` | Install dependencies with `uv sync` |
 | `make run` | Run `src/main.py` |
-| `make ui` | Run the Streamlit app at `src/app.py` |
 | `make add pkg=<name>` | Add a dependency |
 | `make remove pkg=<name>` | Remove a dependency |
 | `make freeze` | List installed packages |
@@ -94,4 +87,3 @@ Detailed notes live next to the code they describe:
 - [tracer](src/tracer/README.md): live process snapshot collection
 - [visualizer](src/visualizer/README.md): plotting surfaces
 - [abstract](src/abstract/README.md): base interfaces
-
