@@ -1,0 +1,426 @@
+\chapter{Investigação}
+\label{chap:investigacao}
+\label{chap:resultados-discussao}
+
+Este capítulo descreve a metodologia adotada para a execução de experimentos e apresenta os resultados
+obtidos. 
+
+O objetivo em nenhum momento é demonstrar
+vantagem quântica, mas sim avaliar se o sistema produz soluções válidas, como se comporta
+sob diferentes configurações e onde se encontram os seus limites.
+
+A execução dos experimentos foi assistida por um agente de inteligência artificial 
+com acesso ao repositório, que implementou os cenários definidos, correu as 
+simulações e gerou os relatórios de resultados. Todas as conclusões foram 
+posteriormente revistas e validadas pelo autor. No total foram realizadas 1164
+execuções principais, distribuídas por cinco fases experimentais.
+\input{testes-experimentos}
+
+\clearpage
+\section{Resultados da Investigação}
+
+\subsection{Validação Inicial da Pipeline}
+
+Foram inicialmente executadas instâncias pequenas, com dois a quatro processos e dois
+cores. Estas instâncias produzem entre 4 e 8 variáveis QUBO, o que permite calcular o
+ótimo global por \textit{brute force} e comparar diretamente a solução obtida pelo QAOA.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Processos} & \textbf{Cores} & \textbf{Variáveis} & \textbf{Viável} & \textbf{Ótimo} & \textbf{Pipeline} \\
+\hline
+2 & 2 & 4 & Sim & Sim & Direta \\
+3 & 2 & 6 & Sim & Sim & Direta \\
+4 & 2 & 8 & Sim & Sim & Direta \\
+\hline
+\end{tabular}
+\caption{Resultados dos testes iniciais em instâncias pequenas.}
+\label{tab:resultados-sanity}
+\end{table}
+
+Em todos os casos a solução produzida foi viável e coincidiu com o ótimo obtido por
+\textit{brute force}. Isto confirma que, para instâncias pequenas, o sistema executa corretamente
+o ciclo completo.
+
+Numa instância com quatro processos e dois cores, foi também avaliado o efeito da
+profundidade $p$ do circuito QAOA, ou seja, o número de vezes que os operadores de fase
+e de mistura são aplicados. Foram testados valores $p \in \{1, \ldots, 7\}$ com cinco
+repetições cada. Em todos os casos $p=1$ foi suficiente para atingir o ótimo, com o
+tempo a crescer de 1277\,ms para 5111\,ms sem qualquer melhoria de qualidade; esta
+instância era demasiado simples para discriminar o efeito da profundidade, cujo impacto
+real só se torna visível em instâncias maiores.
+
+\subsubsection{Validação da Decomposição}
+
+Para avaliar o comportamento da pipeline à medida que o número de processos cresce, foram
+executadas instâncias com $N \in \{2, 3, 4, 5, 6, 8, 10\}$ processos e dois cores, com
+\texttt{qubit\_max}=6. Quando o número de variáveis QUBO excede este limite, o problema
+é automaticamente dividido em sub-QUBOs resolvidos pela pipeline
+iterativa.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{$N$} & \textbf{Variáveis} & \textbf{Pipeline} & \textbf{Sub-QUBOs} & \textbf{Ótimo} & \textbf{Load imbalance} & \textbf{Tempo médio (ms)} \\
+\hline
+2  & 4  & Direta    & 0 & 100\% & 0.000 & 896.1  \\
+3  & 6  & Direta    & 0 & 100\% & 0.333 & 1279.6 \\
+4  & 8  & Iterativa & 2 & 100\% & 0.000 & 2401.3 \\
+5  & 10 & Iterativa & 2 & 100\% & 0.200 & 2869.1 \\
+6  & 12 & Iterativa & 2 & 100\% & 0.000 & 3279.0 \\
+8  & 16 & Iterativa & 3 & 100\% & 0.000 & 4202.9 \\
+10 & 20 & Iterativa & 4 & 100\% & 0.000 & 5755.9 \\
+\hline
+\end{tabular}
+}
+\caption{Escalabilidade da pipeline com o número de processos.}
+\label{tab:resultados-d1}
+\end{table}
+
+A decomposição manteve a viabilidade e atingiu o
+ótimo global em todas as execuções até $N=10$. O tempo cresceu com o número de
+sub-QUBOs, de 896\,ms em $N=2$ para 5756\,ms em $N=10$.
+
+Os desequilíbrios de carga em $N=3$ e $N=5$ não resultam de falha da pipeline: com pesos
+uniformes e dois cores, é impossível distribuir um número ímpar de processos sem algum
+desequilíbrio.
+
+\subsubsection{Caracterização Inicial do QAOA}
+\label{subsec:caracterizacao-inicial-qaoa}
+Foi utilizada uma instância fixa com oito processos e dois núcleos
+($N=8$, $K=2$), correspondendo a 16 variáveis QUBO. Os pesos dos processos foram
+$$
+\mathbf{w} = [0.30,\,0.27,\,0.22,\,0.18,\,0.15,\,0.11,\,0.08,\,0.05],
+$$
+
+O parâmetro \texttt{qubit\_max} define o número máximo de variáveis que o QAOA pode 
+resolver de uma vez; quando o problema excede esse limite, é dividido em sub-QUBOs 
+resolvidos sequencialmente. 
+
+A profundidade $p$ controla o número de camadas alternadas 
+de operadores de fase e de mistura no circuito --- maior profundidade aumenta a 
+expressividade do circuito mas também o custo de simulação. 
+
+Os passos referem-se ao 
+número de iterações do otimizador clássico que ajusta os parâmetros $\gamma$ e $\beta$ 
+do circuito.
+
+Cada resolução usa um
+circuito de profundidade $p=2$ e 100 passos do otimizador clássico.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{\texttt{qubit\_max}} & \textbf{Pipeline} & \textbf{Sub-QUBOs} & \textbf{Gap médio} & \textbf{Tempo médio (ms)} \\
+\hline
+4  & Iterativa & 4 & 0.000000 & 4550.3 \\
+6  & Iterativa & 3 & 0.000000 & 4546.8 \\
+8  & Iterativa & 2 & 0.000000 & 4777.0 \\
+10 & Iterativa & 2 & 0.000000 & 4792.5 \\
+12 & Iterativa & 2 & 0.000000 & 5648.0 \\
+16 & Direta    & 0 & 0.000591 & 6911.1 \\
+\hline
+\end{tabular}
+\caption{Comparação entre execução iterativa e direta para diferentes limites de qubits ($N=8$, $K=2$).}
+\label{tab:resultados-qubitmax}
+\end{table}
+
+Nos casos em que o limite de qubits forçou a decomposição, a pipeline iterativa atingiu o ótimo global em todas as execuções. Com \texttt{qubit\_max}=16,
+a pipeline resolveu a instância completa sem decomposição, mas não atingiu o ótimo com
+o orçamento de $p=2$ e 100 passos, uma vez que o solver passou a otimizar um espaço
+de estados de maior dimensão com o mesmo orçamento algorítmico.
+
+Este resultado sugere que a configuração $p=2$ e 100 iterações não foi suficiente
+para explorar adequadamente o espaço de estados da instância. Para testar
+esta interpretação, manteve-se \texttt{qubit\_max}=16 e variaram-se a profundidade
+e o número de iterações do otimizador.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Profundidade $p$} &
+\textbf{Iterações} &
+\textbf{Gap} &
+\textbf{Ótimo} &
+\textbf{Tempo (ms)} \\
+\hline
+2 & 100 & 0.000591 & Não & 8087.1  \\
+2 & 200 & 0.000591 & Não & 14141.7 \\
+2 & 500 & 0.001251 & Não & 35510.7 \\
+\hline
+3 & 100 & 0.000000 & Sim & 10577.5 \\
+3 & 200 & 0.000000 & Sim & 20738.6 \\
+3 & 500 & 0.000000 & Sim & 51943.0 \\
+\hline
+4 & 100 & 0.000000 & Sim & 13701.7 \\
+4 & 200 & 0.000000 & Sim & 27484.1 \\
+4 & 500 & 0.000000 & Sim & 68555.0 \\
+\hline
+\end{tabular}
+\caption{Impacto da profundidade e do número de iterações na resolução direta
+com \texttt{qubit\_max}=16 ($N=8$, $K=2$).}
+\label{tab:resultados-profundidade-passos-direta}
+\end{table}
+O aumento da profundidade de $p=2$ para $p=3$ permitiu recuperar o ótimo global
+com apenas 100 iterações. Em contraste, aumentar exclusivamente o número de
+iterações, mantendo $p=2$, não melhorou a solução. Aliás, com 500 iterações, o gap foi
+inclusivamente superior ao observado com 100 e 200 iterações.
+
+Estes resultados indicam que, nesta instância, a profundidade do circuito teve
+maior influência na qualidade da solução do que o número de iterações do
+otimizador. A resolução direta conseguiu, portanto, atingir o ótimo global, mas
+exigiu uma profundidade superior e maior tempo computacional.
+
+No entanto, a pipeline iterativa atingiu a mesma qualidade em menos tempo nas configurações
+testadas. Este resultado demonstra uma vantagem computacional para esta instância e mostra que o
+aumento do limite de qubits deve ser acompanhado por uma parametrização adequada do QAOA.
+
+\paragraph{Caracterização do Otimizador Clássico.}
+Foi também avaliado o efeito do número de iterações do otimizador clássico e da 
+inicialização de $\gamma/\beta$. Testaram-se valores entre 50 e 500 iterações e um 
+grid de 25 pares de inicialização; em todos os casos a solução foi viável e ótima. 
+Aumentar de 50 para 500 iterações multiplicou o tempo por um fator de aproximadamente 
+10 sem qualquer melhoria de qualidade, o que reforça que estas instâncias eram 
+demasiado simples para revelar o limite do otimizador.
+
+\clearpage
+Os resultados da Secção~\ref{subsec:caracterizacao-inicial-qaoa} mostram que a
+qualidade depende não só do orçamento do circuito, mas também da forma como a pipeline
+gere a informação entre sub-QUBOs. As duas secções seguintes caracterizam os parâmetros
+que controlam essa gestão.
+
+\section{Escolha do Mixer}
+
+O mixer X aplica rotações independentes a cada qubit e não preserva a restrição 
+de atribuição única durante a evolução do circuito, dependendo da penalidade $P$ para 
+desencorajar estados inválidos. O mixer XY atua apenas entre qubits do mesmo 
+processo, preservando essa restrição estruturalmente e eliminando essa dependência.
+
+O valor de $P_\text{safe}$ é calculado pela heurística
+\[
+P_\text{safe} \approx 2 \cdot w_{\max} \cdot \frac{W_\text{total}}{K},
+\]
+que estima a penalidade mínima necessária para que o custo de violar a restrição 
+de atribuição única supere o ganho de qualquer atribuição inválida.
+
+Foram totalizadas 504 execuções com duas instâncias. Na instância regular,
+usou-se $\mathbf{w}=[0.15, 0.35, 0.25, 0.25]$ e $P_\text{safe}=0.35$.
+Na instância com processo dominante, usou-se
+$\mathbf{w}=[0.70, 0.10, 0.10, 0.10]$ e $P_\text{safe}=0.70$.
+
+\subsection{Viabilidade sob orçamento reduzido}
+
+Primeiro foi fixado $p=1$, \texttt{top\_k}=1, e o número de passos do 
+otimizador entre 1 e 50. Os resultados agregam duas instâncias, duas penalidades 
+e cinco sementes aleatórias para inicilização de $\gamma$ e $\beta$, com 20 execuções por mixer em cada orçamento.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Passos} & \textbf{X viável} & \textbf{XY viável} & 
+\textbf{X ótimo} & \textbf{XY ótimo} \\
+\hline
+1  & 6/20  & 20/20 & 6/20  & 0/20 \\
+3  & 12/20 & 20/20 & 12/20 & 0/20 \\
+5  & 12/20 & 20/20 & 12/20 & 0/20 \\
+10 & 20/20 & 20/20 & 20/20 & 0/20 \\
+20 & 20/20 & 20/20 & 19/20 & 0/20 \\
+50 & 20/20 & 20/20 & 17/20 & 0/20 \\
+\hline
+\end{tabular}
+\caption{Viabilidade e otimalidade com \texttt{top\_k}=1 e $p=1$}
+\label{tab:resultados-mx3}
+\end{table}
+
+O mixer XY manteve viabilidade em 120/120 execuções e atribuiu sempre 100\% da 
+massa de probabilidade ao subespaço de atribuições únicas válidas. O mixer X falhou a restrição 
+de atribuição única em 30/120 execuções, com todas as falhas abaixo de 10 passos.
+
+Contudo, o padrão de otimalidade inverteu-se: com \texttt{top\_k}=1, o mixer X 
+produziu 86/120 soluções ótimas, enquanto o mixer XY produziu 0/120. A razão é 
+estrutural: o XY parte de um estado inicial onde todos os processos estão 
+atribuídos ao núcleo 0, e com circuitos pouco profundos a distribuição permanece 
+concentrada em atribuições viáveis mas subótimas. O estado ótimo global foi 
+classificado em primeiro lugar pelo mixer X nas execuções, mas 
+apareceu nas posições 6--10 para o mixer XY na instância de referência.
+
+\subsection{Comparação com Valores Práticos de \texttt{top\_k}}
+
+Para complementar o experimento anterior em que foi usado \texttt{top\_k}=1, foi realizado um segundo
+conjunto de experimentos com $p \in \{2, 3\}$, 100 passos, $P_\text{safe}$ e
+\texttt{top\_k} $\in \{2, 3, 5, 10\}$. Todas as 160 execuções foram viáveis.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Instância} & \textbf{$p$} & \textbf{\texttt{top\_k}} & 
+\textbf{X ótimo} & \textbf{XY ótimo} \\
+\hline
+Regular   & 2 & 2  & 5/5 & 0/5 \\
+Regular   & 2 & 3  & 5/5 & 0/5 \\
+Regular   & 2 & 5  & 5/5 & 0/5 \\
+Regular   & 2 & 10 & 5/5 & 5/5 \\
+Regular   & 3 & 2  & 5/5 & 1/5 \\
+Regular   & 3 & 3  & 5/5 & 2/5 \\
+Regular   & 3 & 5  & 5/5 & 2/5 \\
+Regular   & 3 & 10 & 5/5 & 5/5 \\
+Dominante & 2 & 2  & 5/5 & 2/5 \\
+Dominante & 2 & 3  & 5/5 & 2/5 \\
+Dominante & 2 & 5  & 5/5 & 5/5 \\
+Dominante & 2 & 10 & 5/5 & 5/5 \\
+Dominante & 3 & 2  & 5/5 & 2/5 \\
+Dominante & 3 & 3  & 5/5 & 2/5 \\
+Dominante & 3 & 5  & 5/5 & 5/5 \\
+Dominante & 3 & 10 & 5/5 & 5/5 \\
+\hline
+\end{tabular}
+\caption{Otimalidade por mixer, profundidade e \texttt{top\_k} com 100 passos e $P_\text{safe}$.}
+\label{tab:resultados-mx5}
+\end{table}
+
+O mixer X atingiu o ótimo em 80/80 execuções. O mixer XY atingiu 43/80, com
+desempenho a melhorar consistentemente com \texttt{top\_k}: ambos convergiram para
+100\% de otimalidade em \texttt{top\_k}=10. O tempo médio foi 2787.0\,ms para X e
+2200.7\,ms para XY, uma redução de 21\%.
+
+Este resultado clarifica o compromisso observado anteriormente: a dificuldade do XY
+em optimalidade não é absoluta, mas depende do número de candidatos disponíveis. Com
+\texttt{top\_k}=10, a distribuição do XY contém candidatos suficientes para capturar
+o estado ótimo; com valores menores, a concentração de massa em atribuições viáveis
+mas subótimas limita a recuperação.
+
+\subsection{Síntese}
+
+Os experimentos revelam um compromisso claro entre os dois mixers. O XY é
+estruturalmente superior em viabilidade: manteve 100\% de massa no subespaço de
+atribuições únicas válidas em todas as execuções e nunca produziu uma solução
+inválida, independentemente da penalidade ou do orçamento do otimizador. Foi também
+16--22\% mais rápido em todos os regimes testados.
+
+Em optimalidade, o comportamento depende do número de candidatos disponíveis. Com
+\texttt{top\_k}=1, o mixer X superou claramente o XY --- 86/120 ótimos contra 0/120 ---
+porque o estado ótimo global tende a aparecer em posições mais elevadas na sua
+distribuição. Com valores práticos de \texttt{top\_k}, essa vantagem diminui: a
+partir de \texttt{top\_k}=10, ambos os mixers atingiram 100\% de otimalidade.
+
+A escolha do mixer deve portanto considerar o regime de operação. O XY é preferível
+quando a viabilidade é prioritária ou quando \texttt{top\_k} é suficientemente grande;
+o mixer X é mais robusto em optimalidade quando o orçamento de candidatos é muito
+restrito, desde que o otimizador tenha passos suficientes para garantir viabilidade.
+
+\section{Limites da Pipeline}
+\label{sec:fase4}
+
+As fases anteriores caracterizaram o comportamento da pipeline em condições favoráveis:
+workloads uniformes e instâncias pequenas. Nessas condições, a
+pipeline atingiu o ótimo na quase totalidade das execuções. Para identificar onde e como
+a qualidade se degrada, foram construídas instâncias deliberadamente difíceis e
+alargado o espaço de parâmetros investigado. 
+
+\subsection{Instâncias com Processo Dominante}
+
+A primeira estrutura consiste em seis processos onde um tem peso muito
+superior aos restantes. Nestes casos, a atribuição ótima é estruturalmente forçada: o
+processo dominante deve ir para um núcleo e os cinco leves para o outro; qualquer outra
+distribuição é fortemente penalizada. Foram testados pesos dominantes em
+$\{0.60, 0.70, 0.80, 0.90, 0.95\}$, com os restantes uniformes, e combinações
+$p \in \{1, 2\}$ e $\mathtt{top\_k} \in \{3, 10\}$.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{$p$} & \textbf{\texttt{top\_k}} & \textbf{Ótimos} & \textbf{Gap médio} & \textbf{Tempo médio (ms)} \\
+\hline
+1 & 3  & 24/25 & 0,006755\% & 2003,0 \\
+1 & 10 & 25/25 & 0          & 1999,3 \\
+2 & 3  & 9/25  & 0,082395\% & 3004,6 \\
+2 & 10 & 25/25 & 0          & 3000,1 \\
+\hline
+\end{tabular}
+\caption{Resultados com processo dominante ($N=6$, $K=2$).}
+\label{tab:resultados-e1a}
+\end{table}
+
+O resultado mais relevante é que aumentar $p$ de 1 para 2 degradou fortemente a
+solução quando $\mathtt{top\_k}=3$: de 24/25 para 9/25 ótimos. 
+
+Com
+$\mathtt{top\_k}=10$, a profundidade deixou de fazer diferença e ambas as configurações
+atingiram o ótimo em todas as repetições. 
+
+Este padrão revela que maior profundidade não
+implica necessariamente melhor qualidade --- em circuitos mais profundos, a distribuição
+de probabilidade pode dispersar-se por mais estados, exigindo um conjunto de candidatos
+maior para capturar o ótimo.
+
+\subsection{Instâncias com Pesos Quase Iguais}
+
+A segunda estrutura adversarial usa quatro processos com pesos próximos entre si, onde
+o desequilíbrio máximo entre o processo mais leve e o mais pesado varia entre 0,01 e
+0,20. Estas instâncias são difíceis porque o ótimo global tem energia muito semelhante
+a soluções subótimas, tornando a distinção difícil para o otimizador.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{$p$} & \textbf{\texttt{top\_k}} & \textbf{Ótimos} & \textbf{Gap médio} & \textbf{Tempo médio (ms)} \\
+\hline
+1 & 3  & 15/20 & 0,003213\% & 1569,5 \\
+1 & 10 & 20/20 & 0          & 1566,0 \\
+2 & 3  & 8/20  & 0,005712\% & 2167,5 \\
+2 & 10 & 20/20 & 0          & 2167,1 \\
+\hline
+\end{tabular}
+\caption{Resultados com pesos quase iguais ($N=4$, $K=2$).}
+\label{tab:resultados-e1b}
+\end{table}
+
+O padrão é consistente com o anterior: $\mathtt{top\_k}=10$ eliminou todas as falhas,
+enquanto $\mathtt{top\_k}=3$ deixou uma fração de runs subótimos. Os gaps são pequenos
+em valor absoluto, mas não equivalem a optimalidade exata. O simulated annealing atingiu
+o ótimo em 80/80 execuções neste conjunto.
+
+\subsection{Instâncias com Estrutura CPU/I\slash O}
+
+A terceira estrutura adversarial foi concebida para testar a decomposição adaptativa. Foram criados seis processos divididos em dois grupos
+distintos: três CPU-bound (pesos altos, I/O wait baixo) e três I/O-bound (pesos baixos,
+I/O wait alto). 
+
+O parâmetro $\mathtt{io\_alpha}$ controla o peso relativo do perfil de
+I/O na afinidade da decomposição.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{\texttt{io\_alpha}} & \textbf{Ótimos} & \textbf{Coupling intra} & \textbf{Coupling inter} & \textbf{Load imbalance} & \textbf{Tempo (ms)} \\
+\hline
+0,1 & 20/20 & 0,977 & 0,295 & 0,561 & 716,3 \\
+0,5 & 20/20 & 0,984 & 0,294 & 0,647 & 715,5 \\
+0,9 & 20/20 & 0,987 & 0,293 & 0,732 & 714,0 \\
+\hline
+\end{tabular}
+}
+\caption{Resultados do clustering CPU/I/O para diferentes valores de \texttt{io\_alpha} ($N=6$, $K=2$).}
+\label{tab:resultados-e1c}
+\end{table}
+
+Em todas as configurações, a decomposição separou corretamente os três processos
+CPU-bound dos três I/O-bound As 60 execuções atingiram o ótimo.
+
+No entanto, aumentar $\mathtt{io\_alpha}$ aumentou o desequilíbrio de carga: ao
+privilegiar a afinidade de I/O na formação dos clusters, os bundles ficam com pesos
+totais mais desiguais. Este resultado mostra que afinidade da decomposição e qualidade
+de scheduling são objetivos potencialmente conflituosos --- uma decomposição mais pura em
+termos de perfil de I/O não implica necessariamente uma atribuição mais equilibrada.

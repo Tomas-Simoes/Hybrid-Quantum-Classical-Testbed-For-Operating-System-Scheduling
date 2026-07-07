@@ -1,0 +1,211 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="final-runtime-flow">
+    <mxGraphModel dx="1178" dy="760" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="workload" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=11;fontStyle=1;" value="Workload&#xa;entities: List[WorkloadEntity]" vertex="1">
+          <mxGeometry height="62" width="270" x="278" y="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="decision" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#AABBCC;fontColor=#333333;fontSize=11;fontStyle=1;" value="N * K &lt;= q_max?" vertex="1">
+          <mxGeometry height="72" width="200" x="313" y="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="default_pipeline" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;fontStyle=1;" value="DefaultPipeline&#xa;CoreAssignmentBuilder.build()&#xa;single QUBOInstance" vertex="1">
+          <mxGeometry height="78" width="260" x="45" y="260" as="geometry" />
+        </mxCell>
+
+        <mxCell id="iter_pipeline" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;fontStyle=1;" value="IterativePipeline&#xa;CoreAssignmentBuilder.build()&#xa;QUBOInstance global" vertex="1">
+          <mxGeometry height="78" width="270" x="512" y="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="partition" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;" value="SubQUBODecomposer.partition()&#xa;groups: List[List[WorkloadEntity]]" vertex="1">
+          <mxGeometry height="58" width="270" x="512" y="330" as="geometry" />
+        </mxCell>
+
+        <mxCell id="extract" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;" value="extract_subqubo() + bias phi&#xa;QUBOInstance sub" vertex="1">
+          <mxGeometry height="58" width="270" x="512" y="420" as="geometry" />
+        </mxCell>
+
+        <mxCell id="qubo" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;fontStyle=1;" value="QUBOInstance&#xa;entrada comum dos solvers&#xa;Q + variable_map" vertex="1">
+          <mxGeometry height="72" width="290" x="268" y="520" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pennylane" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;fontStyle=1;" value="PennylaneSolver.solve()&#xa;QAOA candidate solver" vertex="1">
+          <mxGeometry height="58" width="215" x="306" y="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="annealing" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;" value="AnnealingSolver.solve()&#xa;refer&#234;ncia heur&#237;stica" vertex="1">
+          <mxGeometry height="58" width="215" x="35" y="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bruteforce" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;" value="BruteForceSolver.solve()&#xa;refer&#234;ncia exata &lt;= 22 vars" vertex="1">
+          <mxGeometry height="58" width="215" x="577" y="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="solver_result" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;fontStyle=1;" value="SolverResult&#xa;candidato ou refer&#234;ncia" vertex="1">
+          <mxGeometry height="54" width="250" x="288" y="770" as="geometry" />
+        </mxCell>
+
+        <mxCell id="validator" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;fontStyle=1;" value="SolverValidator.validate()&#xa;avalia a solu&#231;&#227;o candidata" vertex="1">
+          <mxGeometry height="58" width="300" x="263" y="865" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sched_out" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;fontStyle=1;" value="SchedulingOutput&#xa;(DefaultPipeline)" vertex="1">
+          <mxGeometry height="52" width="160" x="122" y="955" as="geometry" />
+        </mxCell>
+
+        <mxCell id="iter_out" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;fontStyle=1;" value="IterativeSchedulingOutput&#xa;(IterativePipeline)" vertex="1">
+          <mxGeometry height="52" width="190" x="515" y="955" as="geometry" />
+        </mxCell>
+
+        <mxCell id="exp_out" parent="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;dashed=1;" value="Experiment/UI outputs&#xa;JSON / TXT / m&#233;tricas / figuras" vertex="1">
+          <mxGeometry height="52" width="260" x="283" y="1048" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_workload_decision" edge="1" parent="1" source="workload" target="decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=9;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_decision_default" edge="1" parent="1" source="decision" target="default_pipeline" value="sim" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=9;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="156" />
+              <mxPoint x="175" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_decision_iter" edge="1" parent="1" source="decision" target="iter_pipeline" value="n&#227;o" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=9;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="647" y="156" />
+              <mxPoint x="647" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_default_qubo" edge="1" parent="1" source="default_pipeline" target="qubo" value="single QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="480" />
+              <mxPoint x="413" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_iter_partition" edge="1" parent="1" source="iter_pipeline" target="partition" value="QUBOInstance global" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_partition_extract" edge="1" parent="1" source="partition" target="extract" value="grupos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_extract_qubo" edge="1" parent="1" source="extract" target="qubo" value="sub-QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="647" y="500" />
+              <mxPoint x="413" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_qubo_pennylane" edge="1" parent="1" source="qubo" target="pennylane" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_qubo_annealing" edge="1" parent="1" source="qubo" target="annealing" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="143" y="620" />
+              <mxPoint x="143" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_qubo_bruteforce" edge="1" parent="1" source="qubo" target="bruteforce" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="685" y="620" />
+              <mxPoint x="685" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_pennylane_result" edge="1" parent="1" source="pennylane" target="solver_result" value="SolverResult" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_annealing_result" edge="1" parent="1" source="annealing" target="solver_result" value="SolverResult" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="143" y="740" />
+              <mxPoint x="413" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_bruteforce_result" edge="1" parent="1" source="bruteforce" target="solver_result" value="SolverResult" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="685" y="740" />
+              <mxPoint x="413" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_result_validator" edge="1" parent="1" source="solver_result" target="validator" value="SolverResult + QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_iter_loop" edge="1" parent="1" source="solver_result" target="extract" value="iterativo: update_phi()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=1;strokeColor=#6B7280;fontColor=#6B7280;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="815" y="797" />
+              <mxPoint x="815" y="449" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_validator_sched" edge="1" parent="1" source="validator" target="sched_out" value="default" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="202" y="940" />
+              <mxPoint x="202" y="955" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_validator_iter" edge="1" parent="1" source="validator" target="iter_out" value="iterativo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="940" />
+              <mxPoint x="610" y="955" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_sched_exp" edge="1" parent="1" source="sched_out" target="exp_out" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="202" y="1028" />
+              <mxPoint x="413" y="1028" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_iter_exp" edge="1" parent="1" source="iter_out" target="exp_out" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="1028" />
+              <mxPoint x="413" y="1028" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

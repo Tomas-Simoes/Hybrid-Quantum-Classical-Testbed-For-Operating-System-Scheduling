@@ -28,6 +28,22 @@
         "**/introducao.aux": true,
         "**/introducao.log": true,
         "**/introducao.gz": true,
-        "**/introducao.out": true
+        "**/introducao.out": true,
+        "**/adaptive-clustering.aux": true,
+        "**/adaptive-clustering.log": true,
+        "**/adaptive-clustering.gz": true,
+        "**/adaptive-clustering.out": true,
+        "**/subqubo-decomposition.aux": true,
+        "**/subqubo-decomposition.log": true,
+        "**/subqubo-decomposition.gz": true,
+        "**/subqubo-decomposition.out": true,
+        "**/arquitetura-implementacao.aux": true,
+        "**/arquitetura-implementacao.log": true,
+        "**/arquitetura-implementacao.gz": true,
+        "**/arquitetura-implementacao.out": true,
+        "**/resultados-investigacao.aux": true,
+        "**/resultados-investigacao.log": true,
+        "**/resultados-investigacao.gz": true,
+        "**/resultados-investigacao.out": true
     }
 }

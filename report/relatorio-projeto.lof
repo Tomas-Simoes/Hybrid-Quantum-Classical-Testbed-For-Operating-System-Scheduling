@@ -1,0 +1,13 @@
+\babel@toc {portuguese}{}\relax 
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Representação simplificada do grafo de afinidade. Algumas ligações foram omitidas para facilitar a leitura.}}{16}{figure.4.1}%
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Visão geral do fluxo da arquitetura.}}{21}{figure.6.1}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Interfaces de dados entre aquisição, \texttt {SystemSnapshot} e \texttt {Workload}.}}{23}{figure.6.2}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Fluxo final de construção, resolução e validação das \texttt {QUBOInstance}.}}{25}{figure.6.3}%
+\addvspace {10pt}
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Arquitetura utilizada na execução dos experimentos da investigação.}}{29}{figure.7.1}%

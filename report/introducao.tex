@@ -1,0 +1,33 @@
+\chapter{Introdução}
+\label{chap:introducao}
+
+Os sistemas operativos modernos distribuem carga entre núcleos de \ac{CPU} recorrendo a métodos clássicos~\cite{LinuxCFS}
+que, apesar de eficazes em produção, tomam decisões subótimas em cenários de elevada contenção de recursos.
+
+Em paralelo, métodos de otimização quântica, como o \ac{QAOA}~\cite{Farhi2014QAOA},
+têm sido investigados em problemas combinatoriais que podem ser formulados como
+\ac{QUBO}~\cite{Kochenberger2014QUBO,Glover2019QUBO}.
+
+Este relatório apresenta uma plataforma híbrida quântico-clássica para testar o problema
+de atribuição de processos a núcleos de \acs{CPU}. A plataforma isola a decisão de atribuição processo-núcleo,
+modela-a como um \acs{QUBO}, resolve-a com \acs{QAOA} via PennyLane~\cite{Bergholm2018PennyLane},
+e valida os resultados por comparação com um \textit{solver} exato de \textit{brute force}.
+O objetivo não é demonstrar superioridade quântica face a heurísticas clássicas, mas sim caracterizar o comportamento do \acs{QAOA} neste 
+domínio.
+
+\section{Motivação}
+\label{sec:motivacao}
+A motivação para este projeto surgiu do interesse em compreender de que forma a computação quântica pode ser aplicada a problemas práticos da computação clássica. Uma primeira intuição levou a considerar a possibilidade de um sistema operativo assistido por computação quântica --- ideia que, após análise, se revelou demasiado ampla para o estado atual do hardware quântico. No entanto, no mesmo âmbito, o escalonamento de processos surgiu como um subproblema familiar: trata-se de um problema de otimização combinatória onde, para um conjunto de processos e núcleos, se procura a distribuição de carga mais equilibrada entre múltiplas configurações possíveis. Esta estrutura mapeia-se naturalmente para formulações \acs{QUBO}, tornando-o um candidato adequado para abordagens baseadas em \acs{QAOA}.
+
+\section{Formulação do Problema}
+\label{sec:formulacao-problema}
+
+Dado um conjunto de processos com utilização de \acs{CPU} conhecida e um número fixo de núcleos, o sistema deve atribuir cada processo a exatamente um núcleo. O objetivo de otimização é o equilíbrio de carga: a carga total atribuída a cada núcleo deve aproximar-se o mais possível da carga média global. A solução deve ainda respeitar restrições de atribuição exclusiva, garantindo que nenhum processo fica por atribuir nem é atribuído a múltiplos núcleos simultaneamente.
+
+A mesma estrutura de atribuição exclusiva com equilíbrio de carga surge em contextos 
+de maior escala, como a alocação de máquinas virtuais a servidores físicos em 
+\emph{datacenters}. Nestes cenários, a complexidade combinatória cresce rapidamente 
+com o número de entidades a alocar, tornando a exploração de abordagens baseadas 
+em \acs{QUBO} potencialmente relevante à medida que o hardware quântico evolui.
+
+Expressar estas restrições e este objetivo numa formulação \acs{QUBO}, compatível com otimizadores quânticos, constitui o problema central deste projeto.

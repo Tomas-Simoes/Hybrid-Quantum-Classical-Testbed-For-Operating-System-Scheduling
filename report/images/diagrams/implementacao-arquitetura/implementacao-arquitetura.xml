@@ -1,0 +1,260 @@
+<mxGraphModel dx="713" dy="1271" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="713" pageHeight="1271" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <mxCell id="preset" parent="1" value="Preset (weights)" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;">
+      <mxGeometry x="10" y="6" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="trace" parent="1" value="ProcessTracer.trace()" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;">
+      <mxGeometry x="220" y="6" width="150" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="runner" parent="1" value="scenario_runner (TOML)" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;">
+      <mxGeometry x="410" y="6" width="160" height="35" as="geometry" />
+    </mxCell>
+
+    <mxCell id="snapshot" parent="1" value="SystemSnapshot&#xa;processes: List[ProcessInfo]" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=11;">
+      <mxGeometry x="195" y="85" width="190" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="cluster" parent="1" value="AdaptiveCluster.decompose()&#xa;apenas em live/system trace" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=11;">
+      <mxGeometry x="340" y="185" width="205" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="workload" parent="1" value="Convert to Workload&#xa;to_workload()" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=11;">
+      <mxGeometry x="205" y="285" width="170" height="45" as="geometry" />
+    </mxCell>
+
+    <mxCell id="decision" parent="1" value="N * K &lt;= qubit_max ?" vertex="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#AABBCC;fontColor=#333333;fontSize=11;">
+      <mxGeometry x="205" y="380" width="170" height="55" as="geometry" />
+    </mxCell>
+
+    <mxCell id="default_pipeline" parent="1" value="DefaultPipeline&#xa;CoreAssignmentBuilder.build()" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;">
+      <mxGeometry x="0" y="496" width="220" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="iter_pipeline" parent="1" value="IterativePipeline&#xa;GlobalQ = CoreAssignmentBuilder.build()" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;">
+      <mxGeometry x="365" y="426" width="240" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="partition" parent="1" value="SubQUBODecomposer.partition()" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;">
+      <mxGeometry x="365" y="505" width="240" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="extract" parent="1" value="extract_subqubo() + bias phi" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;">
+      <mxGeometry x="365" y="581" width="240" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="qubo" parent="1" value="QUBOInstance&#xa;Q: np.ndarray (N*K x N*K)&#xa;variable_map: Dict[int, Tuple[int,int]]" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=11;">
+      <mxGeometry x="150" y="665" width="280" height="61" as="geometry" />
+    </mxCell>
+
+    <mxCell id="annealing" parent="1" value="AnnealingSolver.solve()&#xa;heuristic baseline &gt;22 vars" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="20" y="785" width="141" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="pennylane" parent="1" value="PennylaneSolver.solve()&#xa;QAOA candidate solver" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="220" y="785" width="141" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="bruteforce" parent="1" value="BruteForceSolver.solve()&#xa;ground-truth oracle &lt;=22 vars" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="415" y="785" width="151" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="anneal_result" parent="1" value="SolverResult refer&#234;ncia" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="20" y="876" width="141" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="qaoa_result" parent="1" value="SolverResult candidato" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="220" y="876" width="141" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="brute_result" parent="1" value="SolverResult refer&#234;ncia" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="423" y="876" width="141" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="validator" parent="1" value="SolverValidator.validate()&#xa;candidate + brute-force reference  ->  validation: dict" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=11;">
+      <mxGeometry x="157" y="1026" width="266" height="50" as="geometry" />
+    </mxCell>
+
+    <mxCell id="sched_out" parent="1" value="SchedulingOutput" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;">
+      <mxGeometry x="95" y="1135" width="101" height="41" as="geometry" />
+    </mxCell>
+    <mxCell id="iter_out" parent="1" value="IterativeSchedulingOutput" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;">
+      <mxGeometry x="385" y="1135" width="131" height="41" as="geometry" />
+    </mxCell>
+    <mxCell id="exp_out" parent="1" value="Experiment/UI outputs&#xa;JSON / JSONL / TXT / metrics / PNG figures" vertex="1" style="rounded=1;arcSize=15;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;dashed=1;">
+      <mxGeometry x="182" y="1224" width="217" height="47" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e_preset_snapshot" parent="1" source="preset" target="snapshot" edge="1" value="weights: list[float]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="90" y="55" />
+          <mxPoint x="290" y="55" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l_presets" parent="1" value="&lt;i&gt;presets/tests&lt;/i&gt;" vertex="1" connectable="0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;">
+      <mxGeometry x="156" y="2" width="75" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="e_trace_snapshot" parent="1" source="trace" target="snapshot" edge="1" value="List[ProcessInfo]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="l_system" parent="1" value="&lt;i&gt;system trace&lt;/i&gt;" vertex="1" connectable="0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;">
+      <mxGeometry x="334" y="0" width="85" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="e_runner_snapshot" parent="1" source="runner" target="snapshot" edge="1" value="configs + snapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="490" y="55" />
+          <mxPoint x="290" y="55" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="l_experiments" parent="1" value="&lt;i&gt;experiments&lt;/i&gt;" vertex="1" connectable="0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#000000;fontSize=11;">
+      <mxGeometry x="512" y="1" width="80" height="18" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e_snapshot_cluster" parent="1" source="snapshot" target="cluster" edge="1" value="SystemSnapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="500" y="150" />
+          <mxPoint x="500" y="185" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_snapshot_workload" parent="1" source="snapshot" target="workload" edge="1" value="SystemSnapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_cluster_workload" parent="1" source="cluster" target="workload" edge="1" value="ClusteredSnapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="500" y="265" />
+          <mxPoint x="290" y="265" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_workload_decision" parent="1" source="workload" target="decision" edge="1" value="Workload&#xa;entities: List[WorkloadEntity]&#xa;fixed_assignments / fixed_loads" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e_decision_default" parent="1" source="decision" target="default_pipeline" edge="1" value="Workload [sim]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="110" y="408" />
+          <mxPoint x="110" y="496" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_decision_iter" parent="1" source="decision" target="iter_pipeline" edge="1" value="Workload [n&#227;o]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="485" y="408" />
+          <mxPoint x="485" y="426" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_default_qubo" parent="1" source="default_pipeline" target="qubo" edge="1" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="110" y="625" />
+          <mxPoint x="290" y="625" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_iter_partition" parent="1" source="iter_pipeline" target="partition" edge="1" value="QUBOInstance global" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_partition_extract" parent="1" source="partition" target="extract" edge="1" value="groups: List[List[WorkloadEntity]]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_extract_qubo" parent="1" source="extract" target="qubo" edge="1" value="QUBOInstance sub" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="485" y="650" />
+          <mxPoint x="375" y="650" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="e_qubo_anneal" parent="1" source="qubo" target="annealing" edge="1" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="90" y="746" />
+          <mxPoint x="90" y="785" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_qubo_qaoa" parent="1" source="qubo" target="pennylane" edge="1" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_qubo_brute" parent="1" source="qubo" target="bruteforce" edge="1" value="QUBOInstance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="490" y="746" />
+          <mxPoint x="490" y="785" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_anneal_result" parent="1" source="annealing" target="anneal_result" edge="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_qaoa_result" parent="1" source="pennylane" target="qaoa_result" edge="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_brute_result" parent="1" source="bruteforce" target="brute_result" edge="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <mxCell id="e_qaoa_phi" parent="1" source="qaoa_result" target="extract" edge="1" value="iterativo: update_phi()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="670" y="945" />
+          <mxPoint x="670" y="599" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="e_qaoa_validator" parent="1" source="qaoa_result" target="validator" edge="1" value="SolverResult candidato" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_anneal_validator" parent="1" source="anneal_result" target="validator" edge="1" value="SolverResult refer&#234;ncia" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="90" y="990" />
+          <mxPoint x="290" y="990" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_brute_validator" parent="1" source="brute_result" target="validator" edge="1" value="SolverResult refer&#234;ncia" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="490" y="995" />
+          <mxPoint x="290" y="995" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <mxCell id="e_validator_sched" parent="1" source="validator" target="sched_out" edge="1" value="[default] validation + result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="145" y="1110" />
+          <mxPoint x="145" y="1135" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_validator_iter" parent="1" source="validator" target="iter_out" edge="1" value="[iterativo] validation + global_result" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="450" y="1110" />
+          <mxPoint x="450" y="1135" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_sched_exp" parent="1" source="sched_out" target="exp_out" edge="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="145" y="1195" />
+          <mxPoint x="290" y="1195" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="e_iter_exp" parent="1" source="iter_out" target="exp_out" edge="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;strokeColor=#1F2937;fontColor=#1F2937;fontSize=8;">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="450" y="1195" />
+          <mxPoint x="290" y="1195" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+  </root>
+</mxGraphModel>

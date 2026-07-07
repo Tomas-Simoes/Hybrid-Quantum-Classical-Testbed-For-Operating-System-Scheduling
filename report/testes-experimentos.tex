@@ -1,0 +1,116 @@
+\section{Arquitetura dos Experimentos}
+\label{sec:arquitetura-experimentos}
+
+Para avaliar o sistema em condições distintas, foi criada uma camada experimental em
+torno do \textit{SchedulingEngine}. Esta camada separa a definição dos cenários da sua
+execução, o que permite variar sistematicamente a dimensão do problema, o número de
+processos, o limite de qubits, os parâmetros do QAOA e a estratégia de resolução sem
+alterar o código principal do sistema.
+
+A arquitetura experimental organiza-se em quatro etapas: configuração do cenário,
+orquestração da execução, resolução pela pipeline selecionada e persistência dos
+resultados. A Figura~\ref{fig:fluxo-experimentos} apresenta este fluxo. Os executores de
+cenários constituem a camada adicional sobre a arquitetura descrita no capítulo anterior;
+o restante processamento continua a ser realizado pelo \textit{SchedulingEngine}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.4cm,
+    box/.style={rectangle, draw, rounded corners, align=center, minimum width=3.7cm, minimum height=0.9cm},
+    arrow/.style={->, thick}
+]
+
+\node[box] (toml) {Ficheiro TOML\\do cenário};
+\node[box, below of=toml] (runner) {Scenario Runner\\ou Sweep Runner};
+\node[box, below of=runner] (engine) {Scheduling Engine};
+\node[box, below left=1.2cm and 0.8cm of engine] (default) {Pipeline direta};
+\node[box, below right=1.2cm and 0.8cm of engine] (iterative) {Pipeline iterativa\\com sub-QUBOs};
+\node[box, below=2.4cm of engine] (solver) {Solver QAOA\\e validação};
+\node[box, below of=solver] (results) {Resultados\\JSON/JSONL, TXT e logs};
+
+\draw[arrow] (toml) -- (runner);
+\draw[arrow] (runner) -- (engine);
+\draw[arrow] (engine) -- (default);
+\draw[arrow] (engine) -- (iterative);
+\draw[arrow] (default) -- (solver);
+\draw[arrow] (iterative) -- (solver);
+\draw[arrow] (solver) -- (results);
+
+\end{tikzpicture}
+\caption{Arquitetura utilizada na execução dos experimentos da investigação.}
+\label{fig:fluxo-experimentos}
+\end{figure}
+
+\subsection{Definição e Execução dos Cenários}
+
+Cada experimento é descrito num ficheiro de configuração em formato TOML. As secções
+do ficheiro definem o \textit{workload}, a formulação QUBO, os parâmetros do QAOA, a
+decomposição, a validação e as opções de execução. Esta separação permite repetir uma
+experiência ou alterar uma única variável experimental sem modificar o código do
+sistema.
+
+O \textit{Scenario Runner} carrega a configuração, converte os seus valores nos objetos
+usados pelo sistema e executa o número de repetições especificado. Nos estudos
+paramétricos, o \textit{Sweep Runner} expande os eixos e casos definidos no ficheiro TOML,
+gera as combinações correspondentes e entrega cada variante ao mesmo mecanismo de
+execução. Deste modo, tanto uma execução isolada como uma varredura de parâmetros seguem
+o mesmo percurso e produzem registos com a mesma estrutura.
+
+Para cada variante, o \textit{SchedulingEngine} seleciona a pipeline direta ou a pipeline
+iterativa. A primeira resolve a instância QUBO completa; a segunda decompõe o problema em
+sub-QUBOs quando o limite configurado de qubits é ultrapassado. A solução produzida pelo
+solver é depois validada e resumida num conjunto comum de métricas.
+
+Um exemplo simplificado de um cenário experimental é apresentado de seguida:
+
+\begin{lstlisting}[caption={Exemplo simplificado de um cenário experimental em TOML.}]
+scenario_version = 1
+id = "T3.5"
+name = "Three-core iterative decomposition"
+
+[workload]
+mode = "preset"
+num_processes = 5
+num_cores = 3
+weights = [0.36, 0.27, 0.22, 0.18, 0.12]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 50
+learning_rate = 0.05
+top_k = 20
+mixer_type = "xy"
+
+[decomposition]
+qubit_max = 9
+num_cores = 3
+sorting_strategy = "WEIGHT_DESCENDING"
+
+[execution]
+pipeline = "iterative"
+solvers = ["qaoa"]
+repeats = 1
+\end{lstlisting}
+
+\subsection{Recolha e Armazenamento dos Resultados}
+
+Após cada execução, o sistema cria uma pasta própria para o cenário e guarda uma
+cópia da configuração utilizada. Cada repetição origina um ficheiro JSON com a
+configuração resolvida e as métricas, um ficheiro TXT legível e um log da saída produzida.
+
+Em cada execução são registados, entre outros, os seguintes dados:
+
+\begin{itemize}
+    \item configuração usada no experimento;
+    \item número de processos, núcleos e variáveis QUBO;
+    \item energia da solução obtida;
+    \item viabilidade da solução;
+    \item tempo de resolução;
+    \item atribuição final de processos a cores;
+    \item resultado da validação;
+    \item desequilíbrio final de carga entre os núcleos;
+\end{itemize}

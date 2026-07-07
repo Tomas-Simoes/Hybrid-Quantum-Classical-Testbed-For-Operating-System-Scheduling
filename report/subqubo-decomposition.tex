@@ -1,0 +1,273 @@
+\chapter{Decomposição em Sub-QUBOs}
+\label{chap:decomposicao-subqubo}
+
+Após a decomposição adaptativa, o problema deixa de ser expresso em termos de
+processos individuais e passa a ser definido sobre um conjunto de entidades. Cada entidade pode corresponder a um processo isolado ou a um
+\textit{bundle}. Seja
+
+\begin{equation}
+    \mathcal{E} = \{e_0, e_1, \dots, e_{N-1}\}
+\end{equation}
+\listeq{Conjunto de entidades após a decomposição adaptativa}
+
+o conjunto de entidades resultante, onde cada entidade $e_i$ tem peso de
+\acs{CPU} $w_i$ e memória residente $r_i$. 
+
+Para $K$ núcleos, a formulação
+continua a exigir $n_q = N \cdot K$ qubits lógicos. Assim, mesmo depois do agrupamento em \textit{bundles}, o problema
+pode continuar a exceder o limite configurado $q_{max}$. Quando
+$N \cdot K \leq q_{max}$, a plataforma resolve um único \acs{QUBO}. Quando
+$N \cdot K > q_{max}$, é usada uma pipeline iterativa baseada em
+\textit{sub-QUBOs}.
+
+\section{Construção do QUBO Global}
+\label{sec:construcao-qubo-global-subqubo}
+
+O primeiro passo da pipeline iterativa consiste em construir uma matriz
+\acs{QUBO} global $Q^{G}$ sobre todas as entidades de $\mathcal{E}$. Esta matriz
+é construída com a mesma formulação apresentada anteriormente.
+
+Para cada entidade $e_i$ e núcleo $k$, a variável binária correspondente é:
+
+\begin{equation}
+    x_{ik} =
+    \begin{cases}
+        1, & \text{se a entidade } e_i \text{ for atribuída ao núcleo } k,\\
+        0, & \text{caso contrário.}
+    \end{cases}
+\end{equation}
+\listeq{Variável de atribuição entidade-núcleo na decomposição iterativa}
+
+No entanto, quando o número de variáveis excede
+$q_{max}$, esta matriz não é enviada diretamente para o \textit{solver}. Em vez
+disso, é usada como referência para construir sucessivos \textit{sub-QUBOs}.
+
+\section{Extração de um Sub-QUBO}
+\label{sec:extracao-subqubo}
+
+As entidades construidas na decomposição adaptiva são divididas em grupos
+
+\begin{equation}
+    \mathcal{G}_0, \mathcal{G}_1, \dots, \mathcal{G}_{T-1},
+\end{equation}
+\listeq{Partição das entidades em grupos}
+
+onde cada grupo contém no máximo
+
+\begin{equation}
+    m = \left\lfloor \frac{q_{max}}{K} \right\rfloor
+\end{equation}
+\listeq{Número máximo de entidades por sub-QUBO}
+
+entidades. 
+
+Estes grupos são feitos através de duas estratégias:
+
+\begin{itemize}
+    \item \texttt{WEIGHT\_DESCENDING}: ordena os \textit{bundles} por carga
+    de CPU decrescente;
+
+    \item \texttt{COUPLING\_DESCENDING}: começa pelo \textit{bundle} com
+    maior magnitude de carga e adiciona os \textit{bundles} com maior
+    acoplamento, dado por $2W_iW_j$, aos que já pertencem ao grupo. Desta forma, as interações mais fortes permancem dentro do mesmo \textit{sub-QUBO}.
+\end{itemize}
+
+Para cada grupo $\mathcal{G}_t$, é extraída de $Q^{G}$ a submatriz associada às
+variáveis das entidades desse grupo. 
+
+Este processo preserva os termos internos entre entidades do mesmo grupo. No
+entanto, os termos com entidades já resolvidas em iterações anteriores
+deixam de aparecer, porque essas entidades já têm uma
+atribuição fixa. Para incorporar o seu efeito, a implementação mantém um vetor
+de carga acumulada por núcleo:
+
+\begin{equation}
+    \boldsymbol{\phi}^{(t)} =
+    \left(\phi^{(t)}_0, \phi^{(t)}_1, \dots, \phi^{(t)}_{K-1}\right),
+\end{equation}
+\listeq{Carga acumulada por núcleo antes da iteração \(t\)}
+
+inicializado com a carga dos processos de tempo real $\mathcal{P}_{RT}$. Para uma entidade
+$e_i$ do grupo atual e um núcleo $k$, a diagonal do \textit{sub-QUBO} associado à atribuição
+$(e_i,k)$ é corrigida
+por:
+
+\begin{equation}
+    Q^{(t)}_{(e_i,k),(e_i,k)}
+    \leftarrow
+    Q^{(t)}_{(e_i,k),(e_i,k)}
+    +
+    2w_i\phi^{(t)}_k.
+\end{equation}
+\listeq{Propagação da carga acumulada como bias diagonal}
+
+Este termo vem da expansão do balanceamento de carga quando já existe carga fixa
+no núcleo $k$:
+
+\begin{equation}
+    \left(\phi^{(t)}_k + \sum_{e_i \in \mathcal{G}_t} w_i x_{ik} - L_{avg}\right)^2.
+\end{equation}
+\listeq{Balanceamento local com carga acumulada}
+
+Desta forma, as decisões tomadas nos \textit{sub-QUBOs} anteriores influenciam a
+energia do \textit{sub-QUBO} atual através de termos lineares.
+
+\section{Resolução Iterativa}
+\label{sec:resolucao-iterativa-subqubo}
+
+Cada \textit{sub-QUBO} é resolvido sequencialmente com o mesmo \textit{solver}
+\acs{QAOA} usado no caso direto. Seja $a_i^{(t)}$ o núcleo atribuído à entidade
+$e_i \in \mathcal{G}_t$ na iteração $t$. Depois de resolver um
+\textit{sub-QUBO} viável, as atribuições são fixadas e a carga acumulada é
+atualizada:
+
+\begin{equation}
+    \phi^{(t+1)}_k =
+    \phi^{(t)}_k
+    +
+    \sum_{\substack{e_i \in \mathcal{G}_t \\ a_i^{(t)} = k}} w_i.
+\end{equation}
+\listeq{Atualização da carga acumulada após resolver um sub-QUBO}
+
+O processo repete-se até todos os grupos terem sido resolvidos. Se algum
+\textit{sub-QUBO} não produzir uma atribuição viável, a pipeline termina antes
+de atualizar as atribuições finais e o vetor de carga, evitando propagar uma
+solução inválida para as iterações seguintes.
+
+No final, as atribuições parciais são combinadas numa única solução global. Esta
+solução é validada reconstruindo a bitstring correspondente e avaliando a energia
+na formulação \acs{QUBO} global. A decomposição em \textit{sub-QUBOs} não é
+equivalente a resolver o \acs{QUBO} completo de uma só vez; trata-se de uma
+aproximação iterativa que reduz a dimensão de cada problema resolvido, propagando
+as decisões anteriores através do vetor $\boldsymbol{\phi}$.
+
+\subsection{Exemplo de Extração dos Sub-QUBOs}
+
+Retomando os quatro \textit{bundles} do exemplo anterior, as suas cargas
+agregadas são:
+
+\begin{equation}
+    W_0=0.21,\qquad
+    W_1=0.41,\qquad
+    W_2=0.61,\qquad
+    W_3=0.81.
+\end{equation}
+
+Como existem quatro \textit{bundles} e dois núcleos, o QUBO global possui
+$4\times 2=8$ variáveis. Este valor excede o limite $q_{\max}=4$.
+
+Cada \textit{sub-QUBO} pode incluir, no máximo,
+
+\begin{equation}
+    \left\lfloor\frac{q_{\max}}{K}\right\rfloor
+    =
+    \left\lfloor\frac{4}{2}\right\rfloor
+    =2
+\end{equation}
+
+\textit{bundles}. Aplicando a ordenação \texttt{WEIGHT\_DESCENDING}, são formados
+os seguintes grupos:
+
+\begin{equation}
+    \mathcal{G}_0=\{B_3,B_2\},
+    \qquad
+    \mathcal{G}_1=\{B_1,B_0\}.
+\end{equation}
+
+Esta divisão não cria novos \textit{bundles}. Cada grupo determina apenas
+as variáveis de $Q^G$ que serão incluídas no respetivo \textit{sub-QUBO}.
+
+\subsubsection{Primeiro sub-QUBO}
+
+O primeiro grupo contém os \textit{bundles} $B_3$ e $B_2$. As suas
+variáveis de atribuição são
+
+\begin{equation}
+    \mathcal{V}_0=
+    \{x_{3,0},x_{3,1},x_{2,0},x_{2,1}\}.
+\end{equation}
+
+O primeiro \textit{sub-QUBO} corresponde à submatriz de $Q^G$ associada
+a estas variáveis:
+
+\begin{equation}
+    Q^{(0)}=Q^G[\mathcal{V}_0,\mathcal{V}_0].
+\end{equation}
+
+Como o exemplo não inclui processos de tempo real, a carga acumulada
+inicial é
+
+\begin{equation}
+    \boldsymbol{\phi}^{(0)}=(0,0).
+\end{equation}
+
+Suponha-se que a solução obtida atribui $B_3$
+ao núcleo 0 e $B_2$ ao núcleo 1. A carga acumulada passa então a ser
+
+\begin{equation}
+    \boldsymbol{\phi}^{(1)}
+    =
+    (W_3,W_2)
+    =
+    (0.81,0.61).
+\end{equation}
+
+\subsubsection{Segundo sub-QUBO}
+
+O segundo grupo contém os \textit{bundles} $B_1$ e $B_0$, sendo consideradas
+as variáveis
+
+\begin{equation}
+    \mathcal{V}_1=
+    \{x_{1,0},x_{1,1},x_{0,0},x_{0,1}\}.
+\end{equation}
+
+A submatriz correspondente é extraída de $Q^G$. Antes da sua resolução,
+a carga acumulada no primeiro \textit{sub-QUBO} é incorporada nos
+elementos diagonais. Os acréscimos aplicados são:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Variável} & \textbf{Acréscimo diagonal} \\
+\hline
+$x_{1,0}$ & $2(0.41)(0.81)=0.6642$ \\
+$x_{1,1}$ & $2(0.41)(0.61)=0.5002$ \\
+$x_{0,0}$ & $2(0.21)(0.81)=0.3402$ \\
+$x_{0,1}$ & $2(0.21)(0.61)=0.2562$ \\
+\hline
+\end{tabular}
+\caption{Bias introduzido no segundo sub-QUBO pela carga acumulada.}
+\label{tab:exemplo-bias-segundo-subqubo}
+\end{table}
+
+Como o núcleo 0 possui inicialmente uma carga superior, as variáveis que
+representam novas atribuições a esse núcleo recebem um acréscimo maior.
+
+Neste caso, a solução atribui $B_1$ ao núcleo 1 e $B_0$ ao núcleo 0. A
+carga final é, portanto,
+
+\begin{equation}
+\begin{aligned}
+    \phi^{(2)}_0 &= W_3+W_0=0.81+0.21=1.02,\\
+    \phi^{(2)}_1 &= W_2+W_1=0.61+0.41=1.02.
+\end{aligned}
+\end{equation}
+
+A solução final obtida é:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Núcleo} & \textbf{Bundles} & \textbf{Processos} &
+\textbf{Carga total} \\
+\hline
+0 & $B_3,B_0$ & $p_7,p_8,p_1,p_2$ & $1.02$ \\
+1 & $B_2,B_1$ & $p_5,p_6,p_3,p_4$ & $1.02$ \\
+\hline
+\end{tabular}
+\caption{Resultado final do exemplo de resolução por sub-QUBOs.}
+\label{tab:resultado-exemplo-subqubos}
+\end{table}

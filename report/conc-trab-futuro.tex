@@ -1,0 +1,18 @@
+\chapter{Conclusões e Trabalho Futuro}
+\label{chap:conc-trab-futuro}
+
+\section{Conclusões Principais}
+\label{sec:conc-princ}
+
+Este projeto teve como objetivo construir e validar uma plataforma híbrida quântico-clássica completa para o problema de escalonamento de processos, isolando a decisão de atribuição processo-núcleo e expressando-a numa formulação compatível com otimizadores quânticos. O resultado central deste trabalh é a própria plataforma: uma pipeline funcional, modular e validada, capaz de transformar um snapshot de processos numa solução de escalonamento através de QAOA.
+
+A investigação conduzida sobre esta plataforma serviu sobretudo para confirmar que a pipeline se comporta como esperado: nas instâncias pequenas onde o ótimo pode ser calculado exatamente, a solução produzida foi sempre viável e ótima; à medida que o número de processos cresceu, a pipeline iterativa manteve essa qualidade recorrendo à decomposição em sub-QUBOs; e mesmo em instâncias construídas deliberadamente para serem difíceis, a plataforma manteve-se estável, desde que os parâmetros do QAOA fossem ajustados de forma coerente entre si. 
+
+Este trabalho demonstra que é possível construir uma plataforma híbrida funcional para escalonamento de processos preparada para ser benefica com melhorias futuras no hardware quântico.
+
+\section{Trabalho Futuro}
+\label{sec:trab-futuro}
+
+Uma limitação explícita deste trabalho é que toda a execução foi realizada em simulação, através dos backends lightning.gpu e lightning.qubit do PennyLane, e não em hardware quântico real. A validação em dispositivos físicos permitiria caracterizar o impacto do ruído e da conetividade limitada entre qubits físicos na qualidade das soluções obtidas, algo que a simulação não pode captar.
+
+Adicionalmente, a plataforma foi validada sobretudo em instâncias de pequena e média dimensão. Explorar sistematicamente instâncias maiores permitiria caracterizar com mais detalhe o comportamento da pipeline iterativa ao longo de um número elevado de sub-QUBOs sequenciais, nomeadamente até que ponto a propagação de carga através do vetor $\phi$ preserva a qualidade da solução global à medida que a cadeia de decomposição se alonga.

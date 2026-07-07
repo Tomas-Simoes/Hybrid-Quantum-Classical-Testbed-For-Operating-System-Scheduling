@@ -1,0 +1,59 @@
+\babel@toc {portuguese}{}\relax 
+\contentsline {chapter}{Conte\'udo}{0}{section*.1}%
+\contentsline {chapter}{Lista de Figuras}{2}{section*.2}%
+\contentsline {chapter}{Lista de Tabelas}{3}{section*.3}%
+\contentsline {chapter}{Lista de Equações}{4}{chapter*.4}%
+\contentsline {chapter}{\chapternumberline {1}Introdução}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivação}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Formulação do Problema}{1}{section.1.2}%
+\contentsline {chapter}{\chapternumberline {2}Formulação QUBO para Escalonamento}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}CPU Scheduling em Sistemas Operativos}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Formulação QUBO}{3}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Construção da Matriz Q}{4}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Exemplo Ilustrativo}{5}{section.2.4}%
+\contentsline {chapter}{\chapternumberline {3}Resolução do QUBO com QAOA}{7}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Conversão do QUBO em Hamiltoniano}{7}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Mixer X e XY}{9}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Mixer X}{9}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Mixer XY}{9}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Circuito Variacional e Otimização Clássica}{10}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Medição, Descodificação e Seleção da Solução}{11}{section.3.4}%
+\contentsline {chapter}{\chapternumberline {4}Decomposição Adaptativa}{12}{chapter.4}%
+\contentsline {subsection}{\numberline {4.0.1}Verificações de Qualidade e Divisão Recursiva}{14}{subsection.4.0.1}%
+\contentsline {subsection}{\numberline {4.0.2}Exemplo da Formação de Bundles}{15}{subsection.4.0.2}%
+\contentsline {chapter}{\chapternumberline {5}Decomposição em Sub-QUBOs}{17}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Construção do QUBO Global}{17}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Extração de um Sub-QUBO}{17}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Resolução Iterativa}{18}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Exemplo de Extração dos Sub-QUBOs}{19}{subsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.1.1}Primeiro sub-QUBO}{19}{subsubsection.5.3.1.1}%
+\contentsline {subsubsection}{\numberline {5.3.1.2}Segundo sub-QUBO}{20}{subsubsection.5.3.1.2}%
+\contentsline {chapter}{\chapternumberline {6}Arquitetura e Implementação}{21}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Da Visão Geral à Implementação}{22}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Estrutura do Projeto}{26}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Interfaces de Dados}{26}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Configurações}{27}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Conclusão}{27}{section.6.3}%
+\contentsline {chapter}{\chapternumberline {7}Investigação}{28}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Arquitetura dos Experimentos}{28}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Definição e Execução dos Cenários}{29}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Recolha e Armazenamento dos Resultados}{30}{subsection.7.1.2}%
+\contentsline {section}{\numberline {7.2}Resultados da Investigação}{31}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Validação Inicial da Pipeline}{31}{subsection.7.2.1}%
+\contentsline {subsubsection}{\numberline {7.2.1.1}Validação da Decomposição}{31}{subsubsection.7.2.1.1}%
+\contentsline {subsubsection}{\numberline {7.2.1.2}Caracterização Inicial do QAOA}{32}{subsubsection.7.2.1.2}%
+\contentsline {paragraph}{Caracterização do Otimizador Clássico.}{33}{section*.6}%
+\contentsline {section}{\numberline {7.3}Escolha do Mixer}{34}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Viabilidade sob orçamento reduzido}{34}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Comparação com Valores Práticos de \texttt {top\_k}}{35}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Síntese}{35}{subsection.7.3.3}%
+\contentsline {section}{\numberline {7.4}Limites da Pipeline}{36}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Instâncias com Processo Dominante}{36}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Instâncias com Pesos Quase Iguais}{36}{subsection.7.4.2}%
+\contentsline {subsection}{\numberline {7.4.3}Instâncias com Estrutura CPU/I\slash O}{37}{subsection.7.4.3}%
+\contentsline {section}{\numberline {7.5}Escalabilidade Máxima da Decomposição}{38}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Correção da Métrica de Qualidade}{38}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}Qualidade das Soluções}{38}{subsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.5.3}Escalabilidade Temporal}{39}{subsection.7.5.3}%
+\contentsline {subsection}{\numberline {7.5.4}Síntese da Escalabilidade}{40}{subsection.7.5.4}%
+\contentsline {chapter}{Bibliografia}{41}{chapter*.7}%

@@ -1,0 +1,26 @@
+\babel@toc {portuguese}{}\relax 
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\addvspace {10pt}
+\contentsline {table}{\numberline {4.1}{\ignorespaces Processos usados no exemplo de formação de bundles.}}{15}{table.4.1}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Bundles e respetivas grandezas agregadas.}}{16}{table.4.2}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {5.1}{\ignorespaces Bias introduzido no segundo sub-QUBO pela carga acumulada.}}{20}{table.5.1}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Resultado final do exemplo de resolução por sub-QUBOs.}}{20}{table.5.2}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {6.1}{\ignorespaces Mapa resumido da implementação.}}{26}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Interfaces de dados centrais.}}{26}{table.6.2}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Configurações principais da implementação.}}{27}{table.6.3}%
+\addvspace {10pt}
+\contentsline {table}{\numberline {7.1}{\ignorespaces Resultados dos testes iniciais em instâncias pequenas.}}{31}{table.7.1}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Escalabilidade da pipeline com o número de processos.}}{31}{table.7.2}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces Comparação entre execução iterativa e direta para diferentes limites de qubits ($N=8$, $K=2$).}}{32}{table.7.3}%
+\contentsline {table}{\numberline {7.4}{\ignorespaces Impacto da profundidade e do número de iterações na resolução direta com \texttt {qubit\_max}=16 ($N=8$, $K=2$).}}{33}{table.7.4}%
+\contentsline {table}{\numberline {7.5}{\ignorespaces Viabilidade e otimalidade com \texttt {top\_k}=1 e $p=1$}}{34}{table.7.5}%
+\contentsline {table}{\numberline {7.6}{\ignorespaces Otimalidade por mixer, profundidade e \texttt {top\_k} com 100 passos e $P_\text {safe}$.}}{35}{table.7.6}%
+\contentsline {table}{\numberline {7.7}{\ignorespaces Resultados com processo dominante ($N=6$, $K=2$).}}{36}{table.7.7}%
+\contentsline {table}{\numberline {7.8}{\ignorespaces Resultados com pesos quase iguais ($N=4$, $K=2$).}}{37}{table.7.8}%
+\contentsline {table}{\numberline {7.9}{\ignorespaces Resultados do clustering CPU/I/O para diferentes valores de \texttt {io\_alpha} ($N=6$, $K=2$).}}{37}{table.7.9}%
+\contentsline {table}{\numberline {7.10}{\ignorespaces Qualidade corrigida da pipeline na experiência de escalabilidade.}}{39}{table.7.10}%
+\contentsline {table}{\numberline {7.11}{\ignorespaces Tempo médio da experiência de escalabilidade por dimensão.}}{40}{table.7.11}%

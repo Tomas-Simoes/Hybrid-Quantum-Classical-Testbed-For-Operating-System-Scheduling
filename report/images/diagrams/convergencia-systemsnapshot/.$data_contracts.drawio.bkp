@@ -1,0 +1,97 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="0">
+    <mxGraphModel dx="801" dy="1011" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="z1" parent="1" style="swimlane;startSize=22;dashed=1;dashPattern=8 4;rounded=1;arcSize=3;strokeColor=#B47800;fillColor=#FFF8E6;fontStyle=1;fontSize=11;fontColor=#7C4F00;" value="Aquisição" vertex="1">
+          <mxGeometry height="180" width="760" x="30" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="src_preset" parent="z1" style="rounded=1;arcSize=15;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;" value="Preset / testes&#xa;weights: list[float]&#xa;num_cores: int" vertex="1">
+          <mxGeometry height="60" width="200" x="30" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="src_live" parent="z1" style="rounded=1;arcSize=15;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;" value="Sistema operativo&#xa;psutil.process_iter()&#xa;pid, cmdline, cpu_num&#xa;memory_info, cpu_times, nice" vertex="1">
+          <mxGeometry height="70" width="200" x="280" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="src_toml" parent="z1" style="rounded=1;arcSize=15;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=11;" value="Cenário TOML&#xa;scenario_runner.py&#xa;workload.mode&#xa;weights | num_processes | live_trace" vertex="1">
+          <mxGeometry height="70" width="200" x="530" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="fn_preset" parent="z1" style="rounded=1;arcSize=15;fillColor=#FFE8D6;strokeColor=#B45000;fontColor=#7A3000;fontSize=10;" value="build_preset_snapshot()" vertex="1">
+          <mxGeometry height="35" width="200" x="30" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="fn_live" parent="z1" style="rounded=1;arcSize=15;fillColor=#FFE8D6;strokeColor=#B45000;fontColor=#7A3000;fontSize=10;" value="ProcessTracer.trace()" vertex="1">
+          <mxGeometry height="35" width="200" x="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="e_sp" edge="1" parent="z1" source="src_preset" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#888888;fontSize=9;" target="fn_preset">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_sl" edge="1" parent="z1" source="src_live" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#888888;fontSize=9;" target="fn_live">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_toml_preset" edge="1" parent="z1" source="src_toml" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#888888;fontSize=9;exitX=0;exitY=1;entryX=1;entryY=0.5;" target="fn_preset" value="encaminha para">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_toml_live" edge="1" parent="z1" source="src_toml" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#888888;fontSize=9;exitX=0;exitY=1;entryX=1;entryY=0.5;" target="fn_live" value="ou">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="process_info" parent="1" style="rounded=1;arcSize=10;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=10;" value="ProcessInfo&#xa;pid: int&#xa;command: str&#xa;current_core: int&#xa;cpu_weight: float&#xa;rss_mb: float&#xa;priority: int&#xa;io_wait_ratio: float | None&#xa;priority_class: str | None" vertex="1">
+          <mxGeometry height="155" width="180" x="640" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="snapshot" parent="1" style="rounded=1;arcSize=15;fillColor=#FFE8D6;strokeColor=#B45000;fontColor=#7A3000;fontSize=11;fontStyle=1;" value="SystemSnapshot&#xa;processes: List[ProcessInfo]&#xa;num_cores: int&#xa;total_ram_mb: int | None&#xa;snapshot_id: str | None&#xa;timestamp: float" vertex="1">
+          <mxGeometry height="100" width="380" x="200" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="boundary" connectable="0" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=9;align=center;fontStyle=2;" value="fronteira entre aquisição e optimização" vertex="1">
+          <mxGeometry height="16" width="380" x="200" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fn_preset_snap" edge="1" parent="1" source="fn_preset" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#B45000;fontSize=9;" target="snapshot" value="SystemSnapshot sintético">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_fn_live_snap" edge="1" parent="1" source="fn_live" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#B45000;fontSize=9;" target="snapshot" value="SystemSnapshot real">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_snap_proc" edge="1" parent="1" source="snapshot" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#B45000;fontSize=9;" target="process_info" value="processes[]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="z2" parent="1" style="swimlane;startSize=22;dashed=1;dashPattern=8 4;rounded=1;arcSize=3;strokeColor=#1E5AAA;fillColor=#EFF6FF;fontStyle=1;fontSize=11;fontColor=#1E5AAA;" value="Conversão para Workload" vertex="1">
+          <mxGeometry height="310" width="760" x="30" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="label_direct" connectable="0" parent="z2" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=9;align=center;" value="preset / TOML" vertex="1">
+          <mxGeometry height="16" width="200" x="50" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="label_cluster" connectable="0" parent="z2" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#888888;fontSize=9;align=center;fontStyle=2;" value="apenas live trace" vertex="1">
+          <mxGeometry height="16" width="230" x="480" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="path_direct" parent="z2" style="rounded=1;arcSize=15;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;" value="SystemSnapshot.to_workload()&#xa;ProcessInfo → WorkloadEntity&#xa;entity_id = pid&#xa;label = pid_&lt;pid&gt;" vertex="1">
+          <mxGeometry height="70" width="200" x="50" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="path_cluster" parent="z2" style="rounded=1;arcSize=15;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;dashed=1;" value="AdaptiveCluster.decompose()&#xa;→ ClusteredSnapshot&#xa;bundles: List[Bundle]&#xa;rt_procs: List[ProcessInfo]&#xa;→ ClusteredSnapshot.to_workload()&#xa;Bundle → WorkloadEntity&#xa;RT procs → fixed_assignments / fixed_loads" vertex="1">
+          <mxGeometry height="110" width="260" x="460" y="38" as="geometry" />
+        </mxCell>
+        <mxCell id="workload_entity" parent="z2" style="rounded=1;arcSize=10;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=10;" value="WorkloadEntity&#xa;entity_id: int&#xa;cpu_weight: float&#xa;rss_mb: float&#xa;label: str" vertex="1">
+          <mxGeometry height="85" width="160" x="270" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="e_direct_entity" edge="1" parent="z2" source="path_direct" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1E5AAA;fontSize=9;" target="workload_entity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cluster_entity" edge="1" parent="z2" source="path_cluster" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1E5AAA;fontSize=9;" target="workload_entity">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="workload" parent="z2" style="rounded=1;arcSize=15;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=11;fontStyle=1;" value="Workload&#xa;entities: List[WorkloadEntity]&#xa;num_cores: int&#xa;snapshot_id: str&#xa;fixed_assignments: Dict[int, int]&#xa;fixed_loads: Dict[int, float]" vertex="1">
+          <mxGeometry height="90" width="380" x="180" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="e_direct_wl" edge="1" parent="z2" source="path_direct" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#1E5AAA;fontSize=9;" target="workload">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cluster_wl" edge="1" parent="z2" source="path_cluster" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#1E5AAA;fontSize=9;" target="workload">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_snap_direct" edge="1" parent="1" source="snapshot" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#B45000;fontSize=9;" target="path_direct">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_snap_cluster" edge="1" parent="1" source="snapshot" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#B45000;fontSize=9;" target="path_cluster">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

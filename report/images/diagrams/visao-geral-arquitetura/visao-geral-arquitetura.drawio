@@ -1,0 +1,135 @@
+<mxfile host="Electron">
+  <diagram name="Page-1" id="visao-geral-arquitetura">
+    <mxGraphModel dx="517" dy="681" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="517" pageHeight="681" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="tracer_box" parent="1" value="" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#B47800;dashed=1;dashPattern=8 4;">
+          <mxGeometry x="120" y="0" width="221" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="tracer_header" parent="1" value="Tracer" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF8E6;strokeColor=#B47800;fontColor=#000000;fontStyle=1;fontSize=11;">
+          <mxGeometry x="120" y="0" width="221" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="capture" parent="1" value="Captura de processos" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#B47800;fontColor=#7C4F00;fontSize=12;">
+          <mxGeometry x="140" y="25" width="181" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="decomp_box" parent="1" value="" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#B45000;dashed=1;dashPattern=8 4;">
+          <mxGeometry x="0" y="110" width="461" height="392" as="geometry" />
+        </mxCell>
+        <mxCell id="decomp_header" parent="1" value="Decomposição" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#000000;fontStyle=1;fontSize=11;">
+          <mxGeometry x="0" y="110" width="461" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="clustering" parent="1" value="Clustering adaptativo" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FFF4EE;strokeColor=#B45000;fontColor=#7A3000;fontSize=12;">
+          <mxGeometry x="130" y="140" width="201" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" parent="1" value="n_q ≤ q_max ?" vertex="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#AABBCC;fontColor=#333333;fontSize=11;">
+          <mxGeometry x="185" y="205" width="90" height="41" as="geometry" />
+        </mxCell>
+        <mxCell id="true_label" parent="1" value="true" vertex="1" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;fontColor=#000000;fontSize=10;align=center;verticalAlign=middle;">
+          <mxGeometry x="151" y="213" width="22" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="false_label" parent="1" value="false" vertex="1" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;fontColor=#000000;fontSize=10;align=center;verticalAlign=middle;">
+          <mxGeometry x="291" y="213" width="28" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="build_q" parent="1" value="Construção de Q" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=12;">
+          <mxGeometry x="20" y="250" width="161" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="subqubo" parent="1" value="Decomposição SubQUBO" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=12;">
+          <mxGeometry x="280" y="250" width="161" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="iter_solve" parent="1" value="Resolução iterativa" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=12;">
+          <mxGeometry x="280" y="310" width="161" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="phi_update" parent="1" value="Actualização de φ" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#6440C8;fontColor=#3B1E8E;fontSize=12;">
+          <mxGeometry x="280" y="371" width="161" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="next_group" parent="1" value="próximo grupo" vertex="1" style="text;html=1;strokeColor=none;fillColor=none;fontColor=#000000;fontSize=10;align=left;verticalAlign=middle;">
+          <mxGeometry x="445" y="350" width="72" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="solver_box" parent="1" value="" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#147840;dashed=1;dashPattern=8 4;">
+          <mxGeometry x="120" y="520" width="221" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="solver_header" parent="1" value="Solver" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F0FFF6;strokeColor=#147840;fontColor=#000000;fontStyle=1;fontSize=11;">
+          <mxGeometry x="120" y="520" width="221" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="qaoa" parent="1" value="QAOA (PennyLane)" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#147840;fontColor=#0A4A28;fontSize=12;">
+          <mxGeometry x="140" y="545" width="181" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="output_box" parent="1" value="" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1E5AAA;dashed=1;dashPattern=8 4;">
+          <mxGeometry x="120" y="610" width="221" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="output_header" parent="1" value="Saída" vertex="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#1E5AAA;fontColor=#000000;fontStyle=1;fontSize=11;">
+          <mxGeometry x="120" y="610" width="221" height="23" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics" parent="1" value="Resultados e métricas" vertex="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1E5AAA;fontColor=#0C3A7A;fontSize=12;">
+          <mxGeometry x="140" y="635" width="181" height="36" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_capture_cluster" parent="1" source="capture" target="clustering" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="231" y="95" />
+              <mxPoint x="231" y="140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_cluster_decision" parent="1" source="clustering" target="decision" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_decision_build" parent="1" source="decision" target="build_q" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="100" y="225" />
+              <mxPoint x="100" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_decision_sub" parent="1" source="decision" target="subqubo" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="360" y="225" />
+              <mxPoint x="360" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_sub_iter" parent="1" source="subqubo" target="iter_solve" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_iter_phi" parent="1" source="iter_solve" target="phi_update" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_phi_loop" parent="1" source="phi_update" target="subqubo" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="485" y="389" />
+              <mxPoint x="485" y="268" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_build_solver" parent="1" source="build_q" target="qaoa" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="465" />
+              <mxPoint x="230" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_phi_solver" parent="1" source="phi_update" target="qaoa" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="230" y="465" />
+              <mxPoint x="230" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_qaoa_metrics" parent="1" source="qaoa" target="metrics" edge="1" value="" style="endArrow=block;html=1;rounded=0;strokeColor=#1F2937;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
