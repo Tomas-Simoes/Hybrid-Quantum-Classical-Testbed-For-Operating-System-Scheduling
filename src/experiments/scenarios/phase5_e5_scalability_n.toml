@@ -1,0 +1,115 @@
+scenario_version = 1
+id = "E5"
+tier = 8
+category = "phase5_decomposition_scalability"
+name = "Maximum decomposition scalability in N"
+description = "Continuous-gap N sweep of the full iterative pipeline with fixed easy four-process sub-QUBOs (K=2, qubit_max=8)."
+
+[workload]
+mode = "generated"
+num_processes = 10
+num_cores = 2
+weight_strategy = "uniform_random"
+min_weight = 0.0
+max_weight = 1.0
+instance_seed = 0
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 2
+steps = 100
+learning_rate = 0.1
+top_k = 10
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 10000
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[validation]
+method = "auto"
+brute_force_max_n = 20
+brute_force_time_box_seconds = 60.0
+annealing_sweeps = 1000
+annealing_restarts = 10
+optimality_rtol = 1e-9
+optimality_atol = 1e-9
+
+[execution]
+pipeline = "iterative"
+visualization = false
+repeats = 1
+
+[[execution.repeat_tiers]]
+max_n = 50
+repeats = 20
+
+[[execution.repeat_tiers]]
+max_n = 100
+repeats = 12
+
+[[execution.repeat_tiers]]
+max_n = 100000
+repeats = 8
+
+[seeds]
+instance_seed_base = 0
+qaoa_seed_base = 10000
+
+[record]
+metrics = [
+  "num_sub_qubos",
+  "tempo_total_ms",
+  "tempo_qaoa_ms",
+  "tempo_overhead_ms",
+  "baseline_method",
+  "baseline_energy",
+  "pipeline_energy",
+  "is_optimal",
+  "gap_relativo",
+  "load_imbalance",
+]
+
+[[sweep.axes]]
+name = "num_processes"
+path = "workload.num_processes"
+values = [20, 25, 30, 40, 50, 65, 80, 100, 130, 160, 200]
+
+[sweep.resume]
+resume_from = 20
+completed_values = [10, 15]
+source_run_ids = ["sweep_20260705_142459_e5a8c292"]
+
+[sweep.adaptive]
+enabled = true
+axis = "num_processes"
+quality_metric = "normalized_load_imbalance"
+quality_ceiling_mean = 0.01
+monotonic_window = 3
+monotonic_min_delta = 1e-4
+refinement_points = 2
+extra_points_after_transition = 3
+max_mean_run_seconds = 180.0
+tolerance_tiers = [1e-3, 1e-4, 1e-5, 1e-6]
+
+[checks]
+no_crash = true
+global_assignment_feasible = true

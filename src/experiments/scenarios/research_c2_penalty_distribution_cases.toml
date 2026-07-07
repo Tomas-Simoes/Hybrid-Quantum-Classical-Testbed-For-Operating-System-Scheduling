@@ -1,0 +1,216 @@
+scenario_version = 1
+id = "C2"
+tier = 6
+category = "penalty_calibration"
+name = "Penalty robustness across weight distributions"
+description = "N=4, K=2. Ten uniform-like and ten skewed synthetic workloads, each evaluated with P_safe and 2*P_safe under the X mixer."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.25, 0.25, 0.25, 0.25]
+
+[qubo]
+penalty = 0.25
+penalty_intent = "Each sweep case sets P_safe=max_weight because total_weight=1 and K=2."
+
+[qaoa]
+layers = 2
+steps = 100
+learning_rate = 0.05
+top_k = 16
+mixer_type = "x"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "fixed"
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+solvers = ["qaoa", "brute_force"]
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "max_probability"]
+
+[[sweep.cases]]
+name = "u01_psafe"
+values = { "workload.weights" = [0.21, 0.27, 0.24, 0.28], "qubo.penalty" = 0.28, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u01" }
+
+[[sweep.cases]]
+name = "u01_2psafe"
+values = { "workload.weights" = [0.21, 0.27, 0.24, 0.28], "qubo.penalty" = 0.56, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u01" }
+
+[[sweep.cases]]
+name = "u02_psafe"
+values = { "workload.weights" = [0.18, 0.22, 0.31, 0.29], "qubo.penalty" = 0.31, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u02" }
+
+[[sweep.cases]]
+name = "u02_2psafe"
+values = { "workload.weights" = [0.18, 0.22, 0.31, 0.29], "qubo.penalty" = 0.62, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u02" }
+
+[[sweep.cases]]
+name = "u03_psafe"
+values = { "workload.weights" = [0.26, 0.19, 0.25, 0.30], "qubo.penalty" = 0.30, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u03" }
+
+[[sweep.cases]]
+name = "u03_2psafe"
+values = { "workload.weights" = [0.26, 0.19, 0.25, 0.30], "qubo.penalty" = 0.60, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u03" }
+
+[[sweep.cases]]
+name = "u04_psafe"
+values = { "workload.weights" = [0.23, 0.24, 0.28, 0.25], "qubo.penalty" = 0.28, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u04" }
+
+[[sweep.cases]]
+name = "u04_2psafe"
+values = { "workload.weights" = [0.23, 0.24, 0.28, 0.25], "qubo.penalty" = 0.56, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u04" }
+
+[[sweep.cases]]
+name = "u05_psafe"
+values = { "workload.weights" = [0.17, 0.33, 0.21, 0.29], "qubo.penalty" = 0.33, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u05" }
+
+[[sweep.cases]]
+name = "u05_2psafe"
+values = { "workload.weights" = [0.17, 0.33, 0.21, 0.29], "qubo.penalty" = 0.66, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u05" }
+
+[[sweep.cases]]
+name = "u06_psafe"
+values = { "workload.weights" = [0.30, 0.20, 0.27, 0.23], "qubo.penalty" = 0.30, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u06" }
+
+[[sweep.cases]]
+name = "u06_2psafe"
+values = { "workload.weights" = [0.30, 0.20, 0.27, 0.23], "qubo.penalty" = 0.60, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u06" }
+
+[[sweep.cases]]
+name = "u07_psafe"
+values = { "workload.weights" = [0.22, 0.32, 0.18, 0.28], "qubo.penalty" = 0.32, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u07" }
+
+[[sweep.cases]]
+name = "u07_2psafe"
+values = { "workload.weights" = [0.22, 0.32, 0.18, 0.28], "qubo.penalty" = 0.64, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u07" }
+
+[[sweep.cases]]
+name = "u08_psafe"
+values = { "workload.weights" = [0.25, 0.27, 0.20, 0.28], "qubo.penalty" = 0.28, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u08" }
+
+[[sweep.cases]]
+name = "u08_2psafe"
+values = { "workload.weights" = [0.25, 0.27, 0.20, 0.28], "qubo.penalty" = 0.56, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u08" }
+
+[[sweep.cases]]
+name = "u09_psafe"
+values = { "workload.weights" = [0.16, 0.30, 0.26, 0.28], "qubo.penalty" = 0.30, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u09" }
+
+[[sweep.cases]]
+name = "u09_2psafe"
+values = { "workload.weights" = [0.16, 0.30, 0.26, 0.28], "qubo.penalty" = 0.60, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u09" }
+
+[[sweep.cases]]
+name = "u10_psafe"
+values = { "workload.weights" = [0.29, 0.24, 0.22, 0.25], "qubo.penalty" = 0.29, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "u10" }
+
+[[sweep.cases]]
+name = "u10_2psafe"
+values = { "workload.weights" = [0.29, 0.24, 0.22, 0.25], "qubo.penalty" = 0.58, "metadata.distribution" = "uniform", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "u10" }
+
+[[sweep.cases]]
+name = "s01_psafe"
+values = { "workload.weights" = [0.55, 0.20, 0.15, 0.10], "qubo.penalty" = 0.55, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s01" }
+
+[[sweep.cases]]
+name = "s01_2psafe"
+values = { "workload.weights" = [0.55, 0.20, 0.15, 0.10], "qubo.penalty" = 1.10, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s01" }
+
+[[sweep.cases]]
+name = "s02_psafe"
+values = { "workload.weights" = [0.60, 0.18, 0.12, 0.10], "qubo.penalty" = 0.60, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s02" }
+
+[[sweep.cases]]
+name = "s02_2psafe"
+values = { "workload.weights" = [0.60, 0.18, 0.12, 0.10], "qubo.penalty" = 1.20, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s02" }
+
+[[sweep.cases]]
+name = "s03_psafe"
+values = { "workload.weights" = [0.48, 0.27, 0.15, 0.10], "qubo.penalty" = 0.48, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s03" }
+
+[[sweep.cases]]
+name = "s03_2psafe"
+values = { "workload.weights" = [0.48, 0.27, 0.15, 0.10], "qubo.penalty" = 0.96, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s03" }
+
+[[sweep.cases]]
+name = "s04_psafe"
+values = { "workload.weights" = [0.52, 0.24, 0.14, 0.10], "qubo.penalty" = 0.52, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s04" }
+
+[[sweep.cases]]
+name = "s04_2psafe"
+values = { "workload.weights" = [0.52, 0.24, 0.14, 0.10], "qubo.penalty" = 1.04, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s04" }
+
+[[sweep.cases]]
+name = "s05_psafe"
+values = { "workload.weights" = [0.64, 0.16, 0.12, 0.08], "qubo.penalty" = 0.64, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s05" }
+
+[[sweep.cases]]
+name = "s05_2psafe"
+values = { "workload.weights" = [0.64, 0.16, 0.12, 0.08], "qubo.penalty" = 1.28, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s05" }
+
+[[sweep.cases]]
+name = "s06_psafe"
+values = { "workload.weights" = [0.46, 0.30, 0.15, 0.09], "qubo.penalty" = 0.46, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s06" }
+
+[[sweep.cases]]
+name = "s06_2psafe"
+values = { "workload.weights" = [0.46, 0.30, 0.15, 0.09], "qubo.penalty" = 0.92, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s06" }
+
+[[sweep.cases]]
+name = "s07_psafe"
+values = { "workload.weights" = [0.58, 0.22, 0.13, 0.07], "qubo.penalty" = 0.58, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s07" }
+
+[[sweep.cases]]
+name = "s07_2psafe"
+values = { "workload.weights" = [0.58, 0.22, 0.13, 0.07], "qubo.penalty" = 1.16, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s07" }
+
+[[sweep.cases]]
+name = "s08_psafe"
+values = { "workload.weights" = [0.50, 0.28, 0.14, 0.08], "qubo.penalty" = 0.50, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s08" }
+
+[[sweep.cases]]
+name = "s08_2psafe"
+values = { "workload.weights" = [0.50, 0.28, 0.14, 0.08], "qubo.penalty" = 1.00, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s08" }
+
+[[sweep.cases]]
+name = "s09_psafe"
+values = { "workload.weights" = [0.62, 0.20, 0.11, 0.07], "qubo.penalty" = 0.62, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s09" }
+
+[[sweep.cases]]
+name = "s09_2psafe"
+values = { "workload.weights" = [0.62, 0.20, 0.11, 0.07], "qubo.penalty" = 1.24, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s09" }
+
+[[sweep.cases]]
+name = "s10_psafe"
+values = { "workload.weights" = [0.54, 0.26, 0.12, 0.08], "qubo.penalty" = 0.54, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 1.0, "metadata.instance" = "s10" }
+
+[[sweep.cases]]
+name = "s10_2psafe"
+values = { "workload.weights" = [0.54, 0.26, 0.12, 0.08], "qubo.penalty" = 1.08, "metadata.distribution" = "skewed", "metadata.penalty_multiplier" = 2.0, "metadata.instance" = "s10" }
+
+[checks]
+no_crash = true
+expected_pipeline = "default"
+global_optimum_available = true
+

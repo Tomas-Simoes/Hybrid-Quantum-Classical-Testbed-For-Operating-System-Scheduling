@@ -1,0 +1,115 @@
+scenario_version = 1
+id = "MX1"
+tier = 7
+category = "mixer_adversarial"
+name = "Low-top-k paired mixer screen"
+description = "Paired X/XY screen on regular and dominant N=4 workloads with deliberately restricted candidate pools."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.15, 0.35, 0.25, 0.25]
+
+[qubo]
+penalty = 0.35
+
+[qaoa]
+layers = 1
+steps = 60
+learning_rate = 0.1
+top_k = 1
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 101
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[execution]
+pipeline = "default"
+visualization = false
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "max_probability"]
+
+# Reference workload: P_safe = 0.35.
+[[sweep.cases]]
+name = "reference_x_p025"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.0875, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 0.25 }
+
+[[sweep.cases]]
+name = "reference_xy_p025"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.0875, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 0.25 }
+
+[[sweep.cases]]
+name = "reference_x_p050"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.175, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 0.50 }
+
+[[sweep.cases]]
+name = "reference_xy_p050"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.175, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 0.50 }
+
+[[sweep.cases]]
+name = "reference_x_p100"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.35, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 1.00 }
+
+[[sweep.cases]]
+name = "reference_xy_p100"
+values = { "workload.weights" = [0.15, 0.35, 0.25, 0.25], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.35, "metadata.workload" = "reference", "metadata.penalty_multiplier" = 1.00 }
+
+# Dominant workload: P_safe = 0.70.
+[[sweep.cases]]
+name = "dominant_x_p025"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.175, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 0.25 }
+
+[[sweep.cases]]
+name = "dominant_xy_p025"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.175, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 0.25 }
+
+[[sweep.cases]]
+name = "dominant_x_p050"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.35, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 0.50 }
+
+[[sweep.cases]]
+name = "dominant_xy_p050"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.35, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 0.50 }
+
+[[sweep.cases]]
+name = "dominant_x_p100"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "x", "qubo.penalty" = 0.70, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 1.00 }
+
+[[sweep.cases]]
+name = "dominant_xy_p100"
+values = { "workload.weights" = [0.70, 0.10, 0.10, 0.10], "qaoa.mixer_type" = "xy", "qubo.penalty" = 0.70, "metadata.workload" = "dominant", "metadata.penalty_multiplier" = 1.00 }
+
+[[sweep.axes]]
+name = "top_k"
+path = "qaoa.top_k"
+values = [1, 3]
+
+[[sweep.axes]]
+name = "random_seed"
+path = "qaoa.random_seed"
+values = [101, 102, 103]
+
+[checks]
+no_crash = true
+expected_pipeline = "default"
+global_optimum_available = true

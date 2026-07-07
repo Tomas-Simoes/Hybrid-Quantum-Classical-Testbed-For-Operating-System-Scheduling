@@ -1,0 +1,84 @@
+scenario_version = 1
+id = "E1b"
+tier = 7
+category = "phase4_adversarial"
+name = "Adversarial near-equal weight conflicts"
+description = "Four N=4 workloads with increasingly separated near-equal weights, crossed with depth, top-k, and five random seeds."
+
+[workload]
+mode = "preset"
+num_processes = 4
+num_cores = 2
+weights = [0.246, 0.248, 0.251, 0.256]
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 100
+learning_rate = 0.1
+top_k = 3
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 101
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 6
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[validation]
+always_run_annealing = true
+
+[execution]
+pipeline = "iterative"
+visualization = false
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "load_imbalance", "annealing_gap", "component_timings_ms"]
+
+[[sweep.cases]]
+name = "spread_001"
+values = { "workload.weights" = [0.246, 0.248, 0.251, 0.256], "metadata.structure" = "near_equal", "metadata.max_weight_difference" = 0.01, "metadata.instance" = "near001" }
+
+[[sweep.cases]]
+name = "spread_005"
+values = { "workload.weights" = [0.225, 0.245, 0.260, 0.275], "metadata.structure" = "near_equal", "metadata.max_weight_difference" = 0.05, "metadata.instance" = "near005" }
+
+[[sweep.cases]]
+name = "spread_010"
+values = { "workload.weights" = [0.20, 0.24, 0.27, 0.30], "metadata.structure" = "near_equal", "metadata.max_weight_difference" = 0.10, "metadata.instance" = "near010" }
+
+[[sweep.cases]]
+name = "spread_020"
+values = { "workload.weights" = [0.15, 0.23, 0.32, 0.35], "metadata.structure" = "near_equal", "metadata.max_weight_difference" = 0.20, "metadata.instance" = "near020" }
+
+[[sweep.axes]]
+name = "layers"
+path = "qaoa.layers"
+values = [1, 2]
+
+[[sweep.axes]]
+name = "top_k"
+path = "qaoa.top_k"
+values = [3, 10]
+
+[[sweep.axes]]
+name = "random_seed"
+path = "qaoa.random_seed"
+values = [101, 102, 103, 104, 105]

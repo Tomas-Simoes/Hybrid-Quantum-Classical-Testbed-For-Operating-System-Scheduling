@@ -1,0 +1,122 @@
+scenario_version = 1
+id = "E1c"
+tier = 7
+category = "phase4_adversarial_clustering"
+name = "Synthetic CPU and IO profile clustering"
+description = "A deterministic six-process snapshot is clustered for three io_alpha values and solved with QAOA, brute-force, and SA."
+
+[workload]
+mode = "synthetic_cluster"
+num_processes = 6
+num_cores = 2
+snapshot_id = "phase4-e1c-synthetic"
+
+[[workload.processes]]
+pid = 2101
+command = "cpu_bound_1"
+cpu_weight = 0.30
+rss_mb = 256.0
+io_wait_ratio = 0.05
+
+[[workload.processes]]
+pid = 2102
+command = "cpu_bound_2"
+cpu_weight = 0.28
+rss_mb = 240.0
+io_wait_ratio = 0.05
+
+[[workload.processes]]
+pid = 2103
+command = "cpu_bound_3"
+cpu_weight = 0.26
+rss_mb = 224.0
+io_wait_ratio = 0.10
+
+[[workload.processes]]
+pid = 2201
+command = "io_bound_1"
+cpu_weight = 0.12
+rss_mb = 2048.0
+io_wait_ratio = 0.85
+
+[[workload.processes]]
+pid = 2202
+command = "io_bound_2"
+cpu_weight = 0.10
+rss_mb = 1920.0
+io_wait_ratio = 0.90
+
+[[workload.processes]]
+pid = 2203
+command = "io_bound_3"
+cpu_weight = 0.08
+rss_mb = 1792.0
+io_wait_ratio = 0.95
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 1
+steps = 100
+learning_rate = 0.1
+top_k = 3
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 101
+
+[tracer]
+live_mode = false
+min_rss = 0.0
+min_cpu = 0.0
+cpu_interval = 0
+num_samples = 1
+
+[decomposition]
+qubit_max = 6
+num_cores = 2
+io_alpha = 0.1
+affinity_alpha = 0.8
+homogeneity_threshold = 10.0
+zscore_threshold = 10.0
+sorting_strategy = "COUPLING_DESCENDING"
+
+[validation]
+always_run_annealing = true
+
+[execution]
+pipeline = "iterative"
+visualization = false
+repeats = 1
+
+[record]
+metrics = ["energy", "optimality_gap", "feasible", "solve_time_ms", "load_imbalance", "experiment_metadata", "component_timings_ms"]
+
+[[sweep.cases]]
+name = "io_alpha_01"
+values = { "decomposition.io_alpha" = 0.1, "metadata.structure" = "cpu_io_profiles", "metadata.instance" = "io01" }
+
+[[sweep.cases]]
+name = "io_alpha_05"
+values = { "decomposition.io_alpha" = 0.5, "metadata.structure" = "cpu_io_profiles", "metadata.instance" = "io05" }
+
+[[sweep.cases]]
+name = "io_alpha_09"
+values = { "decomposition.io_alpha" = 0.9, "metadata.structure" = "cpu_io_profiles", "metadata.instance" = "io09" }
+
+[[sweep.axes]]
+name = "layers"
+path = "qaoa.layers"
+values = [1, 2]
+
+[[sweep.axes]]
+name = "top_k"
+path = "qaoa.top_k"
+values = [3, 10]
+
+[[sweep.axes]]
+name = "random_seed"
+path = "qaoa.random_seed"
+values = [101, 102, 103, 104, 105]

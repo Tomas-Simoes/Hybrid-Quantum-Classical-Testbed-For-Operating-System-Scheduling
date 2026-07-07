@@ -49,6 +49,13 @@ def utc_timestamp() -> str:
     return time.strftime("%Y%m%d_%H%M%S", time.gmtime())
 
 
+def display_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
+
+
 def normalize_selector(value: str) -> str:
     return "".join(ch for ch in value.lower() if ch.isalnum())
 
@@ -161,19 +168,105 @@ def build_generated_weights(workload_cfg: dict[str, Any], scenario: dict[str, An
         total_weight = float(workload_cfg.get("total_weight", 1.0))
         return [total_weight / n for _ in range(n)]
 
+    if strategy == "uniform_random":
+        import numpy as np
+
+        seed = int(workload_cfg.get("instance_seed", 0))
+        minimum = float(workload_cfg.get("min_weight", 0.0))
+        maximum = float(workload_cfg.get("max_weight", 1.0))
+        if minimum < 0 or maximum <= minimum:
+            raise ValueError(
+                "uniform_random requires 0 <= min_weight < max_weight."
+            )
+        rng = np.random.default_rng(seed)
+        weights = rng.uniform(minimum, maximum, size=n)
+        if minimum == 0.0:
+            weights[weights == 0.0] = np.nextafter(0.0, 1.0)
+        return [float(weight) for weight in weights]
+
     raise ValueError(f"Unsupported generated workload strategy '{strategy}'.")
 
 
-def build_run_inputs(scenario: dict[str, Any]) -> tuple[Any, Any, Any, Any, Any, list[str]]:
-    from data_contracts import DecompositorConfig, QAOAConfig, QUBOConfig, TracerConfig
-    from main import SchedulingEngine
+def build_synthetic_cluster_snapshot(workload_cfg: dict[str, Any], num_cores: int):
+    from data_contracts import ProcessInfo, SystemSnapshot
 
+    process_configs = workload_cfg.get("processes", [])
+    if not process_configs:
+        raise ValueError("synthetic_cluster workload requires workload.processes.")
+
+    processes = []
+    for index, process_cfg in enumerate(process_configs):
+        processes.append(
+            ProcessInfo(
+                pid=int(process_cfg.get("pid", 2000 + index)),
+                command=str(process_cfg.get("command", f"synthetic_{index}")),
+                cpu_weight=float(process_cfg["cpu_weight"]),
+                current_core=int(process_cfg.get("current_core", 0)),
+                rss_mb=float(process_cfg.get("rss_mb", 128.0)),
+                priority=int(process_cfg.get("priority", 20)),
+                io_wait_ratio=float(process_cfg.get("io_wait_ratio", 0.0)),
+                priority_class=process_cfg.get("priority_class", "BE"),
+            )
+        )
+
+    return SystemSnapshot(
+        timestamp=time.time(),
+        num_cores=num_cores,
+        processes=processes,
+        total_ram_mb=(
+            float(workload_cfg["total_ram_mb"])
+            if workload_cfg.get("total_ram_mb") is not None
+            else None
+        ),
+        snapshot_id=str(workload_cfg.get("snapshot_id", "synthetic-cluster")),
+    )
+
+
+def build_preset_snapshot(weights: list[float], num_cores: int):
+    from data_contracts import ProcessInfo, SystemSnapshot
+
+    return SystemSnapshot(
+        timestamp=time.time(),
+        num_cores=num_cores,
+        processes=[
+            ProcessInfo(
+                pid=1000 + index,
+                command=f"proc_{index}",
+                cpu_weight=weight,
+                current_core=0,
+                rss_mb=weight * 1024,
+                priority=20,
+                io_wait_ratio=None,
+                priority_class=None,
+            )
+            for index, weight in enumerate(weights)
+        ],
+        total_ram_mb=None,
+        snapshot_id=None,
+    )
+
+
+def build_run_inputs(
+    scenario: dict[str, Any],
+) -> tuple[Any, Any, Any, Any, Any, list[str], Any, Any]:
+    from data_contracts import (
+        DecompositorConfig,
+        QUBOConfig,
+        TracerConfig,
+    )
+    from investigative_runtime import (
+        InvestigativeQAOAConfig,
+        InvestigativeRunConfig,
+        InvestigativeValidationConfig,
+    )
     warnings: list[str] = []
     workload_cfg = scenario.get("workload", {})
     qaoa_cfg = scenario.get("qaoa", {})
     qubo_cfg = scenario.get("qubo", {})
     tracer_cfg = scenario.get("tracer", {})
     decomposition_cfg = scenario.get("decomposition", {})
+    execution_section = scenario.get("execution", {})
+    validation_section = scenario.get("validation", {})
 
     if "extra_couplings" in qubo_cfg:
         warnings.append(
@@ -190,11 +283,14 @@ def build_run_inputs(scenario: dict[str, Any]) -> tuple[Any, Any, Any, Any, Any,
         weights = [float(w) for w in workload_cfg.get("weights", [])]
         if not weights:
             raise ValueError("Preset workload requires workload.weights.")
-        preset_snapshot = SchedulingEngine.build_preset_snapshot(weights, num_cores)
+        preset_snapshot = build_preset_snapshot(weights, num_cores)
         live_mode = False
     elif mode == "generated":
         weights = build_generated_weights(workload_cfg, scenario, warnings)
-        preset_snapshot = SchedulingEngine.build_preset_snapshot(weights, num_cores)
+        preset_snapshot = build_preset_snapshot(weights, num_cores)
+        live_mode = False
+    elif mode == "synthetic_cluster":
+        preset_snapshot = build_synthetic_cluster_snapshot(workload_cfg, num_cores)
         live_mode = False
     elif mode == "live_trace":
         preset_snapshot = None
@@ -202,7 +298,7 @@ def build_run_inputs(scenario: dict[str, Any]) -> tuple[Any, Any, Any, Any, Any,
     else:
         raise ValueError(f"Unsupported workload.mode '{mode}'.")
 
-    qaoa = QAOAConfig(
+    qaoa = InvestigativeQAOAConfig(
         layers=int(qaoa_cfg.get("layers", 1)),
         steps=int(qaoa_cfg.get("steps", 50)),
         learning_rate=float(qaoa_cfg.get("learning_rate", 0.05)),
@@ -210,6 +306,12 @@ def build_run_inputs(scenario: dict[str, Any]) -> tuple[Any, Any, Any, Any, Any,
         mixer_type=qaoa_cfg.get("mixer_type", "xy"),
         init_gamma=float(qaoa_cfg.get("init_gamma", 0.5)),
         init_beta=float(qaoa_cfg.get("init_beta", qaoa_cfg.get("init_gamma", 0.5))),
+        init_strategy=qaoa_cfg.get("init_strategy", "fixed"),
+        random_seed=(
+            int(qaoa_cfg["random_seed"])
+            if qaoa_cfg.get("random_seed") is not None
+            else None
+        ),
     )
     qubo = QUBOConfig(
         penalty=float(qubo_cfg.get("penalty", 1.0)),
@@ -237,61 +339,48 @@ def build_run_inputs(scenario: dict[str, Any]) -> tuple[Any, Any, Any, Any, Any,
         sorting_strategy=parse_heuristic(decomposition_cfg.get("sorting_strategy", "WEIGHT_DESCENDING")),
     )
 
-    return qaoa, qubo, tracer, decompositor, preset_snapshot, warnings
+    run_cfg = InvestigativeRunConfig(
+        pipeline_mode=str(execution_section.get("pipeline", "auto")).lower(),
+        cluster_preset_snapshot=mode == "synthetic_cluster",
+        enable_visualization=bool(execution_section.get("visualization", True)),
+    )
+    time_box = validation_section.get("brute_force_time_box_seconds", 60.0)
+    validation_cfg = InvestigativeValidationConfig(
+        always_run_annealing=bool(
+            validation_section.get("always_run_annealing", False)
+        ),
+        annealing_seed=(
+            int(validation_section["annealing_seed"])
+            if validation_section.get("annealing_seed") is not None
+            else qaoa.random_seed if qaoa.random_seed is not None else 42
+        ),
+        baseline_method=str(validation_section.get("method", "legacy")),
+        brute_force_max_n=int(validation_section.get("brute_force_max_n", 20)),
+        brute_force_time_box_seconds=(
+            float(time_box) if time_box is not None else None
+        ),
+        annealing_sweeps=int(validation_section.get("annealing_sweeps", 1000)),
+        annealing_restarts=int(validation_section.get("annealing_restarts", 8)),
+        optimality_rtol=float(validation_section.get("optimality_rtol", 1e-9)),
+        optimality_atol=float(validation_section.get("optimality_atol", 1e-9)),
+    )
+
+    return (
+        qaoa,
+        qubo,
+        tracer,
+        decompositor,
+        preset_snapshot,
+        warnings,
+        run_cfg,
+        validation_cfg,
+    )
 
 
 def summarize_output(output: Any) -> dict[str, Any]:
-    import numpy as np
+    from investigative_runtime import summarize_investigation
 
-    from data_contracts import IterativeSchedulingOutput, SchedulingOutput
-
-    if isinstance(output, SchedulingOutput):
-        result = output.result
-        validation = output.validation
-        max_probability = None
-        if result.probs is not None and len(result.probs):
-            max_probability = float(np.max(result.probs))
-        return {
-            "pipeline": "default",
-            "output_type": type(output).__name__,
-            "num_variables": output.qubo_instance.num_variables,
-            "num_entities": output.qubo_instance.num_entities,
-            "num_cores": output.qubo_instance.num_cores,
-            "energy": result.energy,
-            "feasible": result.is_feasible,
-            "optimal": validation.get("is_optimal"),
-            "optimality_gap": output.alpha,
-            "solve_time_ms": result.solve_time_ms,
-            "solver_backend": result.solver_backend,
-            "max_probability": max_probability,
-            "assignments": result.decoded_assignments,
-            "validation": validation,
-        }
-
-    if isinstance(output, IterativeSchedulingOutput):
-        global_result = output.global_result
-        validation = output.validation or {}
-        return {
-            "pipeline": "iterative",
-            "output_type": type(output).__name__,
-            "num_variables": output.qubo_instance.num_variables,
-            "num_entities": output.qubo_instance.num_entities,
-            "num_cores": output.qubo_instance.num_cores,
-            "energy": None if global_result is None else global_result.energy,
-            "feasible": None if global_result is None else global_result.is_feasible,
-            "optimal": validation.get("is_optimal"),
-            "optimality_gap": output.alpha,
-            "solve_time_ms": output.total_solve_time_ms,
-            "num_sub_qubos": output.num_sub_qubos,
-            "num_feasible_sub_qubos": output.num_feasible,
-            "all_sub_qubos_feasible": output.all_feasible,
-            "load_imbalance": output.load_imbalance,
-            "final_phi": output.final_phi,
-            "assignments": output.final_assignments,
-            "validation": validation,
-        }
-
-    return {"output_type": type(output).__name__}
+    return summarize_investigation(output)
 
 
 def append_jsonl(path: Path, item: dict[str, Any]) -> None:
@@ -360,6 +449,21 @@ def format_readable_result(result_record: dict[str, Any], program_output: str) -
             "solve_time_ms",
             "solver_backend",
             "max_probability",
+            "feasible_probability_mass",
+            "invalid_probability_mass",
+            "top_state_feasible",
+            "first_feasible_rank",
+            "first_optimal_rank",
+            "optimal_probability_mass",
+            "feasible_candidates_in_top_k",
+            "annealing_energy",
+            "annealing_gap",
+            "beats_annealing",
+            "annealing_solve_time_ms",
+            "brute_force_solve_time_ms",
+            "sa_energy_match",
+            "component_timings_ms",
+            "experiment_metadata",
             "num_sub_qubos",
             "num_feasible_sub_qubos",
             "all_sub_qubos_feasible",
@@ -433,7 +537,7 @@ def run_scenario_once(
     log_buffer = io.StringIO()
     result_record: dict[str, Any] = {
         "run_id": run_id,
-        "scenario_file": str(scenario_path.relative_to(PROJECT_ROOT)),
+        "scenario_file": display_path(scenario_path),
         "scenario_stem": scenario_stem,
         "scenario_id": scenario.get("id"),
         "scenario_name": scenario.get("name"),
@@ -450,9 +554,18 @@ def run_scenario_once(
     }
 
     try:
-        from main import SchedulingEngine
+        from investigative_runtime import InvestigativeEngine
 
-        qaoa, qubo, tracer, decompositor, preset_snapshot, warnings = build_run_inputs(scenario)
+        (
+            qaoa,
+            qubo,
+            tracer,
+            decompositor,
+            preset_snapshot,
+            warnings,
+            run_cfg,
+            validation_cfg,
+        ) = build_run_inputs(scenario)
         result_record["warnings"].extend(warnings)
         result_record["resolved_config"] = {
             "qaoa": qaoa,
@@ -460,15 +573,19 @@ def run_scenario_once(
             "tracer": tracer,
             "decomposition": decompositor,
             "preset_snapshot": preset_snapshot,
+            "run": run_cfg,
+            "validation": validation_cfg,
         }
 
         with contextlib.redirect_stdout(Tee(sys.stdout, log_buffer)):
-            output = SchedulingEngine.run_job(
+            output = InvestigativeEngine.run_job(
                 qaoa_cfg=qaoa,
                 qubo_cfg=qubo,
                 tracer_cfg=tracer,
                 decompositor_cfg=decompositor,
                 preset_snapshot=preset_snapshot,
+                run_cfg=run_cfg,
+                validation_cfg=validation_cfg,
             )
 
         result_record["status"] = "success"
@@ -495,9 +612,9 @@ def run_scenario_once(
         ended_at = time.time()
         result_record["ended_at_epoch"] = ended_at
         result_record["duration_s"] = ended_at - started_at
-        result_record["result_path"] = str(result_path.relative_to(PROJECT_ROOT))
-        result_record["output_path"] = str(output_path.relative_to(PROJECT_ROOT))
-        result_record["log_path"] = str(log_path.relative_to(PROJECT_ROOT))
+        result_record["result_path"] = display_path(result_path)
+        result_record["output_path"] = display_path(output_path)
+        result_record["log_path"] = display_path(log_path)
 
         program_output = log_buffer.getvalue()
         log_path.write_text(program_output, encoding="utf-8")
@@ -516,8 +633,8 @@ def run_scenario_once(
         append_text(aggregate_output_path_for(aggregate_path), readable_result)
         append_text(cumulative_output_path_for(cumulative_path), readable_result)
 
-    print(f"Saved result: {result_path.relative_to(PROJECT_ROOT)}")
-    print(f"Saved readable output: {output_path.relative_to(PROJECT_ROOT)}")
+    print(f"Saved result: {display_path(result_path)}")
+    print(f"Saved readable output: {display_path(output_path)}")
     return result_record
 
 
@@ -563,7 +680,7 @@ def list_scenarios(scenarios_dir: Path) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Run static TOML experiment scenarios through SchedulingEngine."
+        description="Run static TOML scenarios through the isolated investigative runtime."
     )
     parser.add_argument(
         "selectors",
@@ -604,8 +721,8 @@ def main(argv: list[str] | None = None) -> int:
     cumulative_path = results_dir / "all_results.jsonl"
 
     print(f"Selected {len(selected)} scenario(s).")
-    print(f"Aggregate file: {aggregate_path.relative_to(PROJECT_ROOT)}")
-    print(f"Readable output file: {aggregate_output_path_for(aggregate_path).relative_to(PROJECT_ROOT)}")
+    print(f"Aggregate file: {display_path(aggregate_path)}")
+    print(f"Readable output file: {display_path(aggregate_output_path_for(aggregate_path))}")
 
     records: list[dict[str, Any]] = []
     for path in selected:
@@ -616,10 +733,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Run id: {run_id}")
     print(f"Successful: {len(records) - len(failed)}")
     print(f"Failed: {len(failed)}")
-    print(f"Aggregate file: {aggregate_path.relative_to(PROJECT_ROOT)}")
-    print(f"Readable output file: {aggregate_output_path_for(aggregate_path).relative_to(PROJECT_ROOT)}")
-    print(f"Cumulative file: {cumulative_path.relative_to(PROJECT_ROOT)}")
-    print(f"Cumulative readable file: {cumulative_output_path_for(cumulative_path).relative_to(PROJECT_ROOT)}")
+    print(f"Aggregate file: {display_path(aggregate_path)}")
+    print(f"Readable output file: {display_path(aggregate_output_path_for(aggregate_path))}")
+    print(f"Cumulative file: {display_path(cumulative_path)}")
+    print(f"Cumulative readable file: {display_path(cumulative_output_path_for(cumulative_path))}")
 
     return 1 if failed else 0
 
