@@ -6,13 +6,23 @@ from abstract.abstract import BaseBuilder
 from data_contracts import QUBOConfig, QUBOInstance, Workload
 
 class CoreAssignmentBuilder(BaseBuilder):
+    """
+    Builds a QUBO formulation for the core-assignment problem
+    """
+    
     def __init__(self, qubo_cfg: QUBOConfig):
         self.qubo_cfg = qubo_cfg
         self.P = qubo_cfg.penalty
 
     def build(self, workload: Workload, include_fixed_bias: bool = True) -> QUBOInstance:
+        """
+        Constructs the QUBO matrix for assigning workload entities to CPU cores
+        Returns: QUBOInstance containing Q matrix, variable mapping and metadata
+        """
+
         N = len(workload.entities)
         K = workload.num_cores
+        
         if N == 0:
             raise ValueError("Workload must contain at least one entity.")
         if K <= 0:

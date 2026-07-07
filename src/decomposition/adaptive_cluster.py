@@ -12,11 +12,20 @@ from data_contracts import (
 logger = logging.getLogger(__name__)
 
 class AdaptiveCluster:
+    """
+    Performs adaptive clustering of processes into bundles based on CPU demand, memory usage and I/O behavior
+    """
+    
     def __init__(self, decompositor_cfg: DecompositorConfig):
         self.dec_cfg = decompositor_cfg
 
     # entry point
     def decompose(self, snapshot: SystemSnapshot) -> ClusteredSnapshot:
+        """
+        Entry point for clustering a snapshot.
+        """
+
+        # 1. Separate RT processes from normal ones       
         rt_procs, normal_procs = self._separate_rt_processes(snapshot)
 
         if not normal_procs:
@@ -30,12 +39,12 @@ class AdaptiveCluster:
             result.rt_procs = rt_procs
             return result
 
+        # 2. Determine number of bundles to create
         n = len(normal_procs)
         n_bundles = self.dec_cfg.num_bundles(n)
 
         if n_bundles >= n or n == 1:
-            # No clustering needed — each normal process becomes its own bundle.
-            # we pass normal_procs so RT processes are NOT re-included.
+            # No clustering needed so each normal process becomes its own bundle, a singleton bundle
             result = self._trivial_decomposition(snapshot, normal_procs)
             result.rt_procs = rt_procs
             return result
@@ -77,7 +86,6 @@ class AdaptiveCluster:
         """
         Effective CPU demand, discounting time the process spent waiting on I/O.
         w_eff = cpu_weight * (1 - io_alpha * io_wait_ratio)
-        Range: [0, cpu_weight].  io_wait_ratio is clamped to [0, 1] here.
         """
         raw_io_ratio = 0.0 if proc.io_wait_ratio is None else proc.io_wait_ratio
         io_ratio = max(0.0, min(1.0, raw_io_ratio))
@@ -86,8 +94,7 @@ class AdaptiveCluster:
     # Feature / affinity construction
     def build_feature_matrix(self, snapshot: SystemSnapshot) -> FeatureMatrix:
         """
-        Builds F where F[i, :] = [w_eff_i, rss_mb_i], then Z-score normalises.
-        I/O wait is folded into w_eff rather than kept as a separate column.
+        Builds feature meatrix for clustering
         """
         raw_features = []
         pids = []
@@ -117,14 +124,6 @@ class AdaptiveCluster:
     def build_affinity_matrix(self, feature_matrix: FeatureMatrix) -> AffinityMatrix:
         """
         Builds a combined RBF affinity matrix from CPU (w_eff) and memory (RSS).
-
-        Kernel: A[i,j] = exp(-d^2 / (2 * sigma^2))
-        Sigma is chosen adaptively as sqrt(median(d^2) / 2) so that the kernel
-        evaluates to 1/e at the median squared distance.
-
-        Final matrix: A = alpha * A_cpu + (1 - alpha) * A_mem
-        Diagonal is zeroed before returning — SpectralClustering's normalised
-        Laplacian is distorted by self-loops in the affinity matrix.
         """
         F = feature_matrix.F_norm  # columns: [0: w_eff, 1: RSS]
         alpha = self.dec_cfg.affinity_alpha

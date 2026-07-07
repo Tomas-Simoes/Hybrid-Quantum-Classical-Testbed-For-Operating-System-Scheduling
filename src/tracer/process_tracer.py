@@ -5,6 +5,10 @@ from data_contracts import ProcessInfo, SystemSnapshot, TracerConfig
 import uuid
 
 class ProcessTracer:
+    """
+    Collets CPU, memory and I/O wait time statistics for running processes.
+    """
+
     def __init__(self, tracer_cfg: TracerConfig):
         self.min_rss = tracer_cfg.min_rss
         self.min_cpu = tracer_cfg.min_cpu
@@ -13,12 +17,21 @@ class ProcessTracer:
 
     @staticmethod
     def _normalize_cpu_weight(cpu_percent: float, logical_cores: int) -> float:
+        """
+        Normalizes CPU usage into a 0-1 weight based
+        """
+        
         if logical_cores <= 0:
             logical_cores = 1
         weight = (cpu_percent / 100.0) / logical_cores
         return max(0.0, min(1.0, weight))
 
     def trace(self) -> SystemSnapshot:
+        """
+        Capture a snapshot of system processes, including CPU usage, memory usage and I/O wait ratio
+        Returns: SystemSnapshot containing process metrics, memory usage, number of cores, timestamp and a unique ID
+        """
+        
         logical_cores = psutil.cpu_count(logical=True) or 1
         initial_stats = {}
         procs_cache: dict[int, psutil.Process] = {}
@@ -96,6 +109,9 @@ class ProcessTracer:
         )
     
     def get_priority_class(self, pid: int) -> str: 
+        """
+        Determine the scheduling priority class of a process (BE or RT)
+        """
         try:
             policy = os.sched_getscheduler(pid)
 
