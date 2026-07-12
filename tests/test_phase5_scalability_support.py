@@ -18,7 +18,7 @@ for path in (SRC_ROOT, EXPERIMENTS_ROOT):
         sys.path.insert(0, str(path))
 
 from builder.builder_core import CoreAssignmentBuilder
-from data_contracts import QUBOConfig, SolverResult, Workload, WorkloadEntity
+from data_contracts import QAOAConfig, QUBOConfig, SolverResult, Workload, WorkloadEntity
 from investigative_runtime import (
     FeasibleBruteForceSolver,
     InvestigativeValidationConfig,
@@ -28,6 +28,7 @@ from investigative_runtime import (
 )
 from scenario_runner import build_generated_weights, load_toml
 from solver.brute_force_solver import BruteForceSolver
+from solver.pennylane_solver import PennylaneSolver
 from sweep_runner import (
     load_reused_scalability_records,
     prepare_repeat_variant,
@@ -49,6 +50,12 @@ def build_qubo(weights: list[float]):
 
 
 class Phase5ScalabilitySupportTests(unittest.TestCase):
+    def test_production_solver_limits_candidates_to_configured_top_k(self) -> None:
+        solver = PennylaneSolver(QAOAConfig(2, 100, 0.1, top_k=3))
+        selected = solver._candidate_indices([0.1, 0.4, 0.2, 0.3, 0.0])
+
+        self.assertEqual(selected.tolist(), [1, 3, 2])
+
     def test_uniform_random_instances_are_seeded_and_strictly_positive(self) -> None:
         config = {
             "num_processes": 8,
@@ -130,8 +137,36 @@ class Phase5ScalabilitySupportTests(unittest.TestCase):
 
         self.assertAlmostEqual(comparison["baseline_load_balance_objective"], 0.0)
         self.assertAlmostEqual(comparison["objective_regret"], 0.02)
+        self.assertAlmostEqual(comparison["delta_imbalance"], 0.2)
+        self.assertAlmostEqual(comparison["gap_estavel"], 0.04)
         self.assertFalse(comparison["baseline_match_offset_free"])
+        self.assertFalse(comparison["is_optimal"])
+        self.assertFalse(comparison["gap_relativo"] == 0.0)
         self.assertIsNone(comparison["certified_optimal_offset_free"])
+
+    def test_stable_gap_uses_total_weight_not_near_zero_reference(self) -> None:
+        pipeline = 0.002442
+        reference = 0.000002825
+        total_weight = 5.0
+        stable_gap = (pipeline**2 - reference**2) / total_weight**2
+
+        self.assertAlmostEqual(stable_gap, 2.38534240775e-7)
+        self.assertLess(stable_gap, 1e-6)
+
+    def test_problematic_imbalance_pair_is_not_an_optimal_match(self) -> None:
+        pipeline_imbalance = 0.002442
+        reference_imbalance = 0.000002825
+        pipeline_objective = pipeline_imbalance**2 / 2.0
+        reference_objective = reference_imbalance**2 / 2.0
+        relative_gap = (pipeline_objective - reference_objective) / max(
+            reference_objective, 1e-9
+        )
+
+        self.assertAlmostEqual(relative_gap, 2981.6780096875004, places=9)
+        self.assertGreater(
+            pipeline_objective - reference_objective,
+            1e-9 + 1e-9 * reference_objective,
+        )
 
     def test_repeat_tiers_and_independent_seed_streams(self) -> None:
         scenario = {
@@ -163,19 +198,17 @@ class Phase5ScalabilitySupportTests(unittest.TestCase):
             scenario["sweep"]["axes"][0]["values"],
             [20, 25, 30, 40, 50, 65, 80, 100, 130, 160, 200],
         )
-        self.assertTrue(scenario["sweep"]["adaptive"]["enabled"])
-        self.assertEqual(scenario["sweep"]["resume"]["completed_values"], [10, 15])
+        self.assertFalse(scenario["sweep"]["adaptive"]["enabled"])
+        self.assertNotIn("resume", scenario["sweep"])
         self.assertEqual(
             scenario["sweep"]["adaptive"]["quality_metric"],
-            "normalized_load_imbalance",
+            "delta_imbalance",
         )
-        self.assertEqual(
-            scenario["sweep"]["adaptive"]["quality_ceiling_mean"], 0.01
-        )
+        self.assertNotIn("quality_ceiling_mean", scenario["sweep"]["adaptive"])
         self.assertNotIn("gap_ceiling_mean", scenario["sweep"]["adaptive"])
         self.assertNotIn("quality_threshold", scenario["sweep"]["adaptive"])
 
-    def test_pilot_records_are_reused_without_reexecution(self) -> None:
+    def test_deleted_legacy_records_are_not_reused(self) -> None:
         scenario_path = (
             EXPERIMENTS_ROOT / "scenarios" / "phase5_e5_scalability_n.toml"
         )
@@ -185,15 +218,7 @@ class Phase5ScalabilitySupportTests(unittest.TestCase):
             EXPERIMENTS_ROOT / "results",
         )
 
-        self.assertEqual(len(records), 40)
-        self.assertEqual(
-            {
-                record["config"]["workload"]["num_processes"]
-                for record in records
-            },
-            {10, 15},
-        )
-        self.assertTrue(all(record["data_source"] == "reused" for record in records))
+        self.assertEqual(records, [])
 
     def test_continuous_gap_signal_refines_and_runs_post_transition_points(self) -> None:
         scenario = {

@@ -1,0 +1,211 @@
+\documentclass[tikz,border=3mm]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+\usepackage[scaled=.92]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\pgfplotstableread[col sep=comma]{
+N,qaoa_quality_pct,classical_quality_pct
+10,3.21738947,0.196945961
+20,0.963290409,0.000111410452
+25,0.292997166,0.000169965702
+30,0.417689183,0.0000781099831
+40,0.140898183,0.0000684572434
+50,0.115381648,0.0000420505937
+65,0.0954408235,0.0000197249207
+80,0.0562958439,0.0000218652687
+100,0.0329228159,0.0000105755393
+130,0.0221609581,0.0000115905664
+160,0.0199733903,0.00000640087904
+200,0.00791750443,0.00000994324565
+300,0.00192060413,0.00000924557702
+500,0.000723624937,0.00000323936535
+750,0.000668592159,0.00000978921477
+1000,0.000395553631,0.00000766339116
+}\qualitydata
+
+\pgfplotstableread[col sep=comma]{
+N,pipeline_time_s
+10,4.73647079
+20,17.1959221
+25,16.6271885
+30,19.3433045
+40,25.6537907
+50,33.0798627
+65,43.314164
+80,53.4346536
+100,65.2311122
+130,85.8672272
+160,104.87083
+200,134.357816
+300,156.275263
+500,324.129182
+750,475.269142
+1000,672.387212
+}\pipelinetimedata
+
+\pgfplotstableread[col sep=comma]{
+N,bruteforce_time_s
+10,0.00596272185
+20,5.70448123
+}\bruteforcetimedata
+
+\pgfplotstableread[col sep=comma]{
+N,sa_time_s
+25,1.86913559
+30,2.2366762
+40,3.01299892
+50,3.91785944
+65,5.20574303
+80,6.58302031
+100,8.2082395
+130,10.9961718
+160,14.1325854
+200,18.1496733
+300,29.5242948
+500,56.4903244
+750,107.538206
+1000,178.554544
+}\satimedata
+
+\begin{document}
+
+\definecolor{qaoaBlue}{HTML}{2563EB}
+\definecolor{classicOrange}{HTML}{EA580C}
+\definecolor{saGreen}{HTML}{059669}
+\definecolor{bfRed}{HTML}{DC2626}
+\definecolor{timeGray}{HTML}{4B5563}
+\definecolor{gridGray}{HTML}{E5E7EB}
+\definecolor{textGray}{HTML}{374151}
+
+\begin{tikzpicture}
+\begin{axis}[
+    width=15.2cm,
+    height=8.2cm,
+    xmode=log,
+    ymode=log,
+    xmin=9,
+    xmax=1120,
+    ymin=2e-6,
+    ymax=5,
+    xlabel={$N$},
+    ylabel={Qualidade: desequilíbrio médio (\%)},
+    xlabel style={font=\small\sffamily, text=textGray},
+    ylabel style={font=\small\sffamily, text=textGray},
+    tick label style={font=\footnotesize\sffamily, text=textGray},
+    xtick={10,20,50,100,200,500,1000},
+    xticklabels={10,20,50,100,200,500,1000},
+    ytick={1e-5,1e-4,1e-3,1e-2,1e-1,1,5},
+    yticklabels={$10^{-5}$,$10^{-4}$,$10^{-3}$,$10^{-2}$,$10^{-1}$,$1$,$5$},
+    grid=both,
+    major grid style={draw=gridGray, line width=0.35pt},
+    minor grid style={draw=gridGray!45, line width=0.25pt},
+    axis line style={draw=textGray!35},
+    tick style={draw=textGray!45},
+    legend style={
+      draw=none,
+      fill=white,
+      fill opacity=0.93,
+      text opacity=1,
+      font=\scriptsize\sffamily,
+      at={(0.01,1.02)},
+      anchor=south west,
+      cells={anchor=west}
+    },
+    legend image post style={line width=1.3pt},
+]
+\addlegendimage{empty legend}
+\addlegendentry{\textbf{Qualidade (eixo esq.)}}
+
+\addplot[
+    color=qaoaBlue,
+    line width=1.35pt,
+    mark=*,
+    mark size=2pt,
+    mark options={fill=white, draw=qaoaBlue, line width=0.8pt}
+] table[x=N,y=qaoa_quality_pct] {\qualitydata};
+\addlegendentry{QAOA / pipeline}
+
+\addplot[
+    color=classicOrange,
+    line width=1.25pt,
+    mark=square*,
+    mark size=1.9pt,
+    mark options={fill=white, draw=classicOrange, line width=0.75pt}
+] table[x=N,y=classical_quality_pct] {\qualitydata};
+\addlegendentry{Melhor ref. clássica}
+\end{axis}
+
+\begin{axis}[
+    width=15.2cm,
+    height=8.2cm,
+    xmode=log,
+    ymode=log,
+    xmin=9,
+    xmax=1120,
+    ymin=0.003,
+    ymax=1200,
+    axis x line=none,
+    axis y line*=right,
+    ylabel={Tempo médio total (s)},
+    ylabel style={font=\small\sffamily, text=timeGray},
+    tick label style={font=\footnotesize\sffamily, text=timeGray},
+    ytick={0.01,0.1,1,10,100,1000},
+    yticklabels={$10^{-2}$,$10^{-1}$,$1$,$10$,$100$,$1000$},
+    axis line style={draw=timeGray!55},
+    tick style={draw=timeGray!55},
+    grid=none,
+    axis background/.style={fill=none},
+    legend style={
+      draw=none,
+      fill=white,
+      fill opacity=0.93,
+      text opacity=1,
+      font=\scriptsize\sffamily,
+      at={(0.99,1.02)},
+      anchor=south east,
+      cells={anchor=west}
+    },
+    legend image post style={line width=1.25pt},
+]
+\addlegendimage{empty legend}
+\addlegendentry{\textbf{Tempo (eixo dir.)}}
+
+\addplot[
+    color=qaoaBlue,
+    line width=1.25pt,
+    densely dashed,
+    mark=o,
+    mark size=2pt,
+    mark options={fill=white, draw=qaoaBlue, line width=0.75pt}
+] table[x=N,y=pipeline_time_s] {\pipelinetimedata};
+\addlegendentry{Pipeline total}
+
+\addplot[
+    color=bfRed,
+    line width=1.2pt,
+    dotted,
+    mark=triangle*,
+    mark size=2.1pt,
+    mark options={fill=white, draw=bfRed, line width=0.75pt}
+] table[x=N,y=bruteforce_time_s] {\bruteforcetimedata};
+\addlegendentry{Brute force}
+
+\addplot[
+    color=saGreen,
+    line width=1.2pt,
+    dashed,
+    mark=diamond*,
+    mark size=2pt,
+    mark options={fill=white, draw=saGreen, line width=0.75pt}
+] table[x=N,y=sa_time_s] {\satimedata};
+\addlegendentry{Simulated annealing}
+
+\end{axis}
+\end{tikzpicture}
+
+\end{document}

@@ -1,0 +1,84 @@
+scenario_version = 1
+id = "E6"
+tier = 9
+category = "phase5_extreme_decomposition_scalability"
+name = "Corrected extreme decomposition scalability"
+description = "Sparse stress sweep from N=300 to N=1000 with fixed eight-qubit sub-QUBOs."
+
+[workload]
+mode = "generated"
+num_processes = 300
+num_cores = 2
+weight_strategy = "uniform_random"
+min_weight = 0.0
+max_weight = 1.0
+instance_seed = 0
+
+[qubo]
+penalty = 5.0
+
+[qaoa]
+layers = 2
+steps = 100
+learning_rate = 0.1
+top_k = 10
+mixer_type = "xy"
+init_gamma = 0.5
+init_beta = 0.5
+init_strategy = "random"
+random_seed = 10000
+
+[tracer]
+live_mode = false
+min_rss = 20.0
+min_cpu = 0.005
+cpu_interval = 1
+num_samples = 3
+
+[decomposition]
+qubit_max = 8
+num_cores = 2
+io_alpha = 0.5
+affinity_alpha = 0.8
+homogeneity_threshold = 0.3
+zscore_threshold = 1.5
+sorting_strategy = "COUPLING_DESCENDING"
+
+[validation]
+method = "simulated_annealing"
+annealing_sweeps = 1000
+annealing_restarts = 10
+optimality_rtol = 1e-9
+optimality_atol = 1e-9
+
+[execution]
+pipeline = "iterative"
+visualization = false
+repeats = 3
+
+[seeds]
+instance_seed_base = 0
+qaoa_seed_base = 10000
+
+[record]
+metrics = [
+  "num_sub_qubos",
+  "tempo_total_ms",
+  "tempo_qaoa_ms",
+  "tempo_overhead_ms",
+  "baseline_method",
+  "is_optimal",
+  "gap_relativo",
+  "delta_imbalance",
+  "gap_estavel",
+  "load_imbalance",
+]
+
+[[sweep.axes]]
+name = "num_processes"
+path = "workload.num_processes"
+values = [300, 500, 750, 1000]
+
+[checks]
+no_crash = true
+global_assignment_feasible = true

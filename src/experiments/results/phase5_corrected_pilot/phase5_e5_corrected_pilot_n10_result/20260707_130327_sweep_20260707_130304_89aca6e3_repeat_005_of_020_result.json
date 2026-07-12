@@ -1,0 +1,412 @@
+{
+  "category": "phase5_corrected_pilot",
+  "config": {
+    "category": "phase5_corrected_pilot",
+    "checks": {
+      "global_assignment_feasible": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Isolated N=10 validation after applying top_k and offset-free optimality fixes.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 20,
+      "visualization": false
+    },
+    "id": "E5.corrected.pilot.N10",
+    "name": "Corrected Phase 5 pilot \u2014 N=10",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 10004,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "num_sub_qubos",
+        "tempo_total_ms",
+        "tempo_qaoa_ms",
+        "tempo_overhead_ms",
+        "baseline_method",
+        "is_optimal",
+        "gap_relativo",
+        "load_imbalance"
+      ]
+    },
+    "scenario_version": 1,
+    "seeds": {
+      "instance_seed_base": 0,
+      "qaoa_seed_base": 10000
+    },
+    "sweep_context": {
+      "values": {
+        "instance_seed": 4,
+        "qaoa_seed": 10004
+      },
+      "variant_count": 1,
+      "variant_index": 1
+    },
+    "tier": 8,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "annealing_restarts": 10,
+      "annealing_seed": 4,
+      "annealing_sweeps": 1000,
+      "brute_force_max_n": 20,
+      "brute_force_time_box_seconds": 60.0,
+      "method": "auto",
+      "optimality_atol": 1e-09,
+      "optimality_rtol": 1e-09
+    },
+    "workload": {
+      "instance_seed": 4,
+      "max_weight": 1.0,
+      "min_weight": 0.0,
+      "mode": "generated",
+      "num_cores": 2,
+      "num_processes": 10,
+      "weight_strategy": "uniform_random"
+    }
+  },
+  "duration_s": 5.250475883483887,
+  "ended_at_epoch": 1783429413.178009,
+  "log_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130327_sweep_20260707_130304_89aca6e3_repeat_005_of_020.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_restart_energy_std": null,
+    "annealing_restarts_stable": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 0,
+      "1001": 1,
+      "1002": 1,
+      "1003": 1,
+      "1004": 0,
+      "1005": 0,
+      "1006": 1,
+      "1007": 0,
+      "1008": 0,
+      "1009": 1
+    },
+    "baseline_certified": true,
+    "baseline_core_loads": [
+      2.9428347811801596,
+      2.944476721263168
+    ],
+    "baseline_energy": -67.33021701541715,
+    "baseline_load_balance_objective": 1.3479836180950669e-06,
+    "baseline_load_imbalance": 0.0016419400830085529,
+    "baseline_match_offset_free": false,
+    "baseline_method": "bruteforce",
+    "baseline_normalized_load_imbalance": 0.0005577894365966949,
+    "beats_annealing": null,
+    "brute_force_solve_time_ms": 5.789753000044584,
+    "certified_optimal_offset_free": false,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.030509999760397477,
+      "instrumented_total_ms": 5248.841420000645,
+      "qaoa_ms": 5242.6385670000855,
+      "qubo_build_ms": 0.3016299997398164,
+      "reconstruction_ms": 0.011640000593615696,
+      "validation_ms": 5.85078300036912,
+      "wall_clock_total_ms": 5250.128806999783,
+      "workload_ms": 0.008290000096167205
+    },
+    "convergence_steps_recorded": 300,
+    "core_loads": [
+      2.973061612276355,
+      2.9142498901669733
+    ],
+    "energy": -67.32848895407203,
+    "excess_normalized_load_imbalance": 0.01942135455297266,
+    "experiment_metadata": {},
+    "feasible": true,
+    "final_phi": [
+      2.9730616122763545,
+      2.914249890166973
+    ],
+    "gap_relativo": 1281.9601973794859,
+    "is_optimal": false,
+    "load_balance_objective": 0.0017294093287355606,
+    "load_imbalance": 0.05881172210938157,
+    "max_subqubo_convergence_iterations_to_final_tol": 48,
+    "normalized_load_imbalance": 0.019979143989569355,
+    "num_cores": 2,
+    "num_entities": 10,
+    "num_feasible_sub_qubos": 3,
+    "num_sub_qubos": 3,
+    "num_variables": 20,
+    "objective_regret": 0.0017280613451174656,
+    "optimal": false,
+    "optimality_gap": 2.5665465250519607e-05,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "pipeline_energy": -67.32848895407203,
+    "sa_energy_match": null,
+    "solve_time_ms": 5207.407248999971,
+    "solver_params": {
+      "sub_qubos": 3
+    },
+    "target_load": 2.943655751221664,
+    "tempo_overhead_ms": 6.2028530005591165,
+    "tempo_qaoa_ms": 5242.6385670000855,
+    "tempo_total_ms": 5248.841420000645,
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_best_energy_hit_fraction": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_restart_best_energies": null,
+      "annealing_restart_energy_range": null,
+      "annealing_restart_energy_std": null,
+      "annealing_restarts_stable": null,
+      "annealing_solve_time_ms": null,
+      "baseline_certified": true,
+      "baseline_energy": -67.33021701541715,
+      "baseline_method": "bruteforce",
+      "baseline_method_requested": "auto",
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 5.789753000044584,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 1,
+        "1002": 1,
+        "1003": 1,
+        "1004": 0,
+        "1005": 0,
+        "1006": 1,
+        "1007": 0,
+        "1008": 0,
+        "1009": 1
+      },
+      "candidate_energy": -67.32848895407203,
+      "errors": [],
+      "global_assignments": {
+        "1000": 1,
+        "1001": 1,
+        "1002": 0,
+        "1003": 1,
+        "1004": 1,
+        "1005": 0,
+        "1006": 1,
+        "1007": 0,
+        "1008": 0,
+        "1009": 0
+      },
+      "global_energy": -67.33021701541715,
+      "is_optimal": false,
+      "optimality_atol": 1e-09,
+      "optimality_metric": "offset_free_load_balance_objective",
+      "optimality_rtol": 1e-09,
+      "pipeline_energy": -67.32848895407203,
+      "relative_gap": 1281.9601973794859,
+      "unconstrained_assignments": {},
+      "unconstrained_energy": null,
+      "unconstrained_is_feasible": null,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130327_sweep_20260707_130304_89aca6e3_repeat_005_of_020_output.txt",
+  "repeat_count": 20,
+  "repeat_index": 4,
+  "repeat_number": 5,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.9430561055723676,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 965.6894521061045
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.5113275528143616,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 523.5994140819063
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.9762437057077041,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 999.673554644689
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.08083602389560218,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 82.77608846909663
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.6073558319950296,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 621.9323719629103
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.37648658437727256,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 385.5222624023271
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.8019012069858072,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 821.1468359534666
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.17452781614402846,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 178.71648373148514
+        },
+        {
+          "command": "proc_8",
+          "cpu_weight": 0.8716352741876564,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1008,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 892.5545207681602
+        },
+        {
+          "command": "proc_9",
+          "cpu_weight": 0.5439414007634982,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1009,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 556.9959943818221
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1783429407.9277356,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 10004,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "run": {
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative"
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": false,
+      "annealing_restarts": 10,
+      "annealing_seed": 4,
+      "annealing_sweeps": 1000,
+      "baseline_method": "auto",
+      "brute_force_max_n": 20,
+      "brute_force_time_box_seconds": 60.0,
+      "optimality_atol": 1e-09,
+      "optimality_rtol": 1e-09
+    }
+  },
+  "result_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130327_sweep_20260707_130304_89aca6e3_repeat_005_of_020_result.json",
+  "run_id": "sweep_20260707_130304_89aca6e3",
+  "scenario_file": "src/experiments/scenarios/phase5_e5_corrected_pilot_n10.toml",
+  "scenario_id": "E5.corrected.pilot.N10",
+  "scenario_name": "Corrected Phase 5 pilot \u2014 N=10",
+  "scenario_stem": "phase5_e5_corrected_pilot_n10",
+  "started_at_epoch": 1783429407.9275331,
+  "started_at_utc": "20260707_130327",
+  "status": "success",
+  "tier": 8,
+  "warnings": []
+}

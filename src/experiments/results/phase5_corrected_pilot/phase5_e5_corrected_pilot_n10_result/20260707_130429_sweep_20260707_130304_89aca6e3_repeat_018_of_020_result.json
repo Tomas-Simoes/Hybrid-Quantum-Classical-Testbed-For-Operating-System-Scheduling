@@ -1,0 +1,412 @@
+{
+  "category": "phase5_corrected_pilot",
+  "config": {
+    "category": "phase5_corrected_pilot",
+    "checks": {
+      "global_assignment_feasible": true,
+      "no_crash": true
+    },
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "description": "Isolated N=10 validation after applying top_k and offset-free optimality fixes.",
+    "execution": {
+      "pipeline": "iterative",
+      "repeats": 20,
+      "visualization": false
+    },
+    "id": "E5.corrected.pilot.N10",
+    "name": "Corrected Phase 5 pilot \u2014 N=10",
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 10017,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "penalty": 5.0
+    },
+    "record": {
+      "metrics": [
+        "num_sub_qubos",
+        "tempo_total_ms",
+        "tempo_qaoa_ms",
+        "tempo_overhead_ms",
+        "baseline_method",
+        "is_optimal",
+        "gap_relativo",
+        "load_imbalance"
+      ]
+    },
+    "scenario_version": 1,
+    "seeds": {
+      "instance_seed_base": 0,
+      "qaoa_seed_base": 10000
+    },
+    "sweep_context": {
+      "values": {
+        "instance_seed": 17,
+        "qaoa_seed": 10017
+      },
+      "variant_count": 1,
+      "variant_index": 1
+    },
+    "tier": 8,
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "annealing_restarts": 10,
+      "annealing_seed": 17,
+      "annealing_sweeps": 1000,
+      "brute_force_max_n": 20,
+      "brute_force_time_box_seconds": 60.0,
+      "method": "auto",
+      "optimality_atol": 1e-09,
+      "optimality_rtol": 1e-09
+    },
+    "workload": {
+      "instance_seed": 17,
+      "max_weight": 1.0,
+      "min_weight": 0.0,
+      "mode": "generated",
+      "num_cores": 2,
+      "num_processes": 10,
+      "weight_strategy": "uniform_random"
+    }
+  },
+  "duration_s": 4.2757158279418945,
+  "ended_at_epoch": 1783429473.6977782,
+  "log_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130429_sweep_20260707_130304_89aca6e3_repeat_018_of_020.log",
+  "metrics": {
+    "all_sub_qubos_feasible": true,
+    "annealing_energy": null,
+    "annealing_gap": null,
+    "annealing_restart_energy_std": null,
+    "annealing_restarts_stable": null,
+    "annealing_solve_time_ms": null,
+    "assignments": {
+      "1000": 0,
+      "1001": 0,
+      "1002": 0,
+      "1003": 1,
+      "1004": 0,
+      "1005": 1,
+      "1006": 0,
+      "1007": 1,
+      "1008": 1,
+      "1009": 1
+    },
+    "baseline_certified": true,
+    "baseline_core_loads": [
+      2.162103993155452,
+      2.161717515695074
+    ],
+    "baseline_energy": -59.347716145516806,
+    "baseline_load_balance_objective": 7.468241369016093e-08,
+    "baseline_load_imbalance": 0.0003864774603781207,
+    "baseline_match_offset_free": false,
+    "baseline_method": "bruteforce",
+    "baseline_normalized_load_imbalance": 0.00017876661170542374,
+    "beats_annealing": null,
+    "brute_force_solve_time_ms": 5.675342000358796,
+    "certified_optimal_offset_free": false,
+    "component_timings_ms": {
+      "clustering_ms": 0.0,
+      "decomposition_ms": 0.029410000024654437,
+      "instrumented_total_ms": 4274.166724999304,
+      "qaoa_ms": 4268.103802000496,
+      "qubo_build_ms": 0.2968909993796842,
+      "reconstruction_ms": 0.010879999535973184,
+      "validation_ms": 5.71804199989856,
+      "wall_clock_total_ms": 4275.411531000373,
+      "workload_ms": 0.007699999969190685
+    },
+    "convergence_steps_recorded": 300,
+    "core_loads": [
+      2.2068988939880776,
+      2.1169226148624487
+    ],
+    "energy": -59.34366835479657,
+    "excess_normalized_load_imbalance": 0.041440101762696455,
+    "experiment_metadata": {},
+    "feasible": true,
+    "final_phi": [
+      2.206898893988078,
+      2.1169226148624487
+    ],
+    "gap_relativo": 54200.05219737734,
+    "is_optimal": false,
+    "load_balance_objective": 0.0040478654026465406,
+    "load_imbalance": 0.08997627912562889,
+    "max_subqubo_convergence_iterations_to_final_tol": 46,
+    "normalized_load_imbalance": 0.04161886837440188,
+    "num_cores": 2,
+    "num_entities": 10,
+    "num_feasible_sub_qubos": 3,
+    "num_sub_qubos": 3,
+    "num_variables": 20,
+    "objective_regret": 0.004047790720232851,
+    "optimal": false,
+    "optimality_gap": 6.820465863102254e-05,
+    "output_type": "IterativeSchedulingOutput",
+    "pipeline": "iterative",
+    "pipeline_energy": -59.34366835479657,
+    "sa_energy_match": null,
+    "solve_time_ms": 4233.351328000026,
+    "solver_params": {
+      "sub_qubos": 3
+    },
+    "target_load": 2.161910754425263,
+    "tempo_overhead_ms": 6.062922998808062,
+    "tempo_qaoa_ms": 4268.103802000496,
+    "tempo_total_ms": 4274.166724999304,
+    "validation": {
+      "annealing_assignments": {},
+      "annealing_backend": null,
+      "annealing_best_energy_hit_fraction": null,
+      "annealing_energy": null,
+      "annealing_error": null,
+      "annealing_gap": null,
+      "annealing_is_feasible": null,
+      "annealing_restart_best_energies": null,
+      "annealing_restart_energy_range": null,
+      "annealing_restart_energy_std": null,
+      "annealing_restarts_stable": null,
+      "annealing_solve_time_ms": null,
+      "baseline_certified": true,
+      "baseline_energy": -59.347716145516806,
+      "baseline_method": "bruteforce",
+      "baseline_method_requested": "auto",
+      "beats_annealing": null,
+      "brute_force_error": null,
+      "brute_force_solve_time_ms": 5.675342000358796,
+      "candidate_assignments": {
+        "1000": 0,
+        "1001": 0,
+        "1002": 0,
+        "1003": 1,
+        "1004": 0,
+        "1005": 1,
+        "1006": 0,
+        "1007": 1,
+        "1008": 1,
+        "1009": 1
+      },
+      "candidate_energy": -59.34366835479657,
+      "errors": [],
+      "global_assignments": {
+        "1000": 0,
+        "1001": 0,
+        "1002": 0,
+        "1003": 0,
+        "1004": 0,
+        "1005": 1,
+        "1006": 1,
+        "1007": 1,
+        "1008": 1,
+        "1009": 0
+      },
+      "global_energy": -59.347716145516806,
+      "is_optimal": false,
+      "optimality_atol": 1e-09,
+      "optimality_metric": "offset_free_load_balance_objective",
+      "optimality_rtol": 1e-09,
+      "pipeline_energy": -59.34366835479657,
+      "relative_gap": 54200.05219737734,
+      "unconstrained_assignments": {},
+      "unconstrained_energy": null,
+      "unconstrained_is_feasible": null,
+      "valid": true
+    }
+  },
+  "output_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130429_sweep_20260707_130304_89aca6e3_repeat_018_of_020_output.txt",
+  "repeat_count": 20,
+  "repeat_index": 17,
+  "repeat_number": 18,
+  "resolved_config": {
+    "decomposition": {
+      "affinity_alpha": 0.8,
+      "homogeneity_threshold": 0.3,
+      "io_alpha": 0.5,
+      "num_cores": 2,
+      "qubit_max": 8,
+      "sorting_strategy": "COUPLING_DESCENDING",
+      "zscore_threshold": 1.5
+    },
+    "preset_snapshot": {
+      "num_cores": 2,
+      "processes": [
+        {
+          "command": "proc_0",
+          "cpu_weight": 0.8450747927979015,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1000,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 865.3565878250512
+        },
+        {
+          "command": "proc_1",
+          "cpu_weight": 0.16097309116910696,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1001,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 164.83644535716553
+        },
+        {
+          "command": "proc_2",
+          "cpu_weight": 0.5577445473656921,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1002,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 571.1304165024687
+        },
+        {
+          "command": "proc_3",
+          "cpu_weight": 0.36807994166427127,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1003,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 376.9138602642138
+        },
+        {
+          "command": "proc_4",
+          "cpu_weight": 0.21494196356176842,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1004,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 220.10057068725087
+        },
+        {
+          "command": "proc_5",
+          "cpu_weight": 0.3858240375891985,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1005,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 395.08381449133924
+        },
+        {
+          "command": "proc_6",
+          "cpu_weight": 0.42816449909360843,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1006,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 438.44044707185503
+        },
+        {
+          "command": "proc_7",
+          "cpu_weight": 0.6113431084989805,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1007,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 626.0153431029561
+        },
+        {
+          "command": "proc_8",
+          "cpu_weight": 0.7363858705132865,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1008,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 754.0591314056054
+        },
+        {
+          "command": "proc_9",
+          "cpu_weight": 0.015289656596711554,
+          "current_core": 0,
+          "io_wait_ratio": null,
+          "pid": 1009,
+          "priority": 20,
+          "priority_class": null,
+          "rss_mb": 15.656608355032631
+        }
+      ],
+      "snapshot_id": null,
+      "timestamp": 1783429469.4222445,
+      "total_ram_mb": null
+    },
+    "qaoa": {
+      "init_beta": 0.5,
+      "init_gamma": 0.5,
+      "init_strategy": "random",
+      "layers": 2,
+      "learning_rate": 0.1,
+      "mixer_type": "xy",
+      "random_seed": 10017,
+      "steps": 100,
+      "top_k": 10
+    },
+    "qubo": {
+      "num_cores": 2,
+      "penalty": 5.0,
+      "snapshot": null,
+      "target_load": null
+    },
+    "run": {
+      "cluster_preset_snapshot": false,
+      "enable_visualization": false,
+      "pipeline_mode": "iterative"
+    },
+    "tracer": {
+      "cpu_interval": 1,
+      "live_mode": false,
+      "min_cpu": 0.005,
+      "min_rss": 20.0,
+      "num_samples": 3
+    },
+    "validation": {
+      "always_run_annealing": false,
+      "annealing_restarts": 10,
+      "annealing_seed": 17,
+      "annealing_sweeps": 1000,
+      "baseline_method": "auto",
+      "brute_force_max_n": 20,
+      "brute_force_time_box_seconds": 60.0,
+      "optimality_atol": 1e-09,
+      "optimality_rtol": 1e-09
+    }
+  },
+  "result_path": "src/experiments/results/phase5_corrected_pilot/phase5_e5_corrected_pilot_n10_result/20260707_130429_sweep_20260707_130304_89aca6e3_repeat_018_of_020_result.json",
+  "run_id": "sweep_20260707_130304_89aca6e3",
+  "scenario_file": "src/experiments/scenarios/phase5_e5_corrected_pilot_n10.toml",
+  "scenario_id": "E5.corrected.pilot.N10",
+  "scenario_name": "Corrected Phase 5 pilot \u2014 N=10",
+  "scenario_stem": "phase5_e5_corrected_pilot_n10",
+  "started_at_epoch": 1783429469.4220624,
+  "started_at_utc": "20260707_130429",
+  "status": "success",
+  "tier": 8,
+  "warnings": []
+}

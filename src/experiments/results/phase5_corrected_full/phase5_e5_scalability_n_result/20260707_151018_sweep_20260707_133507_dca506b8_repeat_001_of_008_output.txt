@@ -1,0 +1,1011 @@
+========================================================================================
+EXPERIMENT RESULT: phase5_e5_scalability_n (E5.11)
+========================================================================================
+Run id:        sweep_20260707_133507_dca506b8
+Repeat:        1/8
+Status:        success
+Started UTC:   20260707_151018
+Duration:      128.917s
+Scenario file: src/experiments/scenarios/phase5_e5_scalability_n.toml
+JSON result:   src/experiments/results/phase5_corrected_full/phase5_e5_scalability_n_result/20260707_151018_sweep_20260707_133507_dca506b8_repeat_001_of_008_result.json
+Output file:   src/experiments/results/phase5_corrected_full/phase5_e5_scalability_n_result/20260707_151018_sweep_20260707_133507_dca506b8_repeat_001_of_008_output.txt
+
+METRICS
+----------------------------------------------------------------------------------------
+pipeline: "iterative"
+output_type: "IterativeSchedulingOutput"
+num_entities: 200
+num_cores: 2
+num_variables: 400
+energy: -6824.003602504403
+feasible: true
+optimal: false
+optimality_gap: 1.7286254476251027e-12
+solve_time_ms: 110723.17110400763
+annealing_energy: -6824.003602516199
+annealing_gap: 1.179614628199488e-08
+beats_annealing: false
+annealing_solve_time_ms: 18105.501707001167
+brute_force_solve_time_ms: null
+sa_energy_match: true
+component_timings_ms: {"clustering_ms": 0.0, "decomposition_ms": 5.786026998976013, "instrumented_total_ms": 128900.06197298135, "qaoa_ms": 110743.22312299228, "qubo_build_ms": 44.627080987993395, "reconstruction_ms": 0.27738200333260465, "validation_ms": 18106.060869999055, "wall_clock_total_ms": 128916.37330000049, "workload_ms": 0.08748999971430749}
+experiment_metadata: {}
+num_sub_qubos: 50
+num_feasible_sub_qubos: 50
+all_sub_qubos_feasible: true
+load_imbalance: 0.00015364502340275976
+final_phi: [53.96304376520401, 53.9628901201806]
+
+ASSIGNMENTS
+----------------------------------------------------------------------------------------
+1000 -> 0
+1001 -> 0
+1002 -> 0
+1003 -> 1
+1004 -> 1
+1005 -> 0
+1006 -> 1
+1007 -> 0
+1008 -> 1
+1009 -> 0
+1010 -> 0
+1011 -> 1
+1012 -> 1
+1013 -> 1
+1014 -> 1
+1015 -> 1
+1016 -> 0
+1017 -> 0
+1018 -> 1
+1019 -> 1
+1020 -> 0
+1021 -> 1
+1022 -> 0
+1023 -> 1
+1024 -> 0
+1025 -> 0
+1026 -> 1
+1027 -> 1
+1028 -> 0
+1029 -> 0
+1030 -> 0
+1031 -> 1
+1032 -> 0
+1033 -> 1
+1034 -> 0
+1035 -> 0
+1036 -> 0
+1037 -> 0
+1038 -> 1
+1039 -> 1
+1040 -> 0
+1041 -> 1
+1042 -> 1
+1043 -> 0
+1044 -> 1
+1045 -> 0
+1046 -> 1
+1047 -> 1
+1048 -> 1
+1049 -> 1
+1050 -> 0
+1051 -> 1
+1052 -> 0
+1053 -> 1
+1054 -> 0
+1055 -> 1
+1056 -> 0
+1057 -> 1
+1058 -> 0
+1059 -> 0
+1060 -> 0
+1061 -> 0
+1062 -> 1
+1063 -> 1
+1064 -> 0
+1065 -> 1
+1066 -> 0
+1067 -> 1
+1068 -> 0
+1069 -> 0
+1070 -> 1
+1071 -> 0
+1072 -> 0
+1073 -> 1
+1074 -> 0
+1075 -> 1
+1076 -> 1
+1077 -> 0
+1078 -> 0
+1079 -> 0
+1080 -> 0
+1081 -> 1
+1082 -> 1
+1083 -> 1
+1084 -> 0
+1085 -> 1
+1086 -> 0
+1087 -> 1
+1088 -> 0
+1089 -> 0
+1090 -> 1
+1091 -> 1
+1092 -> 1
+1093 -> 1
+1094 -> 1
+1095 -> 1
+1096 -> 1
+1097 -> 0
+1098 -> 1
+1099 -> 1
+1100 -> 1
+1101 -> 0
+1102 -> 0
+1103 -> 1
+1104 -> 0
+1105 -> 1
+1106 -> 1
+1107 -> 0
+1108 -> 0
+1109 -> 1
+1110 -> 0
+1111 -> 1
+1112 -> 0
+1113 -> 0
+1114 -> 1
+1115 -> 1
+1116 -> 0
+1117 -> 0
+1118 -> 0
+1119 -> 0
+1120 -> 0
+1121 -> 1
+1122 -> 1
+1123 -> 1
+1124 -> 1
+1125 -> 1
+1126 -> 1
+1127 -> 1
+1128 -> 0
+1129 -> 1
+1130 -> 0
+1131 -> 0
+1132 -> 0
+1133 -> 1
+1134 -> 1
+1135 -> 1
+1136 -> 0
+1137 -> 0
+1138 -> 0
+1139 -> 1
+1140 -> 0
+1141 -> 0
+1142 -> 0
+1143 -> 0
+1144 -> 1
+1145 -> 1
+1146 -> 1
+1147 -> 0
+1148 -> 0
+1149 -> 1
+1150 -> 0
+1151 -> 1
+1152 -> 1
+1153 -> 0
+1154 -> 0
+1155 -> 1
+1156 -> 0
+1157 -> 1
+1158 -> 1
+1159 -> 1
+1160 -> 0
+1161 -> 0
+1162 -> 1
+1163 -> 0
+1164 -> 1
+1165 -> 0
+1166 -> 1
+1167 -> 0
+1168 -> 0
+1169 -> 0
+1170 -> 1
+1171 -> 0
+1172 -> 1
+1173 -> 0
+1174 -> 1
+1175 -> 1
+1176 -> 1
+1177 -> 0
+1178 -> 1
+1179 -> 0
+1180 -> 1
+1181 -> 0
+1182 -> 1
+1183 -> 1
+1184 -> 1
+1185 -> 0
+1186 -> 0
+1187 -> 0
+1188 -> 0
+1189 -> 0
+1190 -> 1
+1191 -> 0
+1192 -> 1
+1193 -> 0
+1194 -> 1
+1195 -> 1
+1196 -> 0
+1197 -> 0
+1198 -> 0
+1199 -> 1
+
+VALIDATION
+----------------------------------------------------------------------------------------
+{
+  "annealing_assignments": {
+    "1000": 1,
+    "1001": 0,
+    "1002": 0,
+    "1003": 0,
+    "1004": 1,
+    "1005": 1,
+    "1006": 0,
+    "1007": 0,
+    "1008": 1,
+    "1009": 1,
+    "1010": 0,
+    "1011": 0,
+    "1012": 0,
+    "1013": 1,
+    "1014": 0,
+    "1015": 1,
+    "1016": 0,
+    "1017": 0,
+    "1018": 1,
+    "1019": 0,
+    "1020": 0,
+    "1021": 0,
+    "1022": 0,
+    "1023": 0,
+    "1024": 1,
+    "1025": 1,
+    "1026": 0,
+    "1027": 0,
+    "1028": 0,
+    "1029": 0,
+    "1030": 0,
+    "1031": 0,
+    "1032": 1,
+    "1033": 1,
+    "1034": 1,
+    "1035": 0,
+    "1036": 0,
+    "1037": 0,
+    "1038": 1,
+    "1039": 0,
+    "1040": 1,
+    "1041": 0,
+    "1042": 1,
+    "1043": 0,
+    "1044": 1,
+    "1045": 0,
+    "1046": 1,
+    "1047": 1,
+    "1048": 0,
+    "1049": 0,
+    "1050": 1,
+    "1051": 1,
+    "1052": 0,
+    "1053": 1,
+    "1054": 1,
+    "1055": 0,
+    "1056": 0,
+    "1057": 1,
+    "1058": 0,
+    "1059": 0,
+    "1060": 1,
+    "1061": 0,
+    "1062": 0,
+    "1063": 1,
+    "1064": 1,
+    "1065": 1,
+    "1066": 1,
+    "1067": 1,
+    "1068": 1,
+    "1069": 0,
+    "1070": 1,
+    "1071": 1,
+    "1072": 0,
+    "1073": 1,
+    "1074": 1,
+    "1075": 0,
+    "1076": 0,
+    "1077": 1,
+    "1078": 1,
+    "1079": 0,
+    "1080": 1,
+    "1081": 1,
+    "1082": 1,
+    "1083": 0,
+    "1084": 1,
+    "1085": 0,
+    "1086": 0,
+    "1087": 0,
+    "1088": 1,
+    "1089": 1,
+    "1090": 1,
+    "1091": 1,
+    "1092": 0,
+    "1093": 1,
+    "1094": 1,
+    "1095": 0,
+    "1096": 0,
+    "1097": 0,
+    "1098": 0,
+    "1099": 1,
+    "1100": 0,
+    "1101": 0,
+    "1102": 1,
+    "1103": 0,
+    "1104": 1,
+    "1105": 1,
+    "1106": 1,
+    "1107": 1,
+    "1108": 1,
+    "1109": 1,
+    "1110": 0,
+    "1111": 0,
+    "1112": 0,
+    "1113": 1,
+    "1114": 1,
+    "1115": 0,
+    "1116": 1,
+    "1117": 0,
+    "1118": 0,
+    "1119": 1,
+    "1120": 1,
+    "1121": 0,
+    "1122": 0,
+    "1123": 0,
+    "1124": 1,
+    "1125": 0,
+    "1126": 1,
+    "1127": 0,
+    "1128": 1,
+    "1129": 0,
+    "1130": 1,
+    "1131": 1,
+    "1132": 1,
+    "1133": 1,
+    "1134": 1,
+    "1135": 1,
+    "1136": 0,
+    "1137": 0,
+    "1138": 1,
+    "1139": 1,
+    "1140": 0,
+    "1141": 1,
+    "1142": 1,
+    "1143": 0,
+    "1144": 1,
+    "1145": 0,
+    "1146": 0,
+    "1147": 0,
+    "1148": 0,
+    "1149": 0,
+    "1150": 0,
+    "1151": 1,
+    "1152": 1,
+    "1153": 1,
+    "1154": 0,
+    "1155": 0,
+    "1156": 1,
+    "1157": 1,
+    "1158": 0,
+    "1159": 1,
+    "1160": 1,
+    "1161": 1,
+    "1162": 0,
+    "1163": 1,
+    "1164": 0,
+    "1165": 0,
+    "1166": 1,
+    "1167": 1,
+    "1168": 1,
+    "1169": 0,
+    "1170": 0,
+    "1171": 0,
+    "1172": 1,
+    "1173": 0,
+    "1174": 0,
+    "1175": 0,
+    "1176": 1,
+    "1177": 0,
+    "1178": 0,
+    "1179": 1,
+    "1180": 0,
+    "1181": 0,
+    "1182": 0,
+    "1183": 1,
+    "1184": 1,
+    "1185": 0,
+    "1186": 1,
+    "1187": 0,
+    "1188": 0,
+    "1189": 0,
+    "1190": 0,
+    "1191": 1,
+    "1192": 0,
+    "1193": 1,
+    "1194": 1,
+    "1195": 0,
+    "1196": 1,
+    "1197": 0,
+    "1198": 1,
+    "1199": 0
+  },
+  "annealing_backend": "simulated_annealing_one_hot",
+  "annealing_best_energy_hit_fraction": 1.0,
+  "annealing_energy": -6824.003602516199,
+  "annealing_error": null,
+  "annealing_gap": 1.179614628199488e-08,
+  "annealing_is_feasible": true,
+  "annealing_restart_best_energies": [
+    -6824.003602516165,
+    -6824.003602516132,
+    -6824.0036025162035,
+    -6824.003602515868,
+    -6824.003602515605,
+    -6824.003602516048,
+    -6824.003602516011,
+    -6824.003602515906,
+    -6824.003602516141,
+    -6824.00360251628
+  ],
+  "annealing_restart_energy_range": 6.748450687155128e-10,
+  "annealing_restart_energy_std": 1.8868475370931157e-10,
+  "annealing_restarts_stable": true,
+  "annealing_solve_time_ms": 18105.501707001167,
+  "baseline_certified": false,
+  "baseline_energy": -6824.003602516199,
+  "baseline_method": "simulated_annealing",
+  "baseline_method_requested": "auto",
+  "beats_annealing": false,
+  "brute_force_error": null,
+  "brute_force_solve_time_ms": null,
+  "candidate_assignments": {
+    "1000": 0,
+    "1001": 0,
+    "1002": 0,
+    "1003": 1,
+    "1004": 1,
+    "1005": 0,
+    "1006": 1,
+    "1007": 0,
+    "1008": 1,
+    "1009": 0,
+    "1010": 0,
+    "1011": 1,
+    "1012": 1,
+    "1013": 1,
+    "1014": 1,
+    "1015": 1,
+    "1016": 0,
+    "1017": 0,
+    "1018": 1,
+    "1019": 1,
+    "1020": 0,
+    "1021": 1,
+    "1022": 0,
+    "1023": 1,
+    "1024": 0,
+    "1025": 0,
+    "1026": 1,
+    "1027": 1,
+    "1028": 0,
+    "1029": 0,
+    "1030": 0,
+    "1031": 1,
+    "1032": 0,
+    "1033": 1,
+    "1034": 0,
+    "1035": 0,
+    "1036": 0,
+    "1037": 0,
+    "1038": 1,
+    "1039": 1,
+    "1040": 0,
+    "1041": 1,
+    "1042": 1,
+    "1043": 0,
+    "1044": 1,
+    "1045": 0,
+    "1046": 1,
+    "1047": 1,
+    "1048": 1,
+    "1049": 1,
+    "1050": 0,
+    "1051": 1,
+    "1052": 0,
+    "1053": 1,
+    "1054": 0,
+    "1055": 1,
+    "1056": 0,
+    "1057": 1,
+    "1058": 0,
+    "1059": 0,
+    "1060": 0,
+    "1061": 0,
+    "1062": 1,
+    "1063": 1,
+    "1064": 0,
+    "1065": 1,
+    "1066": 0,
+    "1067": 1,
+    "1068": 0,
+    "1069": 0,
+    "1070": 1,
+    "1071": 0,
+    "1072": 0,
+    "1073": 1,
+    "1074": 0,
+    "1075": 1,
+    "1076": 1,
+    "1077": 0,
+    "1078": 0,
+    "1079": 0,
+    "1080": 0,
+    "1081": 1,
+    "1082": 1,
+    "1083": 1,
+    "1084": 0,
+    "1085": 1,
+    "1086": 0,
+    "1087": 1,
+    "1088": 0,
+    "1089": 0,
+    "1090": 1,
+    "1091": 1,
+    "1092": 1,
+    "1093": 1,
+    "1094": 1,
+    "1095": 1,
+    "1096": 1,
+    "1097": 0,
+    "1098": 1,
+    "1099": 1,
+    "1100": 1,
+    "1101": 0,
+    "1102": 0,
+    "1103": 1,
+    "1104": 0,
+    "1105": 1,
+    "1106": 1,
+    "1107": 0,
+    "1108": 0,
+    "1109": 1,
+    "1110": 0,
+    "1111": 1,
+    "1112": 0,
+    "1113": 0,
+    "1114": 1,
+    "1115": 1,
+    "1116": 0,
+    "1117": 0,
+    "1118": 0,
+    "1119": 0,
+    "1120": 0,
+    "1121": 1,
+    "1122": 1,
+    "1123": 1,
+    "1124": 1,
+    "1125": 1,
+    "1126": 1,
+    "1127": 1,
+    "1128": 0,
+    "1129": 1,
+    "1130": 0,
+    "1131": 0,
+    "1132": 0,
+    "1133": 1,
+    "1134": 1,
+    "1135": 1,
+    "1136": 0,
+    "1137": 0,
+    "1138": 0,
+    "1139": 1,
+    "1140": 0,
+    "1141": 0,
+    "1142": 0,
+    "1143": 0,
+    "1144": 1,
+    "1145": 1,
+    "1146": 1,
+    "1147": 0,
+    "1148": 0,
+    "1149": 1,
+    "1150": 0,
+    "1151": 1,
+    "1152": 1,
+    "1153": 0,
+    "1154": 0,
+    "1155": 1,
+    "1156": 0,
+    "1157": 1,
+    "1158": 1,
+    "1159": 1,
+    "1160": 0,
+    "1161": 0,
+    "1162": 1,
+    "1163": 0,
+    "1164": 1,
+    "1165": 0,
+    "1166": 1,
+    "1167": 0,
+    "1168": 0,
+    "1169": 0,
+    "1170": 1,
+    "1171": 0,
+    "1172": 1,
+    "1173": 0,
+    "1174": 1,
+    "1175": 1,
+    "1176": 1,
+    "1177": 0,
+    "1178": 1,
+    "1179": 0,
+    "1180": 1,
+    "1181": 0,
+    "1182": 1,
+    "1183": 1,
+    "1184": 1,
+    "1185": 0,
+    "1186": 0,
+    "1187": 0,
+    "1188": 0,
+    "1189": 0,
+    "1190": 1,
+    "1191": 0,
+    "1192": 1,
+    "1193": 0,
+    "1194": 1,
+    "1195": 1,
+    "1196": 0,
+    "1197": 0,
+    "1198": 0,
+    "1199": 1
+  },
+  "candidate_energy": -6824.003602504403,
+  "errors": [],
+  "global_assignments": {},
+  "global_energy": null,
+  "is_optimal": false,
+  "optimality_atol": 1e-09,
+  "optimality_metric": "offset_free_load_balance_objective",
+  "optimality_rtol": 1e-09,
+  "pipeline_energy": -6824.003602504403,
+  "relative_gap": 11.795212230333291,
+  "unconstrained_assignments": {},
+  "unconstrained_energy": null,
+  "unconstrained_is_feasible": null,
+  "valid": true
+}
+
+PROGRAM OUTPUT
+----------------------------------------------------------------------------------------
+--- Iterative Run Started at Tue Jul  7 16:10:18 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0205s
+Partitioning in Sub-QUBOs...
+50 sub-QUBOs | sizes: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/50] 4 entities | weight=3.9692
+  phi before: [0. 0.]
+  residual capacity: [53.963 53.963]
+  Solved in 2150.4ms | energy=-440.498799 | feasible=True
+  phi after:  [1.99   1.9792]
+
+[Sub-QUBO 2/50] 4 entities | weight=3.9168
+  phi before: [1.99   1.9792]
+  residual capacity: [51.973  51.9838]
+  Solved in 2165.0ms | energy=-419.503098 | feasible=True
+  phi after:  [3.9447 3.9412]
+
+[Sub-QUBO 3/50] 4 entities | weight=3.8657
+  phi before: [3.9447 3.9412]
+  residual capacity: [50.0182 50.0218]
+  Solved in 2184.7ms | energy=-399.252343 | feasible=True
+  phi after:  [5.8764 5.8752]
+
+[Sub-QUBO 4/50] 4 entities | weight=3.8192
+  phi before: [5.8764 5.8752]
+  residual capacity: [48.0865 48.0878]
+  Solved in 2149.6ms | energy=-380.011912 | feasible=True
+  phi after:  [7.7838 7.787 ]
+
+[Sub-QUBO 5/50] 4 entities | weight=3.7550
+  phi before: [7.7838 7.787 ]
+  residual capacity: [46.1792 46.176 ]
+  Solved in 2154.8ms | energy=-359.746305 | feasible=True
+  phi after:  [9.6627 9.6631]
+
+[Sub-QUBO 6/50] 4 entities | weight=3.7196
+  phi before: [9.6627 9.6631]
+  residual capacity: [44.3003 44.2998]
+  Solved in 2151.9ms | energy=-342.639753 | feasible=True
+  phi after:  [11.5228 11.5226]
+
+[Sub-QUBO 7/50] 4 entities | weight=3.6892
+  phi before: [11.5228 11.5226]
+  residual capacity: [42.4402 42.4404]
+  Solved in 2220.4ms | energy=-326.332412 | feasible=True
+  phi after:  [13.3627 13.3719]
+
+[Sub-QUBO 8/50] 4 entities | weight=3.6004
+  phi before: [13.3627 13.3719]
+  residual capacity: [40.6003 40.5911]
+  Solved in 2152.0ms | energy=-305.841870 | feasible=True
+  phi after:  [15.1632 15.1718]
+
+[Sub-QUBO 9/50] 4 entities | weight=3.5390
+  phi before: [15.1632 15.1718]
+  residual capacity: [38.7997 38.7912]
+  Solved in 2190.1ms | energy=-288.332947 | feasible=True
+  phi after:  [16.934 16.94 ]
+
+[Sub-QUBO 10/50] 4 entities | weight=3.4681
+  phi before: [16.934 16.94 ]
+  residual capacity: [37.0289 37.023 ]
+  Solved in 2222.1ms | energy=-270.804339 | feasible=True
+  phi after:  [18.6737 18.6684]
+
+[Sub-QUBO 11/50] 4 entities | weight=3.4295
+  phi before: [18.6737 18.6684]
+  residual capacity: [35.2893 35.2946]
+  Solved in 2227.5ms | energy=-256.187734 | feasible=True
+  phi after:  [20.3851 20.3865]
+
+[Sub-QUBO 12/50] 4 entities | weight=3.3265
+  phi before: [20.3851 20.3865]
+  residual capacity: [33.5779 33.5765]
+  Solved in 2195.8ms | energy=-237.854275 | feasible=True
+  phi after:  [22.0491 22.0489]
+
+[Sub-QUBO 13/50] 4 entities | weight=3.2696
+  phi before: [22.0491 22.0489]
+  residual capacity: [31.9138 31.914 ]
+  Solved in 2192.7ms | energy=-223.347552 | feasible=True
+  phi after:  [23.6831 23.6846]
+
+[Sub-QUBO 14/50] 4 entities | weight=3.2203
+  phi before: [23.6831 23.6846]
+  residual capacity: [30.2799 30.2784]
+  Solved in 2158.9ms | energy=-209.827729 | feasible=True
+  phi after:  [25.2947 25.2932]
+
+[Sub-QUBO 15/50] 4 entities | weight=3.1212
+  phi before: [25.2947 25.2932]
+  residual capacity: [28.6683 28.6697]
+  Solved in 2163.5ms | energy=-194.093713 | feasible=True
+  phi after:  [26.8544 26.8547]
+
+[Sub-QUBO 16/50] 4 entities | weight=2.9984
+  phi before: [26.8544 26.8547]
+  residual capacity: [27.1085 27.1082]
+  Solved in 2163.5ms | energy=-178.068871 | feasible=True
+  phi after:  [28.3604 28.3472]
+
+[Sub-QUBO 17/50] 4 entities | weight=2.9202
+  phi before: [28.3604 28.3472]
+  residual capacity: [25.6025 25.6158]
+  Solved in 2226.5ms | energy=-165.302800 | feasible=True
+  phi after:  [29.8189 29.8088]
+
+[Sub-QUBO 18/50] 4 entities | weight=2.8665
+  phi before: [29.8189 29.8088]
+  residual capacity: [24.144  24.1542]
+  Solved in 2219.6ms | energy=-154.336979 | feasible=True
+  phi after:  [31.2493 31.2449]
+
+[Sub-QUBO 19/50] 4 entities | weight=2.7486
+  phi before: [31.2493 31.2449]
+  residual capacity: [22.7137 22.718 ]
+  Solved in 2252.9ms | energy=-141.097724 | feasible=True
+  phi after:  [32.6233 32.6196]
+
+[Sub-QUBO 20/50] 4 entities | weight=2.6612
+  phi before: [32.6233 32.6196]
+  residual capacity: [21.3397 21.3434]
+  Solved in 2178.5ms | energy=-130.046762 | feasible=True
+  phi after:  [33.9465 33.9575]
+
+[Sub-QUBO 21/50] 4 entities | weight=2.5637
+  phi before: [33.9465 33.9575]
+  residual capacity: [20.0164 20.0054]
+  Solved in 2158.5ms | energy=-119.318585 | feasible=True
+  phi after:  [35.2339 35.2338]
+
+[Sub-QUBO 22/50] 4 entities | weight=2.4853
+  phi before: [35.2339 35.2338]
+  residual capacity: [18.729  18.7291]
+  Solved in 2236.0ms | energy=-110.006147 | feasible=True
+  phi after:  [36.4758 36.4772]
+
+[Sub-QUBO 23/50] 4 entities | weight=2.4092
+  phi before: [36.4758 36.4772]
+  residual capacity: [17.4871 17.4857]
+  Solved in 2211.0ms | energy=-101.355591 | feasible=True
+  phi after:  [37.6841 37.6782]
+
+[Sub-QUBO 24/50] 4 entities | weight=2.3347
+  phi before: [37.6841 37.6782]
+  residual capacity: [16.2788 16.2848]
+  Solved in 2207.8ms | energy=-93.299771 | feasible=True
+  phi after:  [38.8486 38.8484]
+
+[Sub-QUBO 25/50] 4 entities | weight=2.2666
+  phi before: [38.8486 38.8484]
+  residual capacity: [15.1144 15.1146]
+  Solved in 2159.8ms | energy=-85.947093 | feasible=True
+  phi after:  [39.9815 39.982 ]
+
+[Sub-QUBO 26/50] 4 entities | weight=2.2108
+  phi before: [39.9815 39.982 ]
+  residual capacity: [13.9814 13.981 ]
+  Solved in 2157.6ms | energy=-79.375576 | feasible=True
+  phi after:  [41.0882 41.0861]
+
+[Sub-QUBO 27/50] 4 entities | weight=2.1357
+  phi before: [41.0882 41.0861]
+  residual capacity: [12.8747 12.8769]
+  Solved in 2160.2ms | energy=-72.717835 | feasible=True
+  phi after:  [42.1557 42.1543]
+
+[Sub-QUBO 28/50] 4 entities | weight=2.0723
+  phi before: [42.1557 42.1543]
+  residual capacity: [11.8073 11.8086]
+  Solved in 2168.8ms | energy=-66.791007 | feasible=True
+  phi after:  [43.1918 43.1905]
+
+[Sub-QUBO 29/50] 4 entities | weight=1.9720
+  phi before: [43.1918 43.1905]
+  residual capacity: [10.7712 10.7724]
+  Solved in 2171.7ms | energy=-60.539721 | feasible=True
+  phi after:  [44.1775 44.1768]
+
+[Sub-QUBO 30/50] 4 entities | weight=1.8331
+  phi before: [44.1775 44.1768]
+  residual capacity: [9.7855 9.7862]
+  Solved in 2224.4ms | energy=-54.197008 | feasible=True
+  phi after:  [45.0879 45.0995]
+
+[Sub-QUBO 31/50] 4 entities | weight=1.7257
+  phi before: [45.0879 45.0995]
+  residual capacity: [8.8751 8.8634]
+  Solved in 2225.5ms | energy=-49.122039 | feasible=True
+  phi after:  [45.958  45.9551]
+
+[Sub-QUBO 32/50] 4 entities | weight=1.6656
+  phi before: [45.958  45.9551]
+  residual capacity: [8.0049 8.0079]
+  Solved in 2168.3ms | energy=-45.284190 | feasible=True
+  phi after:  [46.7881 46.7907]
+
+[Sub-QUBO 33/50] 4 entities | weight=1.5982
+  phi before: [46.7881 46.7907]
+  residual capacity: [7.1749 7.1723]
+  Solved in 2177.5ms | energy=-41.653072 | feasible=True
+  phi after:  [47.5882 47.5888]
+
+[Sub-QUBO 34/50] 4 entities | weight=1.5228
+  phi before: [47.5882 47.5888]
+  residual capacity: [6.3748 6.3742]
+  Solved in 2272.4ms | energy=-38.254355 | feasible=True
+  phi after:  [48.3526 48.3471]
+
+[Sub-QUBO 35/50] 4 entities | weight=1.4323
+  phi before: [48.3526 48.3471]
+  residual capacity: [5.6103 5.6159]
+  Solved in 2245.5ms | energy=-35.053139 | feasible=True
+  phi after:  [49.0621 49.0699]
+
+[Sub-QUBO 36/50] 4 entities | weight=1.3402
+  phi before: [49.0621 49.0699]
+  residual capacity: [4.9009 4.893 ]
+  Solved in 2171.7ms | energy=-32.227732 | feasible=True
+  phi after:  [49.7361 49.7361]
+
+[Sub-QUBO 37/50] 4 entities | weight=1.2348
+  phi before: [49.7361 49.7361]
+  residual capacity: [4.2269 4.2269]
+  Solved in 2310.6ms | energy=-29.675975 | feasible=True
+  phi after:  [50.3552 50.3518]
+
+[Sub-QUBO 38/50] 4 entities | weight=1.1493
+  phi before: [50.3552 50.3518]
+  residual capacity: [3.6078 3.6112]
+  Solved in 2383.1ms | energy=-27.636318 | feasible=True
+  phi after:  [50.9277 50.9285]
+
+[Sub-QUBO 39/50] 4 entities | weight=1.0646
+  phi before: [50.9277 50.9285]
+  residual capacity: [3.0352 3.0344]
+  Solved in 2279.7ms | energy=-25.895171 | feasible=True
+  phi after:  [51.4636 51.4572]
+
+[Sub-QUBO 40/50] 4 entities | weight=0.9606
+  phi before: [51.4636 51.4572]
+  residual capacity: [2.4993 2.5057]
+  Solved in 2365.5ms | energy=-24.346356 | feasible=True
+  phi after:  [51.9432 51.9383]
+
+[Sub-QUBO 41/50] 4 entities | weight=0.8832
+  phi before: [51.9432 51.9383]
+  residual capacity: [2.0198 2.0247]
+  Solved in 2179.7ms | energy=-23.181884 | feasible=True
+  phi after:  [52.3733 52.3913]
+
+[Sub-QUBO 42/50] 4 entities | weight=0.7510
+  phi before: [52.3733 52.3913]
+  residual capacity: [1.5896 1.5717]
+  Solved in 2222.5ms | energy=-22.092314 | feasible=True
+  phi after:  [52.7545 52.7611]
+
+[Sub-QUBO 43/50] 4 entities | weight=0.6116
+  phi before: [52.7545 52.7611]
+  residual capacity: [1.2084 1.2019]
+  Solved in 2231.8ms | energy=-21.287059 | feasible=True
+  phi after:  [53.0671 53.0601]
+
+[Sub-QUBO 44/50] 4 entities | weight=0.5277
+  phi before: [53.0671 53.0601]
+  residual capacity: [0.8959 0.9028]
+  Solved in 2179.2ms | energy=-20.810001 | feasible=True
+  phi after:  [53.3267 53.3282]
+
+[Sub-QUBO 45/50] 4 entities | weight=0.4355
+  phi before: [53.3267 53.3282]
+  residual capacity: [0.6362 0.6348]
+  Solved in 2182.6ms | energy=-20.458663 | feasible=True
+  phi after:  [53.5472 53.5432]
+
+[Sub-QUBO 46/50] 4 entities | weight=0.3183
+  phi before: [53.5472 53.5432]
+  residual capacity: [0.4158 0.4197]
+  Solved in 2331.7ms | energy=-20.215288 | feasible=True
+  phi after:  [53.7028 53.7059]
+
+[Sub-QUBO 47/50] 4 entities | weight=0.2361
+  phi before: [53.7028 53.7059]
+  residual capacity: [0.2602 0.2571]
+  Solved in 2237.0ms | energy=-20.094270 | feasible=True
+  phi after:  [53.8209 53.8239]
+
+[Sub-QUBO 48/50] 4 entities | weight=0.1581
+  phi before: [53.8209 53.8239]
+  residual capacity: [0.1421 0.1391]
+  Solved in 2378.3ms | energy=-20.031959 | feasible=True
+  phi after:  [53.9024 53.9006]
+
+[Sub-QUBO 49/50] 4 entities | weight=0.0892
+  phi before: [53.9024 53.9006]
+  residual capacity: [0.0606 0.0624]
+  Solved in 2393.3ms | energy=-20.006995 | feasible=True
+  phi after:  [53.9467 53.9454]
+
+[Sub-QUBO 50/50] 4 entities | weight=0.0338
+  phi before: [53.9467 53.9454]
+  residual capacity: [0.0163 0.0175]
+  Solved in 2210.7ms | energy=-20.000572 | feasible=True
+  phi after:  [53.963  53.9629]
+
+--- Run Complete ---
+Final core loads: [53.963  53.9629]
+Load imbalance:   0.000154  (L_avg=53.9630)
+Movable entities assigned: 200/200 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -6824.003603
+Global brute-force skipped: None
+

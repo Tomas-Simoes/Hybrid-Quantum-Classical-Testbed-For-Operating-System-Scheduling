@@ -1,0 +1,94 @@
+
+--- Iterative Run Started at Tue Jul  7 15:08:06 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0013s
+Partitioning in Sub-QUBOs...
+13 sub-QUBOs | sizes: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/13] 4 entities | weight=3.7757
+  phi before: [0. 0.]
+  residual capacity: [12.8274 12.8274]
+  Solved in 2234.1ms | energy=-109.736374 | feasible=True
+  phi after:  [1.8834 1.8922]
+
+[Sub-QUBO 2/13] 4 entities | weight=3.6612
+  phi before: [1.8834 1.8922]
+  residual capacity: [10.944  10.9352]
+  Solved in 2357.5ms | energy=-93.401233 | feasible=True
+  phi after:  [3.7208 3.716 ]
+
+[Sub-QUBO 3/13] 4 entities | weight=3.4029
+  phi before: [3.7208 3.716 ]
+  residual capacity: [9.1066 9.1114]
+  Solved in 2252.5ms | energy=-76.203041 | feasible=True
+  phi after:  [5.394  5.4457]
+
+[Sub-QUBO 4/13] 4 entities | weight=3.0517
+  phi before: [5.394  5.4457]
+  residual capacity: [7.4334 7.3817]
+  Solved in 2288.3ms | energy=-60.556325 | feasible=True
+  phi after:  [6.938  6.9534]
+
+[Sub-QUBO 5/13] 4 entities | weight=2.7140
+  phi before: [6.938  6.9534]
+  residual capacity: [5.8894 5.874 ]
+  Solved in 2737.7ms | energy=-48.243366 | feasible=True
+  phi after:  [8.3111 8.2944]
+
+[Sub-QUBO 6/13] 4 entities | weight=2.4079
+  phi before: [8.3111 8.2944]
+  residual capacity: [4.5163 4.533 ]
+  Solved in 2302.3ms | energy=-38.891063 | feasible=True
+  phi after:  [9.5115 9.5019]
+
+[Sub-QUBO 7/13] 4 entities | weight=1.9993
+  phi before: [9.5115 9.5019]
+  residual capacity: [3.3159 3.3255]
+  Solved in 2461.7ms | energy=-31.279797 | feasible=True
+  phi after:  [10.5066 10.5061]
+
+[Sub-QUBO 8/13] 4 entities | weight=1.5939
+  phi before: [10.5066 10.5061]
+  residual capacity: [2.3209 2.3213]
+  Solved in 2251.8ms | energy=-26.127275 | feasible=True
+  phi after:  [11.2755 11.3311]
+
+[Sub-QUBO 9/13] 4 entities | weight=1.0914
+  phi before: [11.2755 11.3311]
+  residual capacity: [1.552  1.4963]
+  Solved in 2303.5ms | energy=-22.732920 | feasible=True
+  phi after:  [11.8502 11.8479]
+
+[Sub-QUBO 10/13] 4 entities | weight=0.8406
+  phi before: [11.8502 11.8479]
+  residual capacity: [0.9772 0.9796]
+  Solved in 2257.8ms | energy=-21.291584 | feasible=True
+  phi after:  [12.2701 12.2686]
+
+[Sub-QUBO 11/13] 4 entities | weight=0.6725
+  phi before: [12.2701 12.2686]
+  residual capacity: [0.5574 0.5588]
+  Solved in 2271.2ms | energy=-20.524216 | feasible=True
+  phi after:  [12.593  12.6181]
+
+[Sub-QUBO 12/13] 4 entities | weight=0.4206
+  phi before: [12.593  12.6181]
+  residual capacity: [0.2344 0.2093]
+  Solved in 2361.6ms | energy=-20.098480 | feasible=True
+  phi after:  [12.815  12.8168]
+
+[Sub-QUBO 13/13] 2 entities | weight=0.0231
+  phi before: [12.815  12.8168]
+  residual capacity: [0.0125 0.0106]
+  Solved in 1199.2ms | energy=-10.000147 | feasible=True
+  phi after:  [12.8352 12.8197]
+
+--- Run Complete ---
+Final core loads: [12.8352 12.8197]
+Load imbalance:   0.015525  (L_avg=12.8274)
+Movable entities assigned: 50/50 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -579.085821
+Global brute-force skipped: None

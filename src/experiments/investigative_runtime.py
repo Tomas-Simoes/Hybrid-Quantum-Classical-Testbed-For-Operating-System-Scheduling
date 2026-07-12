@@ -1351,6 +1351,8 @@ def _offset_free_quality_metrics(
         "baseline_load_balance_objective": None,
         "baseline_load_imbalance": None,
         "baseline_normalized_load_imbalance": None,
+        "delta_imbalance": None,
+        "gap_estavel": None,
         "objective_regret": None,
         "excess_normalized_load_imbalance": None,
         "baseline_match_offset_free": None,
@@ -1371,6 +1373,23 @@ def _offset_free_quality_metrics(
         validation.get("optimality_rtol", 1e-9)
     ) * abs(baseline["load_balance_objective"])
     baseline_match = objective_regret <= tolerance
+    delta_imbalance = abs(
+        candidate["load_imbalance"] - baseline["load_imbalance"]
+    )
+    stable_denominator = max(float(workload.total_weight) ** 2, np.finfo(float).eps)
+    stable_gap = (
+        candidate["load_imbalance"] ** 2 - baseline["load_imbalance"] ** 2
+    ) / stable_denominator
+    relative_gap = objective_regret / max(
+        abs(baseline["load_balance_objective"]),
+        float(validation.get("optimality_atol", 1e-9)),
+        np.finfo(float).eps,
+    )
+    # Canonical optimality must be offset-free.  For two cores the load-balance
+    # objective is exactly imbalance**2 / 2.
+    validation["is_optimal"] = baseline_match
+    validation["relative_gap"] = relative_gap
+    validation["optimality_metric"] = "offset_free_load_balance_objective"
     result.update(
         {
             "baseline_core_loads": baseline["core_loads"],
@@ -1381,6 +1400,8 @@ def _offset_free_quality_metrics(
             "baseline_normalized_load_imbalance": baseline[
                 "normalized_load_imbalance"
             ],
+            "delta_imbalance": delta_imbalance,
+            "gap_estavel": stable_gap,
             "objective_regret": objective_regret,
             "excess_normalized_load_imbalance": max(
                 0.0,
@@ -1388,6 +1409,8 @@ def _offset_free_quality_metrics(
                 - baseline["normalized_load_imbalance"],
             ),
             "baseline_match_offset_free": baseline_match,
+            "is_optimal": baseline_match,
+            "gap_relativo": relative_gap,
             "certified_optimal_offset_free": (
                 baseline_match
                 if validation.get("baseline_certified") is True
@@ -1412,6 +1435,9 @@ def summarize_investigation(run: InvestigativeOutput) -> dict[str, Any]:
             float(np.max(result.probs))
             if result.probs is not None and len(result.probs)
             else None
+        )
+        offset_free = _offset_free_quality_metrics(
+            workload, result.decoded_assignments, validation
         )
         return {
             "pipeline": "default",
@@ -1451,11 +1477,7 @@ def summarize_investigation(run: InvestigativeOutput) -> dict[str, Any]:
             ),
             **_convergence_metrics(result.convergence_curve),
             **_scalability_metrics(validation, timings),
-            **_offset_free_quality_metrics(
-                workload,
-                result.decoded_assignments,
-                validation,
-            ),
+            **offset_free,
             "validation": validation,
         }
 
@@ -1471,6 +1493,9 @@ def summarize_investigation(run: InvestigativeOutput) -> dict[str, Any]:
             for item in sub_curves
             if item["convergence_iterations_to_final_tol"] is not None
         ]
+        offset_free = _offset_free_quality_metrics(
+            output.used_workload, output.final_assignments, validation
+        )
         return {
             "pipeline": "iterative",
             "output_type": type(output).__name__,
@@ -1512,11 +1537,7 @@ def summarize_investigation(run: InvestigativeOutput) -> dict[str, Any]:
                 max(iterations) if iterations else None
             ),
             **_scalability_metrics(validation, timings),
-            **_offset_free_quality_metrics(
-                output.used_workload,
-                output.final_assignments,
-                validation,
-            ),
+            **offset_free,
             "validation": validation,
         }
 

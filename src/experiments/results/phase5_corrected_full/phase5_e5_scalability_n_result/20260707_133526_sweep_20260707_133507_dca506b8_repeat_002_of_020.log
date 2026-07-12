@@ -1,0 +1,47 @@
+
+--- Iterative Run Started at Tue Jul  7 14:35:26 2026 ---
+Building Q_global...
+QUBO Matrix completed in 0.0002s
+Partitioning in Sub-QUBOs...
+5 sub-QUBOs | sizes: [4, 4, 4, 4, 4]
+Starting Iterative Loop...
+
+[Sub-QUBO 1/5] 4 entities | weight=3.5152
+  phi before: [0. 0.]
+  residual capacity: [4.6369 4.6369]
+  Solved in 2279.3ms | energy=-46.420288 | feasible=True
+  phi after:  [1.7764 1.7389]
+
+[Sub-QUBO 2/5] 4 entities | weight=2.3531
+  phi before: [1.7764 1.7389]
+  residual capacity: [2.8605 2.898 ]
+  Solved in 2254.0ms | energy=-30.772561 | feasible=True
+  phi after:  [2.8641 3.0042]
+
+[Sub-QUBO 3/5] 4 entities | weight=1.6891
+  phi before: [2.8641 3.0042]
+  residual capacity: [1.7728 1.6326]
+  Solved in 2182.1ms | energy=-24.332594 | feasible=True
+  phi after:  [3.7409 3.8165]
+
+[Sub-QUBO 4/5] 4 entities | weight=1.2071
+  phi before: [3.7409 3.8165]
+  residual capacity: [0.896  0.8203]
+  Solved in 2246.4ms | energy=-21.346030 | feasible=True
+  phi after:  [4.3825 4.382 ]
+
+[Sub-QUBO 5/5] 4 entities | weight=0.5092
+  phi before: [4.3825 4.382 ]
+  residual capacity: [0.2544 0.2548]
+  Solved in 2164.3ms | energy=-20.128557 | feasible=True
+  phi after:  [4.6135 4.6602]
+
+--- Run Complete ---
+Final core loads: [4.6135 4.6602]
+Load imbalance:   0.046758  (L_avg=4.6369)
+Movable entities assigned: 20/20 | Fixed RT assignments: 0
+Validating assembled global assignment...
+Global assignment feasible: True
+Global candidate energy:   -143.000030
+Global optimum energy:     -143.001123
+Globally optimal:          False

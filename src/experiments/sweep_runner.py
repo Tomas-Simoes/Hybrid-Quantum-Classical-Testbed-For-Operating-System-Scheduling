@@ -394,6 +394,8 @@ def write_scalability_csvs(
         "normalized_load_imbalance",
         "load_balance_objective",
         "baseline_load_imbalance",
+        "delta_imbalance",
+        "gap_estavel",
         "baseline_normalized_load_imbalance",
         "baseline_load_balance_objective",
         "objective_regret",
@@ -431,6 +433,8 @@ def write_scalability_csvs(
                 ),
                 "load_balance_objective": metrics.get("load_balance_objective"),
                 "baseline_load_imbalance": metrics.get("baseline_load_imbalance"),
+                "delta_imbalance": metrics.get("delta_imbalance"),
+                "gap_estavel": metrics.get("gap_estavel"),
                 "baseline_normalized_load_imbalance": metrics.get(
                     "baseline_normalized_load_imbalance"
                 ),
@@ -478,6 +482,10 @@ def write_scalability_csvs(
         "normalized_load_imbalance_median",
         "load_balance_objective_mean",
         "baseline_load_balance_objective_mean",
+        "delta_imbalance_mean",
+        "delta_imbalance_median",
+        "delta_imbalance_std",
+        "gap_estavel_mean",
         "objective_regret_mean",
         "objective_regret_median",
         "baseline_match_offset_free_percent",
@@ -509,6 +517,8 @@ def write_scalability_csvs(
             successful, "baseline_load_balance_objective"
         )
         objective_regrets = numeric(successful, "objective_regret")
+        delta_imbalances = numeric(successful, "delta_imbalance")
+        stable_gaps = numeric(successful, "gap_estavel")
         baseline_matches = [
             bool(row["baseline_match_offset_free"])
             for row in successful
@@ -552,6 +562,20 @@ def write_scalability_csvs(
                 statistics.fmean(baseline_objectives)
                 if baseline_objectives
                 else None
+            ),
+            "delta_imbalance_mean": (
+                statistics.fmean(delta_imbalances) if delta_imbalances else None
+            ),
+            "delta_imbalance_median": (
+                statistics.median(delta_imbalances) if delta_imbalances else None
+            ),
+            "delta_imbalance_std": (
+                statistics.stdev(delta_imbalances)
+                if len(delta_imbalances) > 1
+                else 0.0
+            ),
+            "gap_estavel_mean": (
+                statistics.fmean(stable_gaps) if stable_gaps else None
             ),
             "objective_regret_mean": (
                 statistics.fmean(objective_regrets)
@@ -646,13 +670,13 @@ def run_adaptive_sweep_scenario(
     coarse_values = [int(value) for value in axis["values"]]
     if coarse_values != sorted(set(coarse_values)):
         raise ValueError("Adaptive sweep values must be unique and increasing.")
-    quality_metric = str(adaptive.get("quality_metric", "gap_relativo"))
-    quality_ceiling = float(
-        adaptive.get(
-            "quality_ceiling_mean",
-            adaptive.get("gap_ceiling_mean", 0.001),
+    quality_metric = str(adaptive.get("quality_metric", "delta_imbalance"))
+    if "quality_ceiling_mean" not in adaptive:
+        raise ValueError(
+            "Enabled adaptive sweeps require an explicit quality_ceiling_mean "
+            "in the units of their quality_metric."
         )
-    )
+    quality_ceiling = float(adaptive["quality_ceiling_mean"])
     monotonic_window = int(adaptive.get("monotonic_window", 3))
     monotonic_min_delta = float(adaptive.get("monotonic_min_delta", 0.0))
     refinement_points = int(adaptive.get("refinement_points", 2))

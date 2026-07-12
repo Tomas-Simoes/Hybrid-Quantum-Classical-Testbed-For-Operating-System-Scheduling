@@ -19,6 +19,10 @@ class PennylaneSolver(BaseSolver):
         self.init_gamma = qaoa_cfg.init_gamma
         self.init_beta = qaoa_cfg.init_beta
 
+    def _candidate_indices(self, probs):
+        ranked = np.argsort(np.asarray(probs))[::-1]
+        return ranked[: min(self.top_k, len(ranked))]
+
     def _make_device(self, device_name: str, num_qubits: int):
         return qml.device(device_name, wires=num_qubits)
 
@@ -113,13 +117,14 @@ class PennylaneSolver(BaseSolver):
         probs = get_probs(params)
 
         ranked_indices = np.argsort(np.asarray(probs))[::-1]
+        candidate_indices = self._candidate_indices(probs)
 
         best_bitstring = None
         best_energy = float("inf")
         best_decoded = None
         best_feasible = False
 
-        for idx in ranked_indices:
+        for idx in candidate_indices:
             bit_str = bin(int(idx))[2:].zfill(num_qubits)
             bitstring_array = np.array([int(b) for b in bit_str])
 
@@ -156,7 +161,8 @@ class PennylaneSolver(BaseSolver):
                 "init_gamma": self.init_gamma,
                 "init_beta": self.init_beta,
                 "device": device_name,
-                "selection_pool": "all_states",
+                "top_k": self.top_k,
+                "selection_pool": "top_k_probable_states",
             },
             probs=probs,
             convergence_curve=energies_over_time,

@@ -1,0 +1,139 @@
+\begin{figure}[H]
+\centering
+\definecolor{phasePipeline}{HTML}{2563EB}
+\definecolor{phaseReference}{HTML}{059669}
+\definecolor{phaseTotal}{HTML}{111827}
+\definecolor{phaseQaoa}{HTML}{D97706}
+\definecolor{phaseGrid}{HTML}{E5E7EB}
+\definecolor{phaseText}{HTML}{374151}
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.90\textwidth,
+    height=0.53\textwidth,
+    xmode=log,
+    ymode=log,
+    xmin=9,
+    xmax=1100,
+    ymin=0.000003,
+    ymax=5,
+    xlabel={$N$},
+    ylabel={Desequilíbrio normalizado (\%)},
+    xlabel style={font=\small\sffamily, text=phaseText},
+    ylabel style={font=\small\sffamily, text=phasePipeline},
+    tick label style={font=\footnotesize\sffamily, text=phaseText},
+    xtick={10,20,50,100,200,500,1000},
+    xticklabels={10,20,50,100,200,500,1000},
+    ytick={0.00001,0.0001,0.001,0.01,0.1,1},
+    yticklabels={0.00001,0.0001,0.001,0.01,0.1,1},
+    log basis x=10,
+    log basis y=10,
+    grid=both,
+    major grid style={draw=phaseGrid, line width=0.35pt},
+    minor grid style={draw=phaseGrid!45, line width=0.25pt},
+    axis line style={draw=phaseText!35},
+    tick style={draw=phaseText!45},
+    axis y line*=left,
+    axis x line*=bottom,
+    legend style={
+      draw=none,
+      fill=none,
+      font=\footnotesize\sffamily,
+      at={(0.02,0.98)},
+      anchor=north west,
+      cells={anchor=west}
+    },
+    legend image post style={line width=1.2pt},
+]
+\addplot[
+    color=phasePipeline,
+    line width=1.15pt,
+    mark=*,
+    mark size=1.8pt,
+    mark options={fill=white, draw=phasePipeline, line width=0.8pt}
+] table[x=N,y=pipeline_quality_pct,col sep=comma]
+  {data/phase5_scalability_plot.csv};
+\addlegendentry{Pipeline}
+
+\addplot[
+    color=phaseReference,
+    line width=1.05pt,
+    dashed,
+    mark=diamond*,
+    mark size=1.8pt,
+    mark options={fill=white, draw=phaseReference, line width=0.75pt}
+] table[x=N,y=reference_quality_pct,col sep=comma]
+  {data/phase5_scalability_plot.csv};
+\addlegendentry{Melhor referência}
+\end{axis}
+
+\begin{axis}[
+    width=0.90\textwidth,
+    height=0.53\textwidth,
+    xmode=log,
+    ymode=log,
+    xmin=9,
+    xmax=1100,
+    ymin=3,
+    ymax=900,
+    ylabel={Tempo (s)},
+    ylabel style={font=\small\sffamily, text=phaseTotal},
+    tick label style={font=\footnotesize\sffamily, text=phaseText},
+    xtick=\empty,
+    ytick={5,10,30,100,300,900},
+    yticklabels={5,10,30,100,300,900},
+    log basis x=10,
+    log basis y=10,
+    axis y line*=right,
+    axis x line=none,
+    axis line style={draw=phaseText!35},
+    tick style={draw=phaseText!45},
+    legend style={
+      draw=none,
+      fill=none,
+      font=\footnotesize\sffamily,
+      at={(0.98,0.98)},
+      anchor=north east,
+      cells={anchor=west}
+    },
+    legend image post style={line width=1.2pt},
+]
+\addplot[
+    color=phaseTotal,
+    line width=1.15pt,
+    mark=square*,
+    mark size=1.7pt,
+    mark options={fill=white, draw=phaseTotal, line width=0.8pt}
+] table[x=N,y=total_time_s,col sep=comma]
+  {data/phase5_scalability_plot.csv};
+\addlegendentry{Pipeline total}
+
+\addplot[
+    color=phaseQaoa,
+    line width=1.15pt,
+    mark=triangle*,
+    mark size=2.0pt,
+    mark options={fill=white, draw=phaseQaoa, line width=0.8pt}
+] table[x=N,y=qaoa_time_s,col sep=comma]
+  {data/phase5_scalability_plot.csv};
+\addlegendentry{QAOA}
+
+\node[
+    anchor=south east,
+    align=right,
+    font=\scriptsize\sffamily,
+    text=phaseText!78,
+    fill=white,
+    fill opacity=0.88,
+    text opacity=1,
+    inner xsep=5pt,
+    inner ysep=4pt
+] at (rel axis cs:0.985,0.055)
+{XY, $p=2$, \texttt{top\_k}=10\\
+\texttt{qubit\_max}=8; sub-QUBOs: 3--250\\
+BF até $N=20$; depois SA/MILP\\
+viabilidade global: 100\%};
+\end{axis}
+\end{tikzpicture}
+\caption{Escalabilidade corrigida da pipeline iterativa na Fase 5. O eixo esquerdo compara o desequilíbrio normalizado médio da pipeline com a melhor referência disponível: brute force nas instâncias pequenas e simulated annealing ou testemunho MILP nas restantes. O eixo direito mostra o tempo médio total e o tempo médio consumido pelo QAOA, ambos em escala logarítmica.}
+\label{fig:phase5-scalability-dual-axis}
+\end{figure}
