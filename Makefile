@@ -17,10 +17,10 @@ install: 	## Instala todas as dependências  (como npm install)
 	uv sync
 
 run: 		## Corre o projeto
-	$(RUN_PYTHON) src/main.py
+	$(RUN_PYTHON) src/core/main.py
 
 ui: 		## Corre o projeto em modo UI
-	streamlit run src/app.py
+	streamlit run src/core/app.py
 
 add: 		## Adiciona um pacote ao projeto: make add pkg=scipy
 	uv add $(pkg)
@@ -68,16 +68,16 @@ experiment: 	## Corre cenários por prefixo: make experiment t_1
 		echo "       make experiment-list"; \
 		exit 2; \
 	fi
-	$(RUN_PYTHON) src/experiments/scenario_runner.py $(filter-out $@,$(MAKECMDGOALS))
+	$(RUN_PYTHON) src/core/experiments/scenario_runner.py $(filter-out $@,$(MAKECMDGOALS))
 
 experiment-all: ## Corre todos os cenários TOML
-	$(RUN_PYTHON) src/experiments/scenario_runner.py --all
+	$(RUN_PYTHON) src/core/experiments/scenario_runner.py --all
 
 experiment-list: ## Lista os cenários TOML disponíveis
-	$(RUN_PYTHON) src/experiments/scenario_runner.py --list
+	$(RUN_PYTHON) src/core/experiments/scenario_runner.py --list
 
 spy: 		## Grava um perfil py-spy em profile.svg
-	$(RUN_PYSPY) record -o profile.svg -- $(PYTHON) src/main.py
+	$(RUN_PYSPY) record -o profile.svg -- $(PYTHON) src/core/main.py
 
 # Allows commands like `make experiment t_1` and `make test test_brute_force` by swallowing extra selector goals.
 %:

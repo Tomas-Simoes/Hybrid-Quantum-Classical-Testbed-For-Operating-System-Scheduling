@@ -68,7 +68,7 @@ make run
 | --- | --- |
 | `make` | List available commands |
 | `make install` | Install dependencies with `uv sync` |
-| `make run` | Run `src/main.py` |
+| `make run` | Run `src/core/main.py` |
 | `make add pkg=<name>` | Add a dependency |
 | `make remove pkg=<name>` | Remove a dependency |
 | `make freeze` | List installed packages |
@@ -79,11 +79,11 @@ make run
 
 Detailed notes live next to the code they describe:
 
-- [src](src/README.md): engine, contracts, UI entry points, and project map
-- [builder](src/builder/README.md): QUBO builders
-- [solver](src/solver/README.md): QAOA, brute force, validation, metrics
-- [pipeline](src/pipeline/README.md): default and iterative execution flows
-- [decomposition](src/decomposition/README.md): clustering and sub-QUBO partitioning
-- [tracer](src/tracer/README.md): live process snapshot collection
-- [visualizer](src/visualizer/README.md): plotting surfaces
-- [abstract](src/abstract/README.md): base interfaces
+- [core](src/core/README.md): engine, contracts, UI entry points, and project map
+- [builder](src/core/builder/README.md): QUBO builders
+- [solver](src/core/solver/README.md): QAOA, brute force, validation, metrics
+- [pipeline](src/core/pipeline/README.md): default and iterative execution flows
+- [decomposition](src/core/decomposition/README.md): clustering and sub-QUBO partitioning
+- [tracer](src/core/tracer/README.md): live process snapshot collection
+- [visualizer](src/core/visualizer/README.md): plotting surfaces
+- [abstract](src/core/abstract/README.md): base interfaces

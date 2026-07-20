@@ -9,7 +9,7 @@ import numpy as np
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-SRC_ROOT = PROJECT_ROOT / "src"
+SRC_ROOT = PROJECT_ROOT / "src" / "core"
 EXPERIMENTS_ROOT = SRC_ROOT / "experiments"
 for path in (SRC_ROOT, EXPERIMENTS_ROOT):
     if str(path) not in sys.path:
