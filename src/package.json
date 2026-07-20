@@ -1,0 +1,8 @@
+{
+  "name": "hybrid-scheduler-workspace",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "cd .. && .venv/bin/uvicorn src.backend.main:app --host 127.0.0.1 --port 8000"
+  }
+}
