@@ -3,9 +3,12 @@ import { createRun, getRun } from '../api/client.js'
 import { mono } from '../lib/results.js'
 
 const POLL_MS = 1500
-const PUBLIC_MAX_N = 10
-const PUBLIC_MAX_CORES = 4
-const PUBLIC_MAX_QUBITS = 16
+const PUBLIC_MAX_N = Number(import.meta.env.VITE_PUBLIC_MAX_N ?? 6)
+const PUBLIC_MAX_CORES = Number(import.meta.env.VITE_PUBLIC_MAX_CORES ?? 4)
+const PUBLIC_MAX_QUBITS = Number(import.meta.env.VITE_PUBLIC_MAX_QUBITS ?? 8)
+const PUBLIC_MAX_QAOA_LAYERS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS ?? 1)
+const PUBLIC_MAX_QAOA_STEPS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS ?? 25)
+const PUBLIC_MAX_TOP_K = Number(import.meta.env.VITE_PUBLIC_MAX_TOP_K ?? 20)
 const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING', 'CORE_BALANCE']
 const TUNING_TIPS = [
   ['Conflicts or empty assignments?', 'Raise top K or steps first. With the X mixer, a stronger penalty can also push conflicts out of the best states.'],
@@ -17,18 +20,18 @@ const CHAMBER_PRESETS = [
   {
     id: 'effective-n8',
     label: 'Effective',
-    evidence: 'Reliable N=8 decomposed baseline, tuned to the public QAOA limits.',
+    evidence: 'Reliable N=6 decomposed baseline, tuned to the public Render limits.',
     config: {
-      num_processes: '8',
+      num_processes: '6',
       num_cores: '2',
-      weights: ['0.30', '0.27', '0.22', '0.18', '0.15', '0.11', '0.08', '0.05'],
-      total_weight: '1.36',
+      weights: ['0.30', '0.27', '0.22', '0.18', '0.15', '0.11'],
+      total_weight: '1.23',
       penalty: '5.0',
       target_load: '',
-      layers: '2',
-      steps: '50',
+      layers: '1',
+      steps: '25',
       learning_rate: '0.05',
-      top_k: '32',
+      top_k: '20',
       mixer_type: 'xy',
       init_gamma: '0.5',
       init_beta: '0.5',
@@ -44,13 +47,13 @@ const CHAMBER_PRESETS = [
       num_samples: '3',
     },
     rows: [
-      ['scope', 'N = 8'],
+      ['scope', 'N = 6'],
       ['cores', '2'],
       ['mixer', 'xy'],
       ['penalty', '5.0'],
-      ['layers', '2'],
-      ['steps', '50'],
-      ['top K', '32'],
+      ['layers', '1'],
+      ['steps', '25'],
+      ['top K', '20'],
       ['qubit max', '8'],
     ],
   },
@@ -65,8 +68,8 @@ const CHAMBER_PRESETS = [
       total_weight: '1.0',
       penalty: '5.0',
       target_load: '',
-      layers: '2',
-      steps: '50',
+      layers: '1',
+      steps: '25',
       learning_rate: '0.1',
       top_k: '1',
       mixer_type: 'xy',
@@ -88,8 +91,8 @@ const CHAMBER_PRESETS = [
       ['cores', '2'],
       ['mixer', 'xy'],
       ['penalty', '5.0'],
-      ['layers', '2'],
-      ['steps', '50'],
+      ['layers', '1'],
+      ['steps', '25'],
       ['top K', '1'],
       ['qubit max', '6'],
     ],
@@ -106,13 +109,13 @@ const CHAMBER_PRESETS = [
       penalty: '5.0',
       target_load: '',
       layers: '1',
-      steps: '50',
+      steps: '25',
       learning_rate: '0.05',
       top_k: '20',
       mixer_type: 'xy',
       init_gamma: '0.5',
       init_beta: '0.5',
-      qubit_max: '9',
+      qubit_max: '6',
       io_alpha: '0.5',
       affinity_alpha: '0.8',
       homogeneity_threshold: '0.3',
@@ -129,30 +132,30 @@ const CHAMBER_PRESETS = [
       ['mixer', 'xy'],
       ['penalty', '5.0'],
       ['layers', '1'],
-      ['steps', '50'],
+      ['steps', '25'],
       ['top K', '20'],
-      ['qubit max', '9'],
+      ['qubit max', '6'],
     ],
   },
   {
     id: 'max-public',
-    label: 'Max-N',
-    evidence: 'Largest public workload size. It passed fresh checks, but expect a noticeably slower run.',
+    label: 'Max public',
+    evidence: 'Largest Render-free workload exposed by the public controls.',
     config: {
-      num_processes: '10',
+      num_processes: '6',
       num_cores: '2',
-      weights: ['0.22', '0.18', '0.15', '0.12', '0.10', '0.08', '0.06', '0.04', '0.03', '0.02'],
+      weights: ['0.26', '0.21', '0.17', '0.14', '0.12', '0.10'],
       total_weight: '1.0',
       penalty: '5.0',
       target_load: '',
-      layers: '2',
-      steps: '50',
+      layers: '1',
+      steps: '25',
       learning_rate: '0.05',
-      top_k: '32',
+      top_k: '20',
       mixer_type: 'xy',
       init_gamma: '0.5',
       init_beta: '0.5',
-      qubit_max: '10',
+      qubit_max: '8',
       io_alpha: '0.5',
       affinity_alpha: '0.8',
       homogeneity_threshold: '0.3',
@@ -164,14 +167,14 @@ const CHAMBER_PRESETS = [
       num_samples: '3',
     },
     rows: [
-      ['scope', 'N = 10'],
+      ['scope', 'N = 6'],
       ['cores', '2'],
       ['mixer', 'xy'],
       ['penalty', '5.0'],
-      ['layers', '2'],
-      ['steps', '50'],
-      ['top K', '32'],
-      ['qubit max', '10'],
+      ['layers', '1'],
+      ['steps', '25'],
+      ['top K', '20'],
+      ['qubit max', '8'],
     ],
   },
 ]
@@ -186,6 +189,33 @@ function cloneConfig(config) {
 function normalizeWeights(count, weights) {
   const fallback = count > 0 ? String(Number((1 / count).toFixed(4))) : '1'
   return Array.from({ length: count }, (_, index) => weights[index] ?? fallback)
+}
+
+function clampNumber(value, min, max, fallback = min) {
+  const numeric = Number(value)
+  if (!Number.isFinite(numeric)) return fallback
+  return Math.min(Math.max(numeric, min), max)
+}
+
+function clampInteger(value, min, max, fallback = min) {
+  return Math.round(clampNumber(value, min, max, fallback))
+}
+
+function clampConfigToPublicLimits(config) {
+  const numProcesses = clampInteger(config.num_processes, 1, PUBLIC_MAX_N, 1)
+  const numCores = clampInteger(config.num_cores, 1, PUBLIC_MAX_CORES, 1)
+  const qubitMax = clampInteger(config.qubit_max, numCores, PUBLIC_MAX_QUBITS, numCores)
+
+  return {
+    ...config,
+    num_processes: String(numProcesses),
+    num_cores: String(numCores),
+    weights: normalizeWeights(numProcesses, config.weights).slice(0, numProcesses),
+    layers: String(clampInteger(config.layers, 1, PUBLIC_MAX_QAOA_LAYERS, 1)),
+    steps: String(clampInteger(config.steps, 1, PUBLIC_MAX_QAOA_STEPS, 1)),
+    top_k: String(clampInteger(config.top_k, 1, PUBLIC_MAX_TOP_K, 1)),
+    qubit_max: String(qubitMax),
+  }
 }
 
 function numberOrNull(value) {
@@ -210,7 +240,7 @@ function NumberField({ id, label, min, max, step = 'any', value, onChange }) {
 }
 
 export function RunConsole({ runState, onRunStateChange, energy, convergence }) {
-  const [config, setConfig] = useState(() => cloneConfig(CHAMBER_PRESETS[0].config))
+  const [config, setConfig] = useState(() => clampConfigToPublicLimits(cloneConfig(CHAMBER_PRESETS[0].config)))
   const [selectedPresetId, setSelectedPresetId] = useState('effective-n8')
   const [error, setError] = useState(null)
   const [liveTick, setLiveTick] = useState(0)
@@ -252,7 +282,7 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
         const nextCount = Math.min(Math.max(Number(value) || 1, 1), PUBLIC_MAX_N)
         return {
           ...current,
-          num_processes: value,
+          num_processes: String(nextCount),
           weights: normalizeWeights(nextCount, current.weights),
         }
       }
@@ -261,9 +291,22 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
         const currentQubitMax = Number(current.qubit_max) || nextCores * 4
         return {
           ...current,
-          num_cores: value,
-          qubit_max: String(Math.max(currentQubitMax, nextCores)),
+          num_cores: String(nextCores),
+          qubit_max: String(clampInteger(Math.max(currentQubitMax, nextCores), nextCores, PUBLIC_MAX_QUBITS, nextCores)),
         }
+      }
+      if (name === 'layers') {
+        return { ...current, layers: String(clampInteger(value, 1, PUBLIC_MAX_QAOA_LAYERS, 1)) }
+      }
+      if (name === 'steps') {
+        return { ...current, steps: String(clampInteger(value, 1, PUBLIC_MAX_QAOA_STEPS, 1)) }
+      }
+      if (name === 'top_k') {
+        return { ...current, top_k: String(clampInteger(value, 1, PUBLIC_MAX_TOP_K, 1)) }
+      }
+      if (name === 'qubit_max') {
+        const nextCores = clampInteger(current.num_cores, 1, PUBLIC_MAX_CORES, 1)
+        return { ...current, qubit_max: String(clampInteger(value, nextCores, PUBLIC_MAX_QUBITS, nextCores)) }
       }
       return { ...current, [name]: value }
     })
@@ -278,35 +321,37 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
 
   function selectChamberPreset(preset) {
     setSelectedPresetId(preset.id)
-    setConfig(cloneConfig(preset.config))
+    setConfig(clampConfigToPublicLimits(cloneConfig(preset.config)))
   }
 
   function buildPayload() {
+    const publicConfig = clampConfigToPublicLimits(config)
+    const publicProcessCount = Number(publicConfig.num_processes)
     return {
-      num_processes: Number(config.num_processes),
-      n_processes: Number(config.num_processes),
-      num_cores: Number(config.num_cores),
-      weights: config.weights.slice(0, processCount).map((weight) => Number(weight)),
-      total_weight: Number(config.total_weight),
-      penalty: Number(config.penalty),
-      target_load: numberOrNull(config.target_load),
-      layers: Number(config.layers),
-      steps: Number(config.steps),
-      learning_rate: Number(config.learning_rate),
-      top_k: Number(config.top_k),
-      mixer_type: config.mixer_type,
-      init_gamma: Number(config.init_gamma),
-      init_beta: Number(config.init_beta),
-      qubit_max: Number(config.qubit_max),
-      io_alpha: Number(config.io_alpha),
-      affinity_alpha: Number(config.affinity_alpha),
-      homogeneity_threshold: Number(config.homogeneity_threshold),
-      zscore_threshold: Number(config.zscore_threshold),
-      sorting_strategy: config.sorting_strategy,
-      min_rss: Number(config.min_rss),
-      min_cpu: Number(config.min_cpu),
-      cpu_interval: Number(config.cpu_interval),
-      num_samples: Number(config.num_samples),
+      num_processes: Number(publicConfig.num_processes),
+      n_processes: Number(publicConfig.num_processes),
+      num_cores: Number(publicConfig.num_cores),
+      weights: publicConfig.weights.slice(0, publicProcessCount).map((weight) => Number(weight)),
+      total_weight: Number(publicConfig.total_weight),
+      penalty: Number(publicConfig.penalty),
+      target_load: numberOrNull(publicConfig.target_load),
+      layers: Number(publicConfig.layers),
+      steps: Number(publicConfig.steps),
+      learning_rate: Number(publicConfig.learning_rate),
+      top_k: Number(publicConfig.top_k),
+      mixer_type: publicConfig.mixer_type,
+      init_gamma: Number(publicConfig.init_gamma),
+      init_beta: Number(publicConfig.init_beta),
+      qubit_max: Number(publicConfig.qubit_max),
+      io_alpha: Number(publicConfig.io_alpha),
+      affinity_alpha: Number(publicConfig.affinity_alpha),
+      homogeneity_threshold: Number(publicConfig.homogeneity_threshold),
+      zscore_threshold: Number(publicConfig.zscore_threshold),
+      sorting_strategy: publicConfig.sorting_strategy,
+      min_rss: Number(publicConfig.min_rss),
+      min_cpu: Number(publicConfig.min_cpu),
+      cpu_interval: Number(publicConfig.cpu_interval),
+      num_samples: Number(publicConfig.num_samples),
     }
   }
 
@@ -335,6 +380,7 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
     if (pollRef.current) window.clearInterval(pollRef.current)
 
     try {
+      setConfig((current) => clampConfigToPublicLimits(current))
       const created = await createRun(buildPayload())
       onRunStateChange({
         status: created.status,
@@ -442,10 +488,10 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
               <div className="config-group">
                 <p className="config-heading mono">QAOA</p>
                 <div className="config-grid">
-                  <NumberField id="layers" label="Layers" min="1" step="1" value={config.layers} onChange={(value) => updateConfig('layers', value)} />
-                  <NumberField id="steps" label="Steps" min="1" step="1" value={config.steps} onChange={(value) => updateConfig('steps', value)} />
+                  <NumberField id="layers" label="Layers" min="1" max={PUBLIC_MAX_QAOA_LAYERS} step="1" value={config.layers} onChange={(value) => updateConfig('layers', value)} />
+                  <NumberField id="steps" label="Steps" min="1" max={PUBLIC_MAX_QAOA_STEPS} step="1" value={config.steps} onChange={(value) => updateConfig('steps', value)} />
                   <NumberField id="learning-rate" label="Learning rate" min="0.0001" max="1" step="0.0001" value={config.learning_rate} onChange={(value) => updateConfig('learning_rate', value)} />
-                  <NumberField id="top-k" label="Top K" min="1" step="1" value={config.top_k} onChange={(value) => updateConfig('top_k', value)} />
+                  <NumberField id="top-k" label="Top K" min="1" max={PUBLIC_MAX_TOP_K} step="1" value={config.top_k} onChange={(value) => updateConfig('top_k', value)} />
                   <NumberField id="init-gamma" label="Initial gamma" min="0" step="0.001" value={config.init_gamma} onChange={(value) => updateConfig('init_gamma', value)} />
                   <NumberField id="init-beta" label="Initial beta" min="0" step="0.001" value={config.init_beta} onChange={(value) => updateConfig('init_beta', value)} />
                 </div>

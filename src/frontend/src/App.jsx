@@ -55,7 +55,7 @@ function App() {
     status: 'idle',
     jobId: null,
     job: null,
-    effectiveConfig: { num_processes: 8, mixer_type: 'xy' },
+    effectiveConfig: { num_processes: 6, mixer_type: 'xy' },
   })
 
   const assignments = useMemo(() => extractAssignments(runState.job), [runState.job])
@@ -215,7 +215,7 @@ function App() {
       status={runState.status}
       assignments={assignments}
       convergence={convergence}
-      processCount={runState.effectiveConfig?.num_processes || 8}
+      processCount={runState.effectiveConfig?.num_processes || 6}
     />
   )
 
