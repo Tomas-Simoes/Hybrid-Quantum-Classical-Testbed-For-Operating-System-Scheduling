@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createRun, getRun } from '../api/client.js'
-import { mono } from '../lib/results.js'
 
 const POLL_MS = 1500
 const PUBLIC_MAX_N = Number(import.meta.env.VITE_PUBLIC_MAX_N ?? 6)
@@ -239,38 +238,32 @@ function NumberField({ id, label, min, max, step = 'any', value, onChange }) {
   )
 }
 
-export function RunConsole({ runState, onRunStateChange, energy, convergence }) {
+export function RunConsole({ runState, onRunStateChange }) {
   const [config, setConfig] = useState(() => clampConfigToPublicLimits(cloneConfig(CHAMBER_PRESETS[0].config)))
   const [selectedPresetId, setSelectedPresetId] = useState('effective-n8')
   const [error, setError] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [liveTick, setLiveTick] = useState(0)
   const pollRef = useRef(null)
   const submitLockedRef = useRef(false)
 
   const processCount = Math.min(Math.max(Number(config.num_processes) || 1, 1), PUBLIC_MAX_N)
   const isRunning = runState.status === 'queued' || runState.status === 'running'
   const isRunLocked = isSubmitting || isRunning
-  const latestCost = convergence.length ? convergence[convergence.length - 1] : null
-  const displayIteration = convergence.length || (isRunLocked ? Math.max(1, liveTick) : 0)
   const displayedStatus = isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
   const selectedPreset = CHAMBER_PRESETS.find((preset) => preset.id === selectedPresetId) ?? CHAMBER_PRESETS[0]
 
-  const readout = useMemo(
-    () => [
-      ['status', displayedStatus],
-      ['job_id', runState.jobId || 'not submitted'],
-      ['iteration', displayIteration || 'pending'],
-      ['cost', latestCost === null ? mono(energy) : mono(latestCost)],
-    ],
-    [displayIteration, displayedStatus, energy, latestCost, runState.jobId],
+  const pipelineLimits = useMemo(
+    () =>
+      [
+        `N<=${PUBLIC_MAX_N}`,
+        `cores<=${PUBLIC_MAX_CORES}`,
+        `qubits<=${PUBLIC_MAX_QUBITS}`,
+        `layers<=${PUBLIC_MAX_QAOA_LAYERS}`,
+        `steps<=${PUBLIC_MAX_QAOA_STEPS}`,
+        `topK<=${PUBLIC_MAX_TOP_K}`,
+      ].join(' · '),
+    [],
   )
-
-  useEffect(() => {
-    if (!isRunLocked) return undefined
-    const interval = window.setInterval(() => setLiveTick((tick) => tick + 1), 900)
-    return () => window.clearInterval(interval)
-  }, [isRunLocked])
 
   useEffect(
     () => () => {
@@ -382,7 +375,6 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
     submitLockedRef.current = true
     setIsSubmitting(true)
     setError(null)
-    setLiveTick(0)
     if (pollRef.current) window.clearInterval(pollRef.current)
 
     try {
@@ -558,22 +550,27 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
             </div>
           </details>
 
-          <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
-            {isSubmitting ? 'Submitting' : isRunning ? 'Running' : 'Run scheduler'}
-          </button>
-          <p className="console-note">
-            The server clamps public inputs before the scheduler receives them.
-          </p>
+          <div className="run-action-row">
+            <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
+              {isSubmitting ? 'Submitting' : isRunning ? 'Running' : 'Run scheduler'}
+            </button>
+            <div className={`status-badge status-${displayedStatus}`} aria-label={`Run status: ${displayedStatus}`}>
+              <span className="status-dot" aria-hidden="true" />
+              <strong className="mono">{displayedStatus}</strong>
+            </div>
+          </div>
         </form>
 
         <div className="telemetry-surface">
-          {readout.map(([label, value]) => (
-            <div className="telemetry-row" key={label}>
-              <span>{label}</span>
-              <strong className="mono">{value}</strong>
-            </div>
-          ))}
           {error && <p className="console-error mono">{error}</p>}
+          <div className="pipeline-limit-note">
+            <p>
+              <span className="mono">Pipeline limits:</span> {pipelineLimits}
+            </p>
+            <p>
+              Download the unrestricted version on GitHub.
+            </p>
+          </div>
           <div className="telemetry-panel effective-preset-panel">
             <div className="preset-heading-row">
               <p className="telemetry-heading mono">Chamber presets</p>
