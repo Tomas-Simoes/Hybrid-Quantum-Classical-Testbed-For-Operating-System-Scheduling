@@ -20,6 +20,7 @@ from src.backend.execution_log import (
 class BackendExecutionLogTests(unittest.TestCase):
     def setUp(self) -> None:
         self._previous_log_path = settings.execution_log_path
+        self._previous_readable_log_path = settings.execution_readable_log_path
         self._previous_max_read = settings.execution_log_max_read
         self._previous_rotation_days = settings.execution_log_rotation_days
         self._previous_max_bytes = settings.execution_log_max_bytes
@@ -30,6 +31,11 @@ class BackendExecutionLogTests(unittest.TestCase):
             "execution_log_path",
             Path(self._tmpdir.name) / "executions.jsonl",
         )
+        object.__setattr__(
+            settings,
+            "execution_readable_log_path",
+            Path(self._tmpdir.name) / "executions.log",
+        )
         object.__setattr__(settings, "execution_log_max_read", 50)
         object.__setattr__(settings, "execution_log_rotation_days", 14)
         object.__setattr__(settings, "execution_log_max_bytes", 10_000_000)
@@ -37,6 +43,11 @@ class BackendExecutionLogTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         object.__setattr__(settings, "execution_log_path", self._previous_log_path)
+        object.__setattr__(
+            settings,
+            "execution_readable_log_path",
+            self._previous_readable_log_path,
+        )
         object.__setattr__(settings, "execution_log_max_read", self._previous_max_read)
         object.__setattr__(
             settings,
@@ -91,6 +102,58 @@ class BackendExecutionLogTests(unittest.TestCase):
         self.assertEqual(events[0]["effective_config"]["weights"], [0.4, 0.6])
         self.assertEqual(events[1]["duration_ms"], 1000.0)
         self.assertEqual(events[1]["result"]["result"]["assignments"], {"1000": 0})
+
+    def test_execution_lifecycle_is_written_as_readable_log(self) -> None:
+        async def scenario() -> None:
+            queued_record = {
+                "job_id": "job-readable",
+                "status": "queued",
+                "submitted_at": 123.0,
+                "queue_position": 1,
+                "request": {
+                    "method": "POST",
+                    "path": "/api/run",
+                    "client_host": "127.0.0.1",
+                    "user_agent": "test-agent",
+                },
+                "effective_config": {
+                    "num_processes": 2,
+                    "num_cores": 2,
+                    "layers": 1,
+                    "steps": 25,
+                    "weights": [0.4, 0.6],
+                },
+            }
+            completed_record = {
+                **queued_record,
+                "status": "done",
+                "started_at": 124.0,
+                "updated_at": 125.0,
+                "result": {
+                    "duration_ms": 1000.0,
+                    "output_type": "SchedulingOutput",
+                    "result": {
+                        "load_imbalance": 0.2,
+                        "validation": {"valid": True, "is_optimal": False},
+                        "final_assignments": {"1000": 0, "1001": 1},
+                    },
+                },
+            }
+
+            await log_job_queued(queued_record)
+            await log_job_completed(completed_record)
+
+        asyncio.run(scenario())
+        readable = settings.execution_readable_log_path.read_text(encoding="utf-8")
+
+        self.assertIn("execution.queued", readable)
+        self.assertIn("job-readable", readable)
+        self.assertIn("request: POST /api/run from 127.0.0.1", readable)
+        self.assertIn("config: num_processes=2, num_cores=2, layers=1, steps=25", readable)
+        self.assertIn("duration: 1.00s", readable)
+        self.assertIn("output: SchedulingOutput", readable)
+        self.assertIn("result: valid=True, optimal=False, load_imbalance=0.2", readable)
+        self.assertIn("assignments: 1000->0, 1001->1", readable)
 
     def test_failed_execution_logs_exception_details(self) -> None:
         async def scenario() -> dict:

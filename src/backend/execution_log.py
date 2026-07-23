@@ -166,6 +166,102 @@ def _write_line(path: Path, line: str, now: datetime, now_unix: float) -> None:
         handle.write(f"{line}\n")
 
 
+def _format_duration(milliseconds: Any) -> str | None:
+    if not isinstance(milliseconds, (int, float)):
+        return None
+    if milliseconds < 1000:
+        return f"{milliseconds:.0f}ms"
+    return f"{milliseconds / 1000:.2f}s"
+
+
+def _format_assignments(assignments: Any) -> str | None:
+    if not isinstance(assignments, dict) or not assignments:
+        return None
+    pairs = [f"{pid}->{core}" for pid, core in sorted(assignments.items())]
+    if len(pairs) > 12:
+        return ", ".join(pairs[:12]) + f", ... (+{len(pairs) - 12} more)"
+    return ", ".join(pairs)
+
+
+def _compact_config(config: Any) -> dict[str, Any]:
+    if not isinstance(config, dict):
+        return {}
+    keys = (
+        "num_processes",
+        "num_cores",
+        "total_weight",
+        "penalty",
+        "qubit_max",
+        "layers",
+        "steps",
+        "top_k",
+        "mixer_type",
+        "sorting_strategy",
+    )
+    return {key: config.get(key) for key in keys if key in config}
+
+
+def _format_readable_event(entry: dict[str, Any]) -> str:
+    request = entry.get("request") if isinstance(entry.get("request"), dict) else {}
+    config = _compact_config(entry.get("effective_config"))
+    result = entry.get("result") if isinstance(entry.get("result"), dict) else {}
+    payload = result.get("result") if isinstance(result.get("result"), dict) else {}
+    validation = payload.get("validation") if isinstance(payload.get("validation"), dict) else {}
+    assignments = (
+        payload.get("final_assignments")
+        or payload.get("decoded_assignments")
+        or validation.get("candidate_assignments")
+    )
+
+    lines = [
+        f"[{entry.get('timestamp')}] {entry.get('event')}",
+        f"  job: {entry.get('job_id', '-')}",
+        f"  status: {entry.get('status', '-')}",
+    ]
+
+    if request:
+        lines.append(
+            "  request: "
+            f"{request.get('method', '-')} {request.get('path', '-')}"
+            f" from {request.get('client_host', '-')}"
+        )
+        if request.get("user_agent"):
+            lines.append(f"  user_agent: {request.get('user_agent')}")
+
+    if config:
+        config_text = ", ".join(f"{key}={value}" for key, value in config.items())
+        lines.append(f"  config: {config_text}")
+
+    duration = _format_duration(entry.get("duration_ms") or result.get("duration_ms"))
+    if duration:
+        lines.append(f"  duration: {duration}")
+
+    if result.get("output_type"):
+        lines.append(f"  output: {result.get('output_type')}")
+
+    result_bits = []
+    if isinstance(validation.get("valid"), bool):
+        result_bits.append(f"valid={validation.get('valid')}")
+    if isinstance(validation.get("is_optimal"), bool):
+        result_bits.append(f"optimal={validation.get('is_optimal')}")
+    if payload.get("load_imbalance") is not None:
+        result_bits.append(f"load_imbalance={payload.get('load_imbalance')}")
+    if result_bits:
+        lines.append(f"  result: {', '.join(result_bits)}")
+
+    assignment_text = _format_assignments(assignments)
+    if assignment_text:
+        lines.append(f"  assignments: {assignment_text}")
+
+    error = entry.get("error") if isinstance(entry.get("error"), dict) else {}
+    if error:
+        lines.append(
+            f"  error: {error.get('type', 'Error')}: {error.get('message', '')}"
+        )
+
+    return "\n".join(lines) + "\n"
+
+
 async def record_event(event: str, **payload: Any) -> None:
     now = datetime.now(timezone.utc)
     timestamp = now.isoformat()
@@ -177,6 +273,7 @@ async def record_event(event: str, **payload: Any) -> None:
         **payload,
     }
     line = json.dumps(_jsonable(entry), ensure_ascii=True, sort_keys=True)
+    readable = _format_readable_event(_jsonable(entry))
 
     try:
         async with _log_lock:
@@ -184,6 +281,13 @@ async def record_event(event: str, **payload: Any) -> None:
                 _write_line,
                 settings.execution_log_path,
                 line,
+                now,
+                timestamp_unix,
+            )
+            await asyncio.to_thread(
+                _write_line,
+                settings.execution_readable_log_path,
+                readable,
                 now,
                 timestamp_unix,
             )

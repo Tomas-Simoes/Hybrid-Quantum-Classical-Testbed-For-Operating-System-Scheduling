@@ -71,6 +71,12 @@ class AdapterSettings:
             str(PROJECT_ROOT / "logs" / "backend_executions.jsonl"),
         )
     )
+    execution_readable_log_path: Path = Path(
+        os.getenv(
+            "EXECUTION_READABLE_LOG_PATH",
+            str(PROJECT_ROOT / "logs" / "backend_executions.log"),
+        )
+    )
     execution_log_max_read: int = _int_env("EXECUTION_LOG_MAX_READ", 500, minimum=1)
     execution_log_rotation_days: int = _int_env(
         "EXECUTION_LOG_ROTATION_DAYS",

@@ -13,7 +13,7 @@ import { useSectionReveal } from './lib/useSectionReveal.js'
 
 const HOME_TARGETS = new Set(['top', 'tutorial', 'results', 'contacts'])
 const NAV_OFFSET = 64
-const CHAMBER_TRANSITION_MS = 820
+const CHAMBER_TRANSITION_MS = 520
 
 function initialPage() {
   if (typeof window === 'undefined') return 'home'
@@ -38,6 +38,12 @@ function scrollToTarget(target) {
 
 function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function resetChamberScroll(behavior = 'auto') {
+  window.scrollTo({ top: 0, behavior })
+  document.documentElement.scrollTop = 0
+  document.body.scrollTop = 0
 }
 
 function App() {
@@ -69,14 +75,17 @@ function App() {
   useEffect(() => {
     if (page !== 'chamber') return undefined
 
+    let resetTimeout = null
     let secondFrame = null
     const firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }))
+      secondFrame = window.requestAnimationFrame(() => resetChamberScroll())
+      resetTimeout = window.setTimeout(() => resetChamberScroll(), 120)
     })
 
     return () => {
       window.cancelAnimationFrame(firstFrame)
       if (secondFrame) window.cancelAnimationFrame(secondFrame)
+      if (resetTimeout) window.clearTimeout(resetTimeout)
     }
   }, [page])
 
@@ -98,16 +107,18 @@ function App() {
   }
 
   function enterChamber({ updateHistory = false } = {}) {
-    if (updateHistory && window.location.hash !== '#chamber') {
+    const shouldAnimate = pageRef.current === 'home' && !prefersReducedMotion()
+
+    if (updateHistory && !shouldAnimate && window.location.hash !== '#chamber') {
       window.history.pushState(null, '', '#chamber')
     }
 
     setActiveTarget('chamber')
 
-    if (pageRef.current !== 'home' || prefersReducedMotion()) {
+    if (!shouldAnimate) {
       clearPageTransition()
       setPage('chamber')
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      resetChamberScroll('smooth')
       return
     }
 
@@ -118,7 +129,10 @@ function App() {
       transitionTimeoutRef.current = null
       setPage('chamber')
       setPageTransition(null)
-      window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }))
+      if (updateHistory && window.location.hash !== '#chamber') {
+        window.history.pushState(null, '', '#chamber')
+      }
+      window.requestAnimationFrame(() => resetChamberScroll())
     }, CHAMBER_TRANSITION_MS)
   }
 
@@ -250,11 +264,7 @@ function App() {
       </footer>
       {pageTransition === 'enter-chamber' ? (
         <div className="chamber-transition" aria-hidden="true">
-          <span className="chamber-transition-grid" />
-          <span className="chamber-transition-ring chamber-ring-outer" />
-          <span className="chamber-transition-ring chamber-ring-inner" />
-          <span className="chamber-transition-core" />
-          <span className="chamber-transition-label mono">CHAMBER</span>
+          <span className="chamber-transition-line" />
         </div>
       ) : null}
     </div>
