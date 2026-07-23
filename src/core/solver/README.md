@@ -16,8 +16,14 @@ It:
 - inspects the top-k most probable bitstrings,
 - returns the lowest-energy feasible bitstring found in top-k.
 
-The solver tries `lightning.gpu` first. If GPU device creation or any later
-QAOA runtime step fails, it retries the full solve on `lightning.qubit`.
+The solver tries `lightning.gpu` first in local/development runs. If GPU device
+creation or any later QAOA runtime step fails, it retries the full solve on
+`lightning.qubit`.
+
+Production-like runtimes, including Render, skip the GPU probe and use
+`lightning.qubit` directly. Set `QAOA_FORCE_CPU=true` to force that behavior in
+any environment, or `QAOA_FORCE_CPU=false` to explicitly allow the GPU-first
+path.
 
 Initial QAOA parameters are configurable through `QAOAConfig`:
 

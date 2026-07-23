@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Tuple
 from pennylane import numpy as pnp
 import numpy as np
@@ -7,6 +8,29 @@ from abstract.abstract import BaseSolver
 from data_contracts import QAOAConfig, QUBOInstance, SolverResult
 import time
 import warnings
+
+
+def _env_flag(name: str) -> bool | None:
+    value = os.getenv(name)
+    if value is None:
+        return None
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _is_production_runtime() -> bool:
+    environment = (
+        os.getenv("APP_ENV")
+        or os.getenv("ENVIRONMENT")
+        or os.getenv("PYTHON_ENV")
+        or ""
+    ).strip().lower()
+    if environment in {"prod", "production"}:
+        return True
+
+    return any(
+        os.getenv(name)
+        for name in ("RENDER", "RENDER_SERVICE_ID", "RENDER_EXTERNAL_URL")
+    )
 
 
 class PennylaneSolver(BaseSolver):
@@ -25,6 +49,12 @@ class PennylaneSolver(BaseSolver):
 
     def _make_device(self, device_name: str, num_qubits: int):
         return qml.device(device_name, wires=num_qubits)
+
+    def _force_cpu_device(self) -> bool:
+        forced = _env_flag("QAOA_FORCE_CPU")
+        if forced is not None:
+            return forced
+        return _is_production_runtime()
 
     def _xy_mixer_layer(self, beta: float, N: int, K: int):
         """
@@ -56,6 +86,9 @@ class PennylaneSolver(BaseSolver):
                 qml.Hadamard(wires=i)
 
     def solve(self, qubo: QUBOInstance) -> SolverResult:
+        if self._force_cpu_device():
+            return self._solve_on_device(qubo, "lightning.qubit")
+
         try:
             return self._solve_on_device(qubo, "lightning.gpu")
         except Exception as gpu_error:

@@ -56,6 +56,40 @@ class Phase5ScalabilitySupportTests(unittest.TestCase):
 
         self.assertEqual(selected.tolist(), [1, 3, 2])
 
+    def test_render_runtime_skips_gpu_probe(self) -> None:
+        solver = PennylaneSolver(QAOAConfig(1, 1, 0.1, top_k=1))
+
+        with patch.dict("os.environ", {"RENDER": "true"}, clear=True):
+            with patch.object(solver, "_solve_on_device", return_value="cpu") as solve:
+                result = solver.solve("qubo")
+
+        self.assertEqual(result, "cpu")
+        solve.assert_called_once_with("qubo", "lightning.qubit")
+
+    def test_force_cpu_env_skips_gpu_probe(self) -> None:
+        solver = PennylaneSolver(QAOAConfig(1, 1, 0.1, top_k=1))
+
+        with patch.dict("os.environ", {"QAOA_FORCE_CPU": "true"}, clear=True):
+            with patch.object(solver, "_solve_on_device", return_value="cpu") as solve:
+                result = solver.solve("qubo")
+
+        self.assertEqual(result, "cpu")
+        solve.assert_called_once_with("qubo", "lightning.qubit")
+
+    def test_explicit_force_cpu_false_allows_gpu_first_on_render(self) -> None:
+        solver = PennylaneSolver(QAOAConfig(1, 1, 0.1, top_k=1))
+
+        with patch.dict(
+            "os.environ",
+            {"RENDER": "true", "QAOA_FORCE_CPU": "false"},
+            clear=True,
+        ):
+            with patch.object(solver, "_solve_on_device", return_value="gpu") as solve:
+                result = solver.solve("qubo")
+
+        self.assertEqual(result, "gpu")
+        solve.assert_called_once_with("qubo", "lightning.gpu")
+
     def test_uniform_random_instances_are_seeded_and_strictly_positive(self) -> None:
         config = {
             "num_processes": 8,
