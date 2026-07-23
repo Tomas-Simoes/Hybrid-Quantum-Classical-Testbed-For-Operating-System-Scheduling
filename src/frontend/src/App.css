@@ -452,7 +452,6 @@ h3 {
 .hero-copy .hero-subtitle,
 .section-heading p,
 .stage p,
-.console-note,
 .empty-state,
 .chart-empty {
   color: var(--muted);
@@ -1719,9 +1718,11 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.console-note {
-  font-size: 13px;
-  line-height: 1.5;
+.run-action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .telemetry-surface {
@@ -1761,6 +1762,63 @@ button:disabled {
   text-align: right;
 }
 
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 24px;
+  padding: 4px 8px;
+  border: 1px solid rgba(237, 230, 217, 0.12);
+  border-radius: 999px;
+  background: rgba(11, 9, 8, 0.34);
+}
+
+.status-badge strong {
+  color: var(--bone);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--muted);
+}
+
+.status-submitting,
+.status-queued,
+.status-running {
+  border-color: rgba(201, 162, 75, 0.5);
+  background: rgba(201, 162, 75, 0.08);
+}
+
+.status-submitting .status-dot,
+.status-queued .status-dot,
+.status-running .status-dot {
+  background: var(--gold);
+}
+
+.status-done {
+  border-color: rgba(120, 190, 135, 0.45);
+  background: rgba(120, 190, 135, 0.08);
+}
+
+.status-done .status-dot {
+  background: rgb(120, 190, 135);
+}
+
+.status-failed,
+.status-error {
+  border-color: rgba(239, 120, 120, 0.5);
+  background: rgba(239, 120, 120, 0.08);
+}
+
+.status-failed .status-dot,
+.status-error .status-dot {
+  background: rgb(239, 120, 120);
+}
+
 .telemetry-panel {
   display: grid;
   gap: 12px;
@@ -1770,6 +1828,27 @@ button:disabled {
 }
 
 .telemetry-heading {
+  color: var(--gold);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.pipeline-limit-note {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 2px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(237, 230, 217, 0.08);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.pipeline-limit-note p {
+  margin: 0;
+}
+
+.pipeline-limit-note span {
   color: var(--gold);
   font-size: 10px;
   text-transform: uppercase;
@@ -1890,11 +1969,11 @@ button:disabled {
   }
 
   .run-console-section .config-grid {
-    grid-template-columns: repeat(2, minmax(160px, 220px));
+    grid-template-columns: repeat(2, minmax(132px, 180px));
   }
 
   .run-console-section .weight-grid {
-    grid-template-columns: repeat(4, minmax(0, 138px));
+    grid-template-columns: repeat(4, minmax(0, 116px));
   }
 
   .run-console-section input,
@@ -1919,7 +1998,7 @@ button:disabled {
   }
 
   .run-console:has(.advanced-config[open]) .advanced-config-body .config-grid {
-    grid-template-columns: repeat(2, minmax(140px, 174px));
+    grid-template-columns: repeat(2, minmax(118px, 150px));
   }
 
   .run-console-section .telemetry-surface {
@@ -1953,7 +2032,7 @@ button:disabled {
 
 @media (min-width: 1181px) {
   .run-console:has(.advanced-config[open]) {
-    grid-template-columns: minmax(640px, 1.45fr) minmax(340px, 0.7fr);
+    grid-template-columns: minmax(540px, 0.9fr) minmax(360px, 1fr);
   }
 }
 

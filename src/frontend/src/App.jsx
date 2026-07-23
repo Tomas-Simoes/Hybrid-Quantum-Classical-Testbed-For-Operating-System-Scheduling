@@ -249,15 +249,12 @@ function App() {
             <RunConsole
               runState={runState}
               onRunStateChange={setRunState}
-              energy={energy}
-              convergence={convergence}
             />
             <ResultsView job={runState.job} />
           </>
         )}
       </main>
       <footer className="site-footer">
-        <span>Hybrid quantum-classical OS scheduling dissertation artifact.</span>
         <a href="https://github.com/Tomas-Simoes/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling">
           Source
         </a>
