@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import os
 import sys
+import tempfile
 import time
 from dataclasses import asdict, is_dataclass
 from enum import Enum
@@ -11,7 +12,7 @@ from typing import Any
 
 SRC_ROOT = Path(__file__).resolve().parents[1]
 CORE_ROOT = SRC_ROOT / "core"
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib")
+os.environ.setdefault("MPLCONFIGDIR", tempfile.mkdtemp(prefix="hybrid-scheduler-mpl-"))
 if str(CORE_ROOT) not in sys.path:
     sys.path.insert(0, str(CORE_ROOT))
 
@@ -19,9 +20,13 @@ import numpy as np
 
 from data_contracts import (
     DecompositorConfig,
+    IterativeSchedulingOutput,
     ProcessInfo,
     QAOAConfig,
     QUBOConfig,
+    QUBOInstance,
+    SchedulingOutput,
+    SolverResult,
     SystemSnapshot,
     TracerConfig,
 )
@@ -109,6 +114,56 @@ def run_pipeline(config: RunConfig) -> dict[str, Any]:
 
 
 def jsonable(value: Any) -> Any:
+    if isinstance(value, SchedulingOutput):
+        return {
+            "result": jsonable(value.result),
+            "validation": jsonable(value.validation),
+            "used_snapshot": jsonable(value.used_snapshot),
+            "alpha": jsonable(value.alpha),
+            "qubo_instance": jsonable(value.qubo_instance),
+            "qaoa_cfg": jsonable(value.qaoa_cfg),
+            "qubo_cfg": jsonable(value.qubo_cfg),
+        }
+    if isinstance(value, IterativeSchedulingOutput):
+        return {
+            "final_assignments": jsonable(value.final_assignments),
+            "solver_results": jsonable(value.solver_results),
+            "phi_history": jsonable(value.phi_history),
+            "used_workload": jsonable(value.used_workload),
+            "qubo_instance": jsonable(value.qubo_instance),
+            "qaoa_cfg": jsonable(value.qaoa_cfg),
+            "qubo_cfg": jsonable(value.qubo_cfg),
+            "global_result": jsonable(value.global_result),
+            "validation": jsonable(value.validation),
+            "alpha": jsonable(value.alpha),
+            "final_phi": jsonable(value.final_phi),
+            "L_avg": jsonable(value.L_avg),
+            "load_imbalance": jsonable(value.load_imbalance),
+            "total_solve_time_ms": jsonable(value.total_solve_time_ms),
+            "num_sub_qubos": value.num_sub_qubos,
+            "num_feasible": value.num_feasible,
+            "all_feasible": value.all_feasible,
+        }
+    if isinstance(value, SolverResult):
+        return {
+            "bitstring": jsonable(value.bitstring),
+            "decoded_assignments": jsonable(value.decoded_assignments),
+            "energy": jsonable(value.energy),
+            "is_feasible": value.is_feasible,
+            "solver_backend": value.solver_backend,
+            "solve_time_ms": jsonable(value.solve_time_ms),
+            "solver_params": jsonable(value.solver_params),
+            "convergence_curve": jsonable(value.convergence_curve),
+        }
+    if isinstance(value, QUBOInstance):
+        return {
+            "num_variables": value.num_variables,
+            "num_entities": value.num_entities,
+            "num_cores": value.num_cores,
+            "penalty_weight": jsonable(value.penalty_weight),
+            "iteration_index": value.iteration_index,
+            "source_snapshot_id": value.source_snapshot_id,
+        }
     if isinstance(value, np.ndarray):
         return value.tolist()
     if isinstance(value, np.generic):

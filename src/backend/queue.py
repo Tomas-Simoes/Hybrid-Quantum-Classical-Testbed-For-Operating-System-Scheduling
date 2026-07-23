@@ -3,9 +3,16 @@ from __future__ import annotations
 import asyncio
 import uuid
 from dataclasses import dataclass
+from typing import Any
 
 from . import job_store
 from .config import settings
+from .execution_log import (
+    log_job_completed,
+    log_job_failed,
+    log_job_queued,
+    log_job_started,
+)
 from .pipeline_bridge import run_pipeline
 from .validation import RunConfig
 
@@ -27,14 +34,23 @@ def _job_queue() -> asyncio.Queue[QueuedJob]:
     return _queue
 
 
-async def enqueue_run(config: RunConfig) -> dict:
+async def enqueue_run(
+    config: RunConfig,
+    request_metadata: dict[str, Any] | None = None,
+) -> dict:
     queue = _job_queue()
     if queue.full():
         raise RuntimeError("Job queue is full. Please retry shortly.")
 
     job_id = str(uuid.uuid4())
-    record = await job_store.create_job(job_id, config, queue.qsize() + 1)
+    record = await job_store.create_job(
+        job_id,
+        config,
+        queue.qsize() + 1,
+        request_metadata,
+    )
     await queue.put(QueuedJob(job_id=job_id, config=config))
+    await log_job_queued(record)
     return record
 
 
@@ -61,10 +77,13 @@ async def _worker() -> None:
     while True:
         job = await queue.get()
         try:
-            await job_store.mark_running(job.job_id)
+            running_record = await job_store.mark_running(job.job_id)
+            await log_job_started(running_record)
             result = await asyncio.to_thread(run_pipeline, job.config)
-            await job_store.mark_done(job.job_id, result)
+            done_record = await job_store.mark_done(job.job_id, result)
+            await log_job_completed(done_record)
         except Exception as exc:
-            await job_store.mark_failed(job.job_id, exc)
+            failed_record = await job_store.mark_failed(job.job_id, exc)
+            await log_job_failed(failed_record, exc)
         finally:
             queue.task_done()

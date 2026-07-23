@@ -437,6 +437,11 @@ class DecompositorConfig:
 # ---------------------------------------------------------------------------
 # Round-trip test
 # ---------------------------------------------------------------------------
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
+
+
 def round_trip_test() -> None:
     snapshot_id = "test-snapshot-uuid-1234"
 
@@ -451,7 +456,7 @@ def round_trip_test() -> None:
         io_wait_ratio=0.1,
         priority_class="BE",
     )
-    assert ProcessInfo.from_dict(proc.to_dict()) == proc
+    _require(ProcessInfo.from_dict(proc.to_dict()) == proc, "ProcessInfo round-trip failed.")
 
     # SystemSnapshot (auto-generated id overridden for determinism)
     snap = SystemSnapshot(
@@ -462,7 +467,7 @@ def round_trip_test() -> None:
         snapshot_id=snapshot_id,
     )
     snap_rt = SystemSnapshot.from_dict(snap.to_dict())
-    assert snap_rt == snap
+    _require(snap_rt == snap, "SystemSnapshot round-trip failed.")
 
     # Bundle / ClusteredSnapshot
     bundle = Bundle(
@@ -472,7 +477,7 @@ def round_trip_test() -> None:
         aggregate_rss_mb=256.0,
         representative_cmd="python",
     )
-    assert Bundle.from_dict(bundle.to_dict()) == bundle
+    _require(Bundle.from_dict(bundle.to_dict()) == bundle, "Bundle round-trip failed.")
 
     clustered = ClusteredSnapshot(
         bundles=[bundle],
@@ -480,7 +485,10 @@ def round_trip_test() -> None:
         source_snapshot_id=snapshot_id,
         rt_procs=[proc],
     )
-    assert ClusteredSnapshot.from_dict(clustered.to_dict()) == clustered
+    _require(
+        ClusteredSnapshot.from_dict(clustered.to_dict()) == clustered,
+        "ClusteredSnapshot round-trip failed.",
+    )
 
     # QUBOInstance
     Q = np.array([[1.0, -0.5], [-0.5, 1.0]])
@@ -495,14 +503,14 @@ def round_trip_test() -> None:
         source_snapshot_id=snapshot_id,
     )
     qubo_rt = QUBOInstance.from_dict(qubo.to_dict())
-    assert np.array_equal(qubo_rt.Q, qubo.Q)
-    assert qubo_rt.num_variables == qubo.num_variables
-    assert qubo_rt.variable_map == qubo.variable_map
-    assert qubo_rt.num_entities == qubo.num_entities
-    assert qubo_rt.num_cores == qubo.num_cores
-    assert qubo_rt.penalty_weight == qubo.penalty_weight
-    assert qubo_rt.iteration_index == qubo.iteration_index
-    assert qubo_rt.source_snapshot_id == qubo.source_snapshot_id
+    _require(np.array_equal(qubo_rt.Q, qubo.Q), "QUBO matrix round-trip failed.")
+    _require(qubo_rt.num_variables == qubo.num_variables, "QUBO num_variables round-trip failed.")
+    _require(qubo_rt.variable_map == qubo.variable_map, "QUBO variable_map round-trip failed.")
+    _require(qubo_rt.num_entities == qubo.num_entities, "QUBO num_entities round-trip failed.")
+    _require(qubo_rt.num_cores == qubo.num_cores, "QUBO num_cores round-trip failed.")
+    _require(qubo_rt.penalty_weight == qubo.penalty_weight, "QUBO penalty_weight round-trip failed.")
+    _require(qubo_rt.iteration_index == qubo.iteration_index, "QUBO iteration_index round-trip failed.")
+    _require(qubo_rt.source_snapshot_id == qubo.source_snapshot_id, "QUBO source_snapshot_id round-trip failed.")
 
     # SolverResult
     result = SolverResult(
@@ -515,13 +523,13 @@ def round_trip_test() -> None:
         solver_params={"penalty": 9.0},
     )
     result_rt = SolverResult.from_dict(result.to_dict())
-    assert np.array_equal(result_rt.bitstring, result.bitstring)
-    assert result_rt.decoded_assignments == result.decoded_assignments
-    assert result_rt.energy == result.energy
-    assert result_rt.is_feasible == result.is_feasible
-    assert result_rt.solver_backend == result.solver_backend
-    assert result_rt.solve_time_ms == result.solve_time_ms
-    assert result_rt.solver_params == result.solver_params
+    _require(np.array_equal(result_rt.bitstring, result.bitstring), "SolverResult bitstring round-trip failed.")
+    _require(result_rt.decoded_assignments == result.decoded_assignments, "SolverResult assignments round-trip failed.")
+    _require(result_rt.energy == result.energy, "SolverResult energy round-trip failed.")
+    _require(result_rt.is_feasible == result.is_feasible, "SolverResult feasibility round-trip failed.")
+    _require(result_rt.solver_backend == result.solver_backend, "SolverResult backend round-trip failed.")
+    _require(result_rt.solve_time_ms == result.solve_time_ms, "SolverResult solve time round-trip failed.")
+    _require(result_rt.solver_params == result.solver_params, "SolverResult params round-trip failed.")
 
     # PipelineResult
     pipeline = PipelineResult(
@@ -532,11 +540,14 @@ def round_trip_test() -> None:
         source_snapshot_id=snapshot_id,
     )
     pipeline_rt = PipelineResult.from_dict(pipeline.to_dict())
-    assert pipeline_rt.final_assignments == pipeline.final_assignments
-    assert pipeline_rt.total_solve_time_ms == pipeline.total_solve_time_ms
-    assert pipeline_rt.num_iterations == pipeline.num_iterations
-    assert pipeline_rt.source_snapshot_id == pipeline.source_snapshot_id
-    assert len(pipeline_rt.iterations) == 1
+    _require(pipeline_rt.final_assignments == pipeline.final_assignments, "Pipeline assignments round-trip failed.")
+    _require(
+        pipeline_rt.total_solve_time_ms == pipeline.total_solve_time_ms,
+        "Pipeline solve time round-trip failed.",
+    )
+    _require(pipeline_rt.num_iterations == pipeline.num_iterations, "Pipeline iteration count round-trip failed.")
+    _require(pipeline_rt.source_snapshot_id == pipeline.source_snapshot_id, "Pipeline source snapshot round-trip failed.")
+    _require(len(pipeline_rt.iterations) == 1, "Pipeline iterations round-trip failed.")
 
     # Verify full JSON round-trip goes through json.dumps/loads without error
     for obj in [proc, snap, bundle, clustered, qubo, result, pipeline]:
