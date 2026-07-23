@@ -28,7 +28,6 @@ html {
   background: var(--void);
   scroll-behavior: smooth;
   scroll-padding-top: 64px;
-  scroll-snap-type: y mandatory;
 }
 
 body {

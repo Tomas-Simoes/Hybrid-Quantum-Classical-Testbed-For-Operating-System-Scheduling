@@ -26,13 +26,20 @@ const quboCells = [
   'hot',
 ]
 
+const processWeights = [
+  { id: 'p_0', width: 72 },
+  { id: 'p_1', width: 46 },
+  { id: 'p_2', width: 58 },
+  { id: 'p_3', width: 34 },
+]
+
 function WorkloadSketch() {
   return (
     <div className="tutorial-glyph workload-glyph" aria-hidden="true">
-      {[72, 46, 58, 34].map((width, index) => (
-        <span className="workload-row" key={width}>
-          <i />
-          <b style={{ '--row-width': `${width}%`, '--row-delay': `${index * 0.18}s` }} />
+      {processWeights.map((process, index) => (
+        <span className="workload-row" key={process.id}>
+          <i>{process.id}</i>
+          <b style={{ '--row-width': `${process.width}%`, '--row-delay': `${index * 0.18}s` }} />
         </span>
       ))}
     </div>
@@ -41,28 +48,49 @@ function WorkloadSketch() {
 
 function BalanceSketch() {
   const cores = [
-    { id: 'c0', load: 68, chips: [48, 30], delay: '0s' },
-    { id: 'c1', load: 46, chips: [24, 30], delay: '0.18s' },
-    { id: 'c2', load: 58, chips: [36, 28], delay: '0.36s' },
+    { id: '0', processes: ['p_0', 'p_3'], delay: '0s', duration: '9.6s', laneMin: '88%', laneMid: '95%', laneMax: '100%' },
+    { id: '1', processes: ['p_1'], delay: '-2.4s', duration: '10.8s', laneMin: '80%', laneMid: '88%', laneMax: '94%' },
+    { id: '2', processes: ['p_2'], delay: '-5.1s', duration: '9.9s', laneMin: '84%', laneMid: '92%', laneMax: '98%' },
   ]
 
   return (
     <div className="tutorial-glyph balance-glyph" aria-hidden="true">
-      <span className="balance-target">
-        <b>avg</b>
+      <span className="assignment-process-stack">
+        {processWeights.map((process, index) => (
+          <i key={process.id} style={{ '--process-delay': `${index * 0.08}s` }}>
+            {process.id}
+          </i>
+        ))}
       </span>
-      {cores.map((core) => (
-        <span
-          className="balance-core"
-          key={core.id}
-          style={{ '--core-load': `${core.load}%`, '--core-delay': core.delay }}
-        >
-          <b>{core.id}</b>
-          {core.chips.map((chip, index) => (
-            <i key={`${core.id}-${chip}`} style={{ '--chip-width': `${chip}%`, '--chip-delay': `${index * 0.12}s` }} />
-          ))}
-        </span>
-      ))}
+      <span className="assignment-flow-lines">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span className="assignment-core-stack">
+        {cores.map((core) => (
+          <span
+            className="assignment-core-lane"
+            key={core.id}
+            style={{
+              '--core-delay': core.delay,
+              '--lane-duration': core.duration,
+              '--lane-min': core.laneMin,
+              '--lane-mid': core.laneMid,
+              '--lane-max': core.laneMax,
+            }}
+          >
+            <b>
+              core<sub>{core.id}</sub>
+            </b>
+            {core.processes.map((process, index) => (
+              <i key={`${core.id}-${process}`} style={{ '--chip-delay': `${index * 0.12}s` }}>
+                {process}
+              </i>
+            ))}
+          </span>
+        ))}
+      </span>
     </div>
   )
 }
@@ -80,12 +108,16 @@ function QuboSketch() {
 function HamiltonianSketch() {
   return (
     <div className="tutorial-glyph hamiltonian-glyph" aria-hidden="true">
-      <span className="ham-token">Q</span>
+      <span className="ham-token ham-source">QUBO</span>
       <span className="ham-arrow" />
-      <span className="ham-token ham-cost">Hc</span>
-      <span className="ham-terms">
-        <i>Zi</i>
-        <i>ZiZj</i>
+      <span className="ham-output">
+        <span className="ham-token ham-cost">
+          H<sub>C</sub>
+        </span>
+        <span className="ham-plus">+</span>
+        <span className="ham-token ham-cost">
+          H<sub>M</sub>
+        </span>
       </span>
     </div>
   )
@@ -98,24 +130,30 @@ function QaoaSketch() {
       <span className="qaoa-orbit orbit-b" />
       <span className="qaoa-orbit orbit-c" />
       <span className="qaoa-core" />
-      <span className="qaoa-layer layer-cost">C</span>
-      <span className="qaoa-layer layer-mixer">M</span>
+      <span className="qaoa-layer layer-cost">
+        H<sub>C</sub>
+      </span>
+      <span className="qaoa-layer layer-mixer">
+        H<sub>M</sub>
+      </span>
     </div>
   )
 }
 
 function SolutionSketch() {
   const cores = [
-    { id: 'c0', load: 69, chips: ['p2', 'p5'], height: 66 },
-    { id: 'c1', load: 64, chips: ['p1', 'p4'], height: 61 },
-    { id: 'c2', load: 67, chips: ['p0', 'p3'], height: 64 },
+    { id: '0', load: 69, chips: ['p_0', 'p_3'], height: 66 },
+    { id: '1', load: 64, chips: ['p_1'], height: 61 },
+    { id: '2', load: 67, chips: ['p_2'], height: 64 },
   ]
 
   return (
     <div className="tutorial-glyph solution-glyph" aria-hidden="true">
       {cores.map((core) => (
         <span className="core-lane" key={core.id} style={{ '--load-height': `${core.height}%` }}>
-          <b>{core.id}</b>
+          <b>
+            core<sub>{core.id}</sub>
+          </b>
           <strong>{core.load}%</strong>
           <em />
           {core.chips.map((chip) => (
@@ -132,14 +170,14 @@ const tutorialSteps = [
     number: '01',
     label: 'Observe',
     title: 'Processes become weights',
-    copy: 'The tracer or preset input is normalized into a snapshot: CPU weight, memory, current core, and process class.',
+    copy: 'We extract CPU weight, memory pressure, current core, and process class from the system snapshot.',
     visual: <WorkloadSketch />,
   },
   {
     number: '02',
     label: 'Target',
-    title: 'Minimize load imbalance',
-    copy: 'The objective keeps each core load close to the average target instead of searching blindly through every assignment.',
+    title: 'Minimize core imbalance',
+    copy: 'The objective penalizes uneven core loads so the solver prefers assignments near the average per-core load.',
     visual: <BalanceSketch />,
   },
   {
@@ -153,26 +191,33 @@ const tutorialSteps = [
     number: '04',
     label: 'Translate',
     title: 'QUBO becomes quantum cost',
-    copy: 'Binary terms are rewritten with Pauli-Z operators, forming the cost Hamiltonian that QAOA can phase and optimize.',
+    copy: 'Binary QUBO terms become Pauli-Z cost terms, forming the Hamiltonian that QAOA can optimize.',
     visual: <HamiltonianSketch />,
   },
   {
     number: '05',
     label: 'Optimize',
     title: 'QAOA searches low energy',
-    copy: 'The QUBO is mapped to a cost Hamiltonian. Cost and mixer layers are tuned by a classical optimizer.',
+    copy: 'QAOA samples schedules while a classical optimizer tunes circuit angles toward lower-cost assignments.',
     visual: <QaoaSketch />,
   },
   {
     number: '06',
     label: 'Decode',
-    title: 'Return balanced core lanes',
-    copy: 'The selected bitstring is decoded into process-to-core assignments and checked against the final load on each core.',
+    title: 'Return balanced assignment',
+    copy: 'The best bitstring is decoded into a process-to-core map with the resulting load shown for each core.',
     visual: <SolutionSketch />,
   },
 ]
 
-export function AlgorithmTutorial() {
+export function AlgorithmTutorial({ onNavigate }) {
+  function handleTryClick(event) {
+    if (!onNavigate) return
+
+    event.preventDefault()
+    onNavigate('chamber')
+  }
+
   return (
     <section className="section-shell algorithm-section" id="tutorial" aria-labelledby="tutorial-title">
       <div className="algorithm-header">
@@ -198,7 +243,7 @@ export function AlgorithmTutorial() {
         ))}
       </div>
 
-      <a className="try-link mono" href="#chamber">
+      <a className="try-link mono" href="#chamber" onClick={handleTryClick}>
         Try it yourself
         <span aria-hidden="true" />
       </a>
