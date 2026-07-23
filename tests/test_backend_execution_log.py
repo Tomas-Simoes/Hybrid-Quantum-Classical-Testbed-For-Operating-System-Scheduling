@@ -20,7 +20,7 @@ from src.backend.execution_log import (
 class BackendExecutionLogTests(unittest.TestCase):
     def setUp(self) -> None:
         self._previous_log_path = settings.execution_log_path
-        self._previous_readable_log_path = settings.execution_readable_log_path
+        self._previous_json_log_path = settings.execution_json_log_path
         self._previous_max_read = settings.execution_log_max_read
         self._previous_rotation_days = settings.execution_log_rotation_days
         self._previous_max_bytes = settings.execution_log_max_bytes
@@ -29,12 +29,12 @@ class BackendExecutionLogTests(unittest.TestCase):
         object.__setattr__(
             settings,
             "execution_log_path",
-            Path(self._tmpdir.name) / "executions.jsonl",
+            Path(self._tmpdir.name) / "executions.log",
         )
         object.__setattr__(
             settings,
-            "execution_readable_log_path",
-            Path(self._tmpdir.name) / "executions.log",
+            "execution_json_log_path",
+            Path(self._tmpdir.name) / "executions.jsonl",
         )
         object.__setattr__(settings, "execution_log_max_read", 50)
         object.__setattr__(settings, "execution_log_rotation_days", 14)
@@ -45,8 +45,8 @@ class BackendExecutionLogTests(unittest.TestCase):
         object.__setattr__(settings, "execution_log_path", self._previous_log_path)
         object.__setattr__(
             settings,
-            "execution_readable_log_path",
-            self._previous_readable_log_path,
+            "execution_json_log_path",
+            self._previous_json_log_path,
         )
         object.__setattr__(settings, "execution_log_max_read", self._previous_max_read)
         object.__setattr__(
@@ -62,7 +62,7 @@ class BackendExecutionLogTests(unittest.TestCase):
         )
         self._tmpdir.cleanup()
 
-    def test_execution_lifecycle_is_written_as_jsonl(self) -> None:
+    def test_execution_lifecycle_is_available_as_structured_events(self) -> None:
         async def scenario() -> list[dict]:
             queued_record = {
                 "job_id": "job-1",
@@ -144,7 +144,7 @@ class BackendExecutionLogTests(unittest.TestCase):
             await log_job_completed(completed_record)
 
         asyncio.run(scenario())
-        readable = settings.execution_readable_log_path.read_text(encoding="utf-8")
+        readable = settings.execution_log_path.read_text(encoding="utf-8")
 
         self.assertIn("execution.queued", readable)
         self.assertIn("job-readable", readable)
@@ -182,7 +182,7 @@ class BackendExecutionLogTests(unittest.TestCase):
 
     def test_execution_log_rotates_by_age(self) -> None:
         old_timestamp = time.time() - (15 * 86_400)
-        settings.execution_log_path.write_text(
+        settings.execution_json_log_path.write_text(
             json.dumps(
                 {
                     "event": "old",
@@ -195,7 +195,7 @@ class BackendExecutionLogTests(unittest.TestCase):
 
         asyncio.run(record_event("new"))
 
-        archives = sorted(settings.execution_log_path.parent.glob("executions-*.jsonl"))
+        archives = sorted(settings.execution_json_log_path.parent.glob("executions-*.jsonl"))
         self.assertEqual(len(archives), 1)
         self.assertIn('"event": "old"', archives[0].read_text(encoding="utf-8"))
 
@@ -212,7 +212,7 @@ class BackendExecutionLogTests(unittest.TestCase):
             return await read_recent_events(10)
 
         events = asyncio.run(scenario())
-        archives = sorted(settings.execution_log_path.parent.glob("executions-*.jsonl"))
+        archives = sorted(settings.execution_json_log_path.parent.glob("executions-*.jsonl"))
 
         self.assertEqual(len(archives), 2)
         self.assertEqual(

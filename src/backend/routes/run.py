@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query, Request, status
+from fastapi.responses import PlainTextResponse
 
 from .. import job_store
 from ..config import settings
-from ..execution_log import read_recent_events
+from ..execution_log import read_recent_events, read_recent_text
 from ..queue import enqueue_run
 from ..ratelimit import limiter
 from ..validation import RunConfig
@@ -59,6 +60,19 @@ async def get_execution_logs(
         },
         "events": await read_recent_events(limit),
     }
+
+
+@router.get("/execution-logs.txt", response_class=PlainTextResponse)
+async def get_execution_logs_text(
+    max_chars: int = Query(default=50_000, ge=1_000, le=200_000),
+) -> PlainTextResponse:
+    if not settings.expose_execution_logs:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Execution logs are not exposed.",
+        )
+    text = await read_recent_text(max_chars)
+    return PlainTextResponse(text or "No execution logs yet.\n")
 
 
 @router.get("/run/{job_id}")

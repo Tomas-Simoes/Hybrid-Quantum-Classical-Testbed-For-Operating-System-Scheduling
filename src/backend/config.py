@@ -68,13 +68,13 @@ class AdapterSettings:
     execution_log_path: Path = Path(
         os.getenv(
             "EXECUTION_LOG_PATH",
-            str(PROJECT_ROOT / "logs" / "backend_executions.jsonl"),
+            str(PROJECT_ROOT / "logs" / "backend_executions.log"),
         )
     )
-    execution_readable_log_path: Path = Path(
+    execution_json_log_path: Path = Path(
         os.getenv(
-            "EXECUTION_READABLE_LOG_PATH",
-            str(PROJECT_ROOT / "logs" / "backend_executions.log"),
+            "EXECUTION_JSON_LOG_PATH",
+            str(PROJECT_ROOT / "logs" / "backend_executions.jsonl"),
         )
     )
     execution_log_max_read: int = _int_env("EXECUTION_LOG_MAX_READ", 500, minimum=1)

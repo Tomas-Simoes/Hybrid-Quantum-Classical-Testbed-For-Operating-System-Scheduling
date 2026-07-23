@@ -243,14 +243,17 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
   const [config, setConfig] = useState(() => clampConfigToPublicLimits(cloneConfig(CHAMBER_PRESETS[0].config)))
   const [selectedPresetId, setSelectedPresetId] = useState('effective-n8')
   const [error, setError] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [liveTick, setLiveTick] = useState(0)
   const pollRef = useRef(null)
+  const submitLockedRef = useRef(false)
 
   const processCount = Math.min(Math.max(Number(config.num_processes) || 1, 1), PUBLIC_MAX_N)
   const isRunning = runState.status === 'queued' || runState.status === 'running'
+  const isRunLocked = isSubmitting || isRunning
   const latestCost = convergence.length ? convergence[convergence.length - 1] : null
-  const displayIteration = convergence.length || (isRunning ? Math.max(1, liveTick) : 0)
-  const displayedStatus = runState.status === 'idle' ? 'standby' : runState.status
+  const displayIteration = convergence.length || (isRunLocked ? Math.max(1, liveTick) : 0)
+  const displayedStatus = isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
   const selectedPreset = CHAMBER_PRESETS.find((preset) => preset.id === selectedPresetId) ?? CHAMBER_PRESETS[0]
 
   const readout = useMemo(
@@ -264,10 +267,10 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
   )
 
   useEffect(() => {
-    if (!isRunning) return undefined
+    if (!isRunLocked) return undefined
     const interval = window.setInterval(() => setLiveTick((tick) => tick + 1), 900)
     return () => window.clearInterval(interval)
-  }, [isRunning])
+  }, [isRunLocked])
 
   useEffect(
     () => () => {
@@ -375,6 +378,9 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (submitLockedRef.current || isRunLocked) return
+    submitLockedRef.current = true
+    setIsSubmitting(true)
     setError(null)
     setLiveTick(0)
     if (pollRef.current) window.clearInterval(pollRef.current)
@@ -388,11 +394,21 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
         job: null,
         effectiveConfig: created.effective_config,
       })
+      setIsSubmitting(false)
       await poll(created.job_id)
       pollRef.current = window.setInterval(() => poll(created.job_id), POLL_MS)
     } catch (runError) {
-      setError(`Run rejected: ${runError.message}`)
+      const message =
+        runError.status === 429
+          ? 'Run rejected: too many clicks in a short window. Wait a moment, then submit once.'
+          : runError.status === 503
+            ? 'Run rejected: the queue is full. Wait for the current run to finish, then try again.'
+            : `Run rejected: ${runError.message}`
+      setError(message)
       onRunStateChange((current) => ({ ...current, status: 'idle' }))
+      setIsSubmitting(false)
+    } finally {
+      submitLockedRef.current = false
     }
   }
 
@@ -542,8 +558,8 @@ export function RunConsole({ runState, onRunStateChange, energy, convergence }) 
             </div>
           </details>
 
-          <button className="run-button" type="submit" disabled={isRunning}>
-            {isRunning ? 'Running' : 'Run scheduler'}
+          <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
+            {isSubmitting ? 'Submitting' : isRunning ? 'Running' : 'Run scheduler'}
           </button>
           <p className="console-note">
             The server clamps public inputs before the scheduler receives them.

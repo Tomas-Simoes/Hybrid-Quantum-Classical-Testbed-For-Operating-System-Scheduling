@@ -12,11 +12,18 @@ async function request(path, options = {}) {
   })
 
   const text = await response.text()
-  const body = text ? JSON.parse(text) : null
+  let body = null
+  try {
+    body = text ? JSON.parse(text) : null
+  } catch {
+    body = { detail: text }
+  }
 
   if (!response.ok) {
     const message = body?.detail || `Request failed with HTTP ${response.status}`
-    throw new Error(message)
+    const error = new Error(message)
+    error.status = response.status
+    throw error
   }
 
   return body

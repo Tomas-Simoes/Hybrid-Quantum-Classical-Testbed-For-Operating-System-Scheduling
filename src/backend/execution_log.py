@@ -166,6 +166,15 @@ def _write_line(path: Path, line: str, now: datetime, now_unix: float) -> None:
         handle.write(f"{line}\n")
 
 
+def _structured_log_path() -> Path:
+    if settings.execution_json_log_path == settings.execution_log_path:
+        return settings.execution_json_log_path.with_name(
+            f"{settings.execution_json_log_path.stem}.structured"
+            f"{settings.execution_json_log_path.suffix}"
+        )
+    return settings.execution_json_log_path
+
+
 def _format_duration(milliseconds: Any) -> str | None:
     if not isinstance(milliseconds, (int, float)):
         return None
@@ -259,7 +268,7 @@ def _format_readable_event(entry: dict[str, Any]) -> str:
             f"  error: {error.get('type', 'Error')}: {error.get('message', '')}"
         )
 
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines)
 
 
 async def record_event(event: str, **payload: Any) -> None:
@@ -280,14 +289,14 @@ async def record_event(event: str, **payload: Any) -> None:
             await asyncio.to_thread(
                 _write_line,
                 settings.execution_log_path,
-                line,
+                readable,
                 now,
                 timestamp_unix,
             )
             await asyncio.to_thread(
                 _write_line,
-                settings.execution_readable_log_path,
-                readable,
+                _structured_log_path(),
+                line,
                 now,
                 timestamp_unix,
             )
@@ -386,7 +395,7 @@ def _read_recent(files: list[Path], limit: int) -> list[dict[str, Any]]:
 
 
 def log_files_for_read(path: Path | None = None) -> list[Path]:
-    active_path = path or settings.execution_log_path
+    active_path = path or _structured_log_path()
     files = _archive_files(active_path)
     if active_path.exists():
         files.append(active_path)
@@ -399,6 +408,27 @@ async def read_recent_events(limit: int | None = None) -> list[dict[str, Any]]:
     async with _log_lock:
         return await asyncio.to_thread(
             _read_recent,
-            log_files_for_read(settings.execution_log_path),
+            log_files_for_read(_structured_log_path()),
             bounded_limit,
+        )
+
+
+def _read_text_tail(files: list[Path], max_chars: int) -> str:
+    text = "".join(
+        path.read_text(encoding="utf-8")
+        for path in files
+        if path.exists() and path.is_file()
+    )
+    if len(text) <= max_chars:
+        return text
+    return text[-max_chars:]
+
+
+async def read_recent_text(max_chars: int = 50_000) -> str:
+    bounded_max_chars = max(1_000, min(int(max_chars), 200_000))
+    async with _log_lock:
+        return await asyncio.to_thread(
+            _read_text_tail,
+            log_files_for_read(settings.execution_log_path),
+            bounded_max_chars,
         )
