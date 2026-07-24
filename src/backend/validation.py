@@ -58,7 +58,6 @@ class RunConfig(BaseModel):
     sorting_strategy: Literal[
         "WEIGHT_DESCENDING",
         "COUPLING_DESCENDING",
-        "CORE_BALANCE",
     ] = "WEIGHT_DESCENDING"
 
     min_rss: float = 20.0
@@ -115,6 +114,11 @@ class RunConfig(BaseModel):
             public_max_qubits,
             max(min_qubit_max, int(requested_qubit_max)),
         )
+        if self.effective_num_bundles > settings.public_max_bundles:
+            raise ValueError(
+                "Configuration requires too many decomposition bundles for the "
+                "public limits. Increase qubit_max or reduce num_processes."
+            )
 
         self.io_alpha = _clamp_float(_finite_float(self.io_alpha, "io_alpha"), 0.0, 1.0)
         self.affinity_alpha = _clamp_float(_finite_float(self.affinity_alpha, "affinity_alpha"), 0.0, 1.0)

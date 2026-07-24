@@ -3,7 +3,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
+
+from ..config import settings
+from ..ratelimit import limiter
 
 router = APIRouter()
 
@@ -12,7 +15,8 @@ SCALABILITY_RESULTS = PROJECT_ROOT / "precomputed" / "scalability_results.json"
 
 
 @router.get("/scalability")
-async def scalability() -> dict:
+@limiter.limit(settings.info_rate_limit)
+async def scalability(request: Request) -> dict:
     if not SCALABILITY_RESULTS.exists():
         raise HTTPException(status_code=404, detail="Precomputed scalability results are not available.")
     return json.loads(SCALABILITY_RESULTS.read_text(encoding="utf-8"))
