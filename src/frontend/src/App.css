@@ -8,7 +8,7 @@
     radial-gradient(circle at 14% 42%, rgba(181, 105, 58, 0.12), transparent 20rem),
     linear-gradient(180deg, rgba(11, 9, 8, 0.2), var(--void) 38rem),
     var(--void);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .nav-glass {
