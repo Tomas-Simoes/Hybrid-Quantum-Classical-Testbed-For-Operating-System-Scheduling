@@ -18,8 +18,11 @@ import {
   resultSummary,
   statusText,
 } from '../lib/results.js'
+import { useMediaQuery } from '../lib/useMediaQuery.js'
 
 export function ResultsView({ job }) {
+  const isMobile = useMediaQuery('(max-width: 880px)')
+
   if (!job?.result) return null
 
   const groups = coreAssignmentGroups(job)
@@ -99,12 +102,12 @@ export function ResultsView({ job }) {
                 <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
                 <XAxis dataKey="core" stroke="#8A8072" tickLine={false} axisLine={false} />
                 <YAxis stroke="#8A8072" tickLine={false} axisLine={false} width={54} />
-                <Tooltip content={<ComparisonTooltip average={reference.average} />} />
+                {!isMobile && <Tooltip content={<ComparisonTooltip average={reference.average} />} />}
                 {Number.isFinite(reference.average) && (
                   <ReferenceLine y={reference.average} stroke="rgba(237,230,217,0.58)" strokeDasharray="4 5" />
                 )}
-                {reference.hasClassical && <Bar dataKey="classical" name="classical optimum" fill="#58C7B6" radius={[2, 2, 0, 0]} />}
-                <Bar dataKey="current" name="decoded schedule" fill="#C9A24B" radius={[2, 2, 0, 0]} />
+                {reference.hasClassical && <Bar dataKey="classical" name="classical optimum" fill="#58C7B6" radius={[2, 2, 0, 0]} isAnimationActive={!isMobile} />}
+                <Bar dataKey="current" name="decoded schedule" fill="#C9A24B" radius={[2, 2, 0, 0]} isAnimationActive={!isMobile} />
               </BarChart>
             </ResponsiveContainer>
             <div className="result-chart-key">
@@ -127,9 +130,9 @@ export function ResultsView({ job }) {
                   <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
                   <XAxis type="number" stroke="#8A8072" tickLine={false} axisLine={false} />
                   <YAxis dataKey="metric" type="category" stroke="#8A8072" tickLine={false} axisLine={false} width={104} />
-                  <Tooltip content={<ComparisonTooltip />} />
-                  {reference.hasClassical && <Bar dataKey="classical" name="classical optimum" fill="#58C7B6" radius={[0, 2, 2, 0]} />}
-                  <Bar dataKey="current" name="decoded schedule" fill="#C9A24B" radius={[0, 2, 2, 0]} />
+                  {!isMobile && <Tooltip content={<ComparisonTooltip />} />}
+                  {reference.hasClassical && <Bar dataKey="classical" name="classical optimum" fill="#58C7B6" radius={[0, 2, 2, 0]} isAnimationActive={!isMobile} />}
+                  <Bar dataKey="current" name="decoded schedule" fill="#C9A24B" radius={[0, 2, 2, 0]} isAnimationActive={!isMobile} />
                 </BarChart>
               </ResponsiveContainer>
             </article>

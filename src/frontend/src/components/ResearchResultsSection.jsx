@@ -20,6 +20,7 @@ import {
   mixerComparisonRows,
   scalabilityRows,
 } from '../lib/researchResults.js'
+import { useMediaQuery } from '../lib/useMediaQuery.js'
 
 const colors = {
   gold: '#F2D985',
@@ -117,6 +118,7 @@ function ScalabilityLegend() {
 }
 
 export function ResearchResultsSection() {
+  const isMobile = useMediaQuery('(max-width: 880px)')
   const totalRuns = scalabilityRows.reduce((sum, row) => sum + row.runs, 0)
   const finalScale = scalabilityRows[scalabilityRows.length - 1]
   const scaleChartRows = scalabilityRows.map((row) => ({
@@ -190,24 +192,26 @@ export function ResearchResultsSection() {
                   ticks={[0, 150, 300, 450, 600]}
                   tickFormatter={formatTimeSeconds}
                 />
-                <Tooltip
-                  content={
-                    <ResultTooltip
-                      suffixes={{
-                        reference_quality_pct: '%',
-                        pipeline_quality_pct: '%',
-                        classical_time_seconds: 's',
-                        qaoa_time_seconds: 's',
-                      }}
-                      precision={{ reference_quality_pct: 6 }}
-                      tooltipLabels={{
-                        pipeline_quality_pct: 'Hybrid Imbalance',
-                        reference_quality_pct: 'Classical imbalance',
-                      }}
-                      payloadOrder={scalabilityTooltipOrder}
-                    />
-                  }
-                />
+                {!isMobile && (
+                  <Tooltip
+                    content={
+                      <ResultTooltip
+                        suffixes={{
+                          reference_quality_pct: '%',
+                          pipeline_quality_pct: '%',
+                          classical_time_seconds: 's',
+                          qaoa_time_seconds: 's',
+                        }}
+                        precision={{ reference_quality_pct: 6 }}
+                        tooltipLabels={{
+                          pipeline_quality_pct: 'Hybrid Imbalance',
+                          reference_quality_pct: 'Classical imbalance',
+                        }}
+                        payloadOrder={scalabilityTooltipOrder}
+                      />
+                    }
+                  />
+                )}
                 <Area
                   yAxisId="imbalance"
                   type="monotone"
@@ -217,6 +221,7 @@ export function ResearchResultsSection() {
                   fill="url(#imbalanceFill)"
                   strokeWidth={2.6}
                   dot={false}
+                  isAnimationActive={!isMobile}
                 />
                 <Line
                   yAxisId="imbalance"
@@ -228,6 +233,7 @@ export function ResearchResultsSection() {
                   strokeOpacity={0.72}
                   strokeWidth={1.8}
                   dot={{ r: 2, strokeWidth: 0, fill: colors.bone }}
+                  isAnimationActive={!isMobile}
                 />
                 <Line
                   yAxisId="time"
@@ -237,6 +243,7 @@ export function ResearchResultsSection() {
                   stroke={colors.green}
                   strokeWidth={2.2}
                   dot={{ r: 2 }}
+                  isAnimationActive={!isMobile}
                 />
                 <Line
                   yAxisId="time"
@@ -246,6 +253,7 @@ export function ResearchResultsSection() {
                   stroke={colors.gold}
                   strokeWidth={2.2}
                   dot={{ r: 2 }}
+                  isAnimationActive={!isMobile}
                 />
               </ComposedChart>
             </ResponsiveContainer>
@@ -267,7 +275,7 @@ export function ResearchResultsSection() {
               <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
               <XAxis dataKey="N" stroke={colors.muted} tickLine={false} axisLine={false} />
               <YAxis stroke={colors.muted} tickLine={false} axisLine={false} width={46} tickFormatter={(value) => `${value}%`} />
-              <Tooltip content={<ResultTooltip suffixes={{ optimality: '%' }} />} />
+              {!isMobile && <Tooltip content={<ResultTooltip suffixes={{ optimality: '%' }} />} />}
               <Line
                 type="monotone"
                 dataKey="optimality"
@@ -275,6 +283,7 @@ export function ResearchResultsSection() {
                 stroke={colors.gold}
                 strokeWidth={2.4}
                 dot={{ r: 4, strokeWidth: 0, fill: colors.gold }}
+                isAnimationActive={!isMobile}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -294,8 +303,8 @@ export function ResearchResultsSection() {
               <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
               <XAxis dataKey="label" stroke={colors.muted} tickLine={false} axisLine={false} interval={0} />
               <YAxis stroke={colors.muted} tickLine={false} axisLine={false} width={42} tickFormatter={(value) => `${formatNumber(value, 0)}s`} />
-              <Tooltip content={<ResultTooltip suffixes={{ timeS: 's' }} />} />
-              <Bar dataKey="timeS" name="Solve time" radius={[4, 4, 0, 0]}>
+              {!isMobile && <Tooltip content={<ResultTooltip suffixes={{ timeS: 's' }} />} />}
+              <Bar dataKey="timeS" name="Solve time" radius={[4, 4, 0, 0]} isAnimationActive={!isMobile}>
                 {directChartRows.map((row) => (
                   <Cell key={row.label} fill={row.optimal ? colors.aqua : colors.copper} />
                 ))}
@@ -322,11 +331,11 @@ export function ResearchResultsSection() {
               <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
               <XAxis dataKey="mixer" stroke={colors.muted} tickLine={false} axisLine={false} />
               <YAxis stroke={colors.muted} tickLine={false} axisLine={false} width={46} tickFormatter={(value) => `${value}%`} />
-              <Tooltip content={<ResultTooltip suffixes={{ topK1Feasible: '%', topK1Optimal: '%', topK10Optimal: '%' }} />} />
+              {!isMobile && <Tooltip content={<ResultTooltip suffixes={{ topK1Feasible: '%', topK1Optimal: '%', topK10Optimal: '%' }} />} />}
               <Legend iconType="rect" wrapperStyle={{ color: '#8A8072', fontFamily: 'Inter, sans-serif', fontSize: 12 }} />
-              <Bar dataKey="topK1Feasible" name="Feasible top_k=1" fill={colors.blue} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="topK1Optimal" name="Optimal top_k=1" fill={colors.gold} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="topK10Optimal" name="Optimal top_k=10" fill={colors.aqua} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="topK1Feasible" name="Feasible top_k=1" fill={colors.blue} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
+              <Bar dataKey="topK1Optimal" name="Optimal top_k=1" fill={colors.gold} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
+              <Bar dataKey="topK10Optimal" name="Optimal top_k=10" fill={colors.aqua} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
             </BarChart>
           </ResponsiveContainer>
         </article>
@@ -345,10 +354,10 @@ export function ResearchResultsSection() {
               <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
               <XAxis dataKey="scenario" stroke={colors.muted} tickLine={false} axisLine={false} interval={0} />
               <YAxis stroke={colors.muted} tickLine={false} axisLine={false} width={46} tickFormatter={(value) => `${value}%`} />
-              <Tooltip content={<ResultTooltip suffixes={{ topK3: '%', topK10: '%' }} />} />
+              {!isMobile && <Tooltip content={<ResultTooltip suffixes={{ topK3: '%', topK10: '%' }} />} />}
               <Legend iconType="rect" wrapperStyle={{ color: '#8A8072', fontFamily: 'Inter, sans-serif', fontSize: 12 }} />
-              <Bar dataKey="topK3" name="Optimal top_k=3" fill={colors.copper} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="topK10" name="Optimal top_k=10" fill={colors.aqua} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="topK3" name="Optimal top_k=3" fill={colors.copper} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
+              <Bar dataKey="topK10" name="Optimal top_k=10" fill={colors.aqua} radius={[4, 4, 0, 0]} isAnimationActive={!isMobile} />
             </BarChart>
           </ResponsiveContainer>
         </article>

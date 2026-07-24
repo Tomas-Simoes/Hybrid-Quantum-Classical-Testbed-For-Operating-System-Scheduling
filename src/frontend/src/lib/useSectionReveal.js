@@ -1,22 +1,25 @@
 import { useEffect } from 'react'
+import { useMediaQuery } from './useMediaQuery.js'
 
 const SECTION_SELECTOR = 'main > section'
 
 export function useSectionReveal(refreshKey = true) {
+  const isMobile = useMediaQuery('(max-width: 880px)')
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)')
+
   useEffect(() => {
     if (!refreshKey || typeof window === 'undefined') return undefined
 
     const sections = Array.from(document.querySelectorAll(SECTION_SELECTOR))
     if (!sections.length) return undefined
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const supportsObserver = 'IntersectionObserver' in window
 
     sections.forEach((section) => {
       section.classList.add('reveal-section')
     })
 
-    if (prefersReducedMotion || !supportsObserver) {
+    if (isMobile || prefersReducedMotion || !supportsObserver) {
       sections.forEach((section) => section.classList.add('section-visible'))
 
       return () => {
@@ -49,5 +52,5 @@ export function useSectionReveal(refreshKey = true) {
         section.classList.remove('reveal-section', 'section-visible')
       })
     }
-  }, [refreshKey])
+  }, [isMobile, prefersReducedMotion, refreshKey])
 }

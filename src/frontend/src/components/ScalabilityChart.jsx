@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 import { getScalability } from '../api/client.js'
 import { mono } from '../lib/results.js'
+import { useMediaQuery } from '../lib/useMediaQuery.js'
 
 const ranges = [
   ['all', 'All'],
@@ -23,6 +24,7 @@ export function ScalabilityChart() {
   const [rows, setRows] = useState([])
   const [range, setRange] = useState('all')
   const [error, setError] = useState(null)
+  const isMobile = useMediaQuery('(max-width: 880px)')
 
   useEffect(() => {
     let alive = true
@@ -95,7 +97,7 @@ export function ScalabilityChart() {
                 axisLine={false}
                 width={64}
               />
-              <Tooltip content={<ScalabilityTooltip />} />
+              {!isMobile && <Tooltip content={<ScalabilityTooltip />} />}
               <Legend iconType="plainline" wrapperStyle={{ color: '#8A8072', fontFamily: 'Inter, sans-serif' }} />
               <Line
                 yAxisId="quality"
@@ -105,6 +107,7 @@ export function ScalabilityChart() {
                 stroke="#C9A24B"
                 strokeWidth={2.5}
                 dot={false}
+                isAnimationActive={!isMobile}
               />
               <Line
                 yAxisId="quality"
@@ -114,6 +117,7 @@ export function ScalabilityChart() {
                 stroke="#B5693A"
                 strokeWidth={2}
                 dot={false}
+                isAnimationActive={!isMobile}
               />
               <Line
                 yAxisId="time"
@@ -124,6 +128,7 @@ export function ScalabilityChart() {
                 strokeOpacity={0.58}
                 strokeWidth={1.6}
                 dot={false}
+                isAnimationActive={!isMobile}
               />
               <Brush dataKey="N" height={28} stroke="#C9A24B" fill="rgba(23,19,15,0.88)" />
             </LineChart>

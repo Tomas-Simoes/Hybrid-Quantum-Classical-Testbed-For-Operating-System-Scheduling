@@ -219,7 +219,7 @@ main > section {
 }
 
 .hero-pipeline-art {
-  --pipeline-delay: 2.25s;
+  --pipeline-delay: 0.85s;
   width: min(620px, 94vw);
   margin: 0 auto 10px;
   color: var(--gold);
@@ -250,24 +250,24 @@ main > section {
   opacity: 0;
   transform: translateY(5px) scale(0.96);
   filter: blur(3px);
-  animation: pipelineStageIn 1100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pipelineStageIn 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(var(--pipeline-delay, 0s) + var(--stage-delay));
 }
 
 .pipeline-stage-0 {
-  --stage-delay: 0.1s;
+  --stage-delay: 0.08s;
 }
 
 .pipeline-stage-1 {
-  --stage-delay: 1.3s;
+  --stage-delay: 1.05s;
 }
 
 .pipeline-stage-2 {
-  --stage-delay: 2.5s;
+  --stage-delay: 2.02s;
 }
 
 .pipeline-stage-3 {
-  --stage-delay: 3.7s;
+  --stage-delay: 2.99s;
 }
 
 .pipeline-icon {
@@ -293,20 +293,20 @@ main > section {
   height: 26px;
   opacity: 0;
   transform-origin: left center;
-  animation: pipelineConnectorIn 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pipelineConnectorIn 720ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(var(--pipeline-delay, 0s) + var(--connector-delay));
 }
 
 .connector-stage-0 {
-  --connector-delay: 0.72s;
+  --connector-delay: 0.55s;
 }
 
 .connector-stage-1 {
-  --connector-delay: 1.92s;
+  --connector-delay: 1.52s;
 }
 
 .connector-stage-2 {
-  --connector-delay: 3.12s;
+  --connector-delay: 2.49s;
 }
 
 .connector-line {
@@ -331,7 +331,7 @@ main > section {
   stroke: rgba(242, 217, 133, 0.3);
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: pipelinePathDraw 1350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pipelinePathDraw 1050ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: calc(var(--pipeline-delay, 0s) + var(--connector-delay));
 }
 
@@ -339,8 +339,8 @@ main > section {
   stroke: rgba(242, 217, 133, 0.42);
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: pipelinePathDraw 520ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: calc(var(--pipeline-delay, 0s) + var(--connector-delay) + 0.72s);
+  animation: pipelinePathDraw 420ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--pipeline-delay, 0s) + var(--connector-delay) + 0.52s);
 }
 
 .sigil-halo {
@@ -3063,6 +3063,28 @@ button:disabled {
     min-height: calc(100svh - 64px);
     padding: 36px 0 44px;
     grid-template-rows: auto auto;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .hero-visual {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    justify-items: center;
+  }
+
+  .hero-copy .hero-subtitle {
+    text-align: center;
   }
 
   h1 {
@@ -3071,6 +3093,7 @@ button:disabled {
 
   .hero-pipeline-art {
     width: min(420px, 94vw);
+    justify-self: center;
   }
 
   .algorithm-section {
@@ -3254,6 +3277,25 @@ button:disabled {
   .effective-config-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .research-chart-card .recharts-wrapper,
+  .research-chart-card .recharts-wrapper *,
+  .research-chart-card .recharts-responsive-container,
+  .result-chart-card .recharts-wrapper,
+  .result-chart-card .recharts-wrapper *,
+  .result-chart-card .recharts-responsive-container,
+  .scalability-panel .recharts-responsive-container,
+  .scalability-panel .recharts-wrapper *,
+  .scalability-panel .recharts-wrapper {
+    pointer-events: none;
+    touch-action: pan-y;
+  }
+
+  .research-chart-card .recharts-tooltip-wrapper,
+  .result-chart-card .recharts-tooltip-wrapper,
+  .scalability-panel .recharts-tooltip-wrapper {
+    display: none !important;
+  }
 }
 
 @media (max-width: 560px) {
@@ -3274,6 +3316,19 @@ button:disabled {
 
   h1 {
     font-size: 38px;
+  }
+
+  .hero-section {
+    padding: 24px 0 34px;
+    gap: 10px;
+  }
+
+  .lattice-shell {
+    width: min(100%, 420px);
+  }
+
+  .quantum-orb-canvas {
+    height: clamp(205px, 58vw, 260px);
   }
 
   h2 {
