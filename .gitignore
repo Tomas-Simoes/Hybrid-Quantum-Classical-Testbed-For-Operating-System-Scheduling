@@ -2,3 +2,11 @@
 __pycache__/
 *.pyc
 logs/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credential*
+*secret*
+src/frontend/dist/

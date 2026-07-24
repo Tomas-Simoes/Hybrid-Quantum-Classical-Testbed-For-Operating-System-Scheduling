@@ -1,7 +1,9 @@
 # main.py
 import logging
+import os
 import time
 import uuid
+import matplotlib.pyplot as plt
 import streamlit as st
 import numpy as np
 from data_contracts import DecompositorConfig, IterativeSchedulingOutput, ProcessInfo, QAOAConfig, QUBOConfig, QUBOInstance, SystemSnapshot, TracerConfig
@@ -23,6 +25,19 @@ from visualizer.snapshot_visualization import SnapshotVisualizer
 
 cli_mode = False
 logger = logging.getLogger("SchedulingEngine")
+
+
+def _is_production_runtime() -> bool:
+    environment = (
+        os.getenv("APP_ENV")
+        or os.getenv("ENVIRONMENT")
+        or os.getenv("PYTHON_ENV")
+        or ""
+    ).strip().lower()
+    if environment in {"prod", "production"}:
+        return True
+    return any(os.getenv(name) for name in ("RENDER", "RENDER_SERVICE_ID", "RENDER_EXTERNAL_URL"))
+
 
 class SchedulingEngine:
     @staticmethod
@@ -233,15 +248,16 @@ class SchedulingEngine:
                 alpha,
             )
 
-            viz = IterativeVisualizer(
-                solver_results=solver_results,
-                phi_history=phi_history,
-                workload=workload,
-                qubo_instance=qubo_instance,
-                qaoa_cfg=qaoa_cfg,
-                qubo_cfg=qubo_cfg,
-            )
-            viz.composite(save_path="results/iterative_run.png")
+            if not _is_production_runtime():
+                viz = IterativeVisualizer(
+                    solver_results=solver_results,
+                    phi_history=phi_history,
+                    workload=workload,
+                    qubo_instance=qubo_instance,
+                    qaoa_cfg=qaoa_cfg,
+                    qubo_cfg=qubo_cfg,
+                )
+                plt.close(viz.composite(save_path="results/iterative_run.png"))
 
             return IterativeSchedulingOutput(
                 final_assignments=final_assignments,
