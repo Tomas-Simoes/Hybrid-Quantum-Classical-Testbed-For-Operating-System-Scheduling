@@ -30,9 +30,11 @@ function scrollToTarget(target) {
   const element = document.getElementById(target)
   if (!element) return
 
+  const isMobile = window.matchMedia('(max-width: 880px)').matches
+
   window.scrollTo({
     top: Math.max(0, element.offsetTop - NAV_OFFSET),
-    behavior: 'smooth',
+    behavior: isMobile ? 'auto' : 'smooth',
   })
 }
 
@@ -107,7 +109,8 @@ function App() {
   }
 
   function enterChamber({ updateHistory = false } = {}) {
-    const shouldAnimate = pageRef.current === 'home' && !prefersReducedMotion()
+    const isMobile = window.matchMedia('(max-width: 880px)').matches
+    const shouldAnimate = pageRef.current === 'home' && !prefersReducedMotion() && !isMobile
 
     if (updateHistory && !shouldAnimate && window.location.hash !== '#chamber') {
       window.history.pushState(null, '', '#chamber')
@@ -118,7 +121,7 @@ function App() {
     if (!shouldAnimate) {
       clearPageTransition()
       setPage('chamber')
-      resetChamberScroll('smooth')
+      resetChamberScroll(isMobile ? 'auto' : 'smooth')
       return
     }
 
@@ -254,11 +257,6 @@ function App() {
           </>
         )}
       </main>
-      <footer className="site-footer">
-        <a href="https://github.com/Tomas-Simoes/Hybrid-Quantum-Classical-Testbed-For-Operating-System-Scheduling">
-          Source
-        </a>
-      </footer>
       {pageTransition === 'enter-chamber' ? (
         <div className="chamber-transition" aria-hidden="true">
           <span className="chamber-transition-line" />

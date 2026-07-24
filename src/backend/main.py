@@ -13,7 +13,7 @@ from slowapi import _rate_limit_exceeded_handler
 from .config import settings
 from .queue import start_worker, stop_worker
 from .ratelimit import limiter
-from .routes import health, run, scalability
+from .routes import feedback, health, run, scalability
 
 
 @asynccontextmanager
@@ -74,3 +74,4 @@ async def add_security_headers(request: Request, call_next):
 app.include_router(health.router, prefix="/api")
 app.include_router(run.router, prefix="/api")
 app.include_router(scalability.router, prefix="/api")
+app.include_router(feedback.router, prefix="/api")

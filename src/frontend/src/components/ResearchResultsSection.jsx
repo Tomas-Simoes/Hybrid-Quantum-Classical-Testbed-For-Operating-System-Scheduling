@@ -363,7 +363,7 @@ export function ResearchResultsSection() {
         <InsightCard
           label="02"
           title="Quality claims stay conservative"
-          copy="The large-N sweep shows valid, low-imbalance assignments, not certified global optimality or quantum advantage."
+          copy="The large-N sweep shows valid, low-imbalance assignments but with not certified global optimality or quantum advantage."
         />
         <InsightCard
           label="03"

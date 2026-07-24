@@ -168,14 +168,14 @@ function SolutionSketch() {
 const tutorialSteps = [
   {
     number: '01',
-    label: 'Observe',
+    label: 'Trace',
     title: 'Processes become weights',
-    copy: 'We extract CPU weight, memory pressure, current core, and process class from the system snapshot.',
+    copy: 'We extract CPU weight, memory usage and I/O wait time from the system snapshot.',
     visual: <WorkloadSketch />,
   },
   {
     number: '02',
-    label: 'Target',
+    label: 'Objective',
     title: 'Minimize core imbalance',
     copy: 'The objective penalizes uneven core loads so the solver prefers assignments near the average per-core load.',
     visual: <BalanceSketch />,

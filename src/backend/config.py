@@ -85,6 +85,11 @@ def _rate_limit_env(name: str, default: str) -> str:
     return value.strip() if value and value.strip() else default
 
 
+def _str_env(name: str, default: str = "") -> str:
+    value = os.getenv(name)
+    return value.strip() if value and value.strip() else default
+
+
 @dataclass(frozen=True)
 class AdapterSettings:
     public_max_n: int = _int_env(
@@ -149,6 +154,35 @@ class AdapterSettings:
     run_rate_limit: str = _rate_limit_env("RUN_RATE_LIMIT", "1/second")
     poll_rate_limit: str = _rate_limit_env("POLL_RATE_LIMIT", "120/minute")
     info_rate_limit: str = _rate_limit_env("INFO_RATE_LIMIT", "30/minute")
+    bug_report_rate_limit: str = _rate_limit_env("BUG_REPORT_RATE_LIMIT", "3/hour")
+    bug_report_min_seconds: int = _int_env("BUG_REPORT_MIN_SECONDS", 3, minimum=0, maximum=60)
+    bug_report_max_seconds: int = _int_env(
+        "BUG_REPORT_MAX_SECONDS",
+        7_200,
+        minimum=60,
+        maximum=86_400,
+    )
+    bug_report_max_links: int = _int_env("BUG_REPORT_MAX_LINKS", 3, minimum=0, maximum=10)
+    bug_report_duplicate_ttl_seconds: int = _int_env(
+        "BUG_REPORT_DUPLICATE_TTL_SECONDS",
+        3_600,
+        minimum=60,
+        maximum=86_400,
+    )
+    bug_report_log_path: Path = Path(
+        os.getenv(
+            "BUG_REPORT_LOG_PATH",
+            str(PROJECT_ROOT / "logs" / "bug_reports.jsonl"),
+        )
+    )
+    bug_report_recipient: str = _str_env("BUG_REPORT_TO", "tomas20simoes@gmail.com")
+    bug_report_sender: str = _str_env("BUG_REPORT_FROM", "bug-reports@localhost")
+    smtp_host: str = _str_env("SMTP_HOST")
+    smtp_port: int = _int_env("SMTP_PORT", 587, minimum=1, maximum=65_535)
+    smtp_username: str = _str_env("SMTP_USERNAME")
+    smtp_password: str = os.getenv("SMTP_PASSWORD", "")
+    smtp_starttls: bool = _bool_env("SMTP_STARTTLS", True)
+    smtp_ssl: bool = _bool_env("SMTP_SSL", False)
     cors_allow_credentials: bool = _bool_env("CORS_ALLOW_CREDENTIALS", False)
     enable_api_docs: bool = _bool_env("ENABLE_API_DOCS", False)
     execution_log_path: Path = Path(

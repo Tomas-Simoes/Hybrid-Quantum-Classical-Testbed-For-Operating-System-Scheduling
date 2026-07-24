@@ -675,10 +675,7 @@ export function RunConsole({ runState, onRunStateChange }) {
           {error && <p className="console-error mono">{error}</p>}
           <div className="pipeline-limit-note">
             <p>
-              <span className="mono">Pipeline limits:</span> {pipelineLimits}
-            </p>
-            <p>
-              Download the unrestricted version on GitHub.
+              <span className="mono">Pipeline limits:</span> {pipelineLimits} - Download the unrestricted version on GitHub.
             </p>
           </div>
           <div className="telemetry-panel effective-preset-panel">

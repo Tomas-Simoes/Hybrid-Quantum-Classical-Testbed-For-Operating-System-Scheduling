@@ -38,7 +38,10 @@ async function request(path, options = {}) {
   }
 
   if (!response.ok) {
-    const message = body?.detail || `Request failed with HTTP ${response.status}`
+    const detail = body?.detail
+    const message = Array.isArray(detail)
+      ? detail.map((item) => item?.msg).filter(Boolean).join(' ')
+      : detail || `Request failed with HTTP ${response.status}`
     const error = new Error(message)
     error.status = response.status
     throw error
@@ -65,4 +68,12 @@ export function getRun(jobId) {
 
 export function getScalability() {
   return request('/api/scalability')
+}
+
+export function sendBugReport(payload) {
+  return request('/api/bug-report', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    timeoutMs: 15000,
+  })
 }

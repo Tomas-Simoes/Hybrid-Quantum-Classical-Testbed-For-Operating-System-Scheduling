@@ -239,6 +239,7 @@ export function BundleLattice({ status }) {
     let logicalHeight = 0
     let lastTime = 0
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isMobile = window.matchMedia('(max-width: 880px)').matches
 
     function resize() {
       const rect = canvas.getBoundingClientRect()
@@ -253,7 +254,7 @@ export function BundleLattice({ status }) {
     function render(time = lastTime) {
       lastTime = time
       drawScene(ctx, logicalWidth, logicalHeight, time, status === 'running')
-      if (!prefersReducedMotion) {
+      if (!prefersReducedMotion && !isMobile) {
         frame = window.requestAnimationFrame(render)
       }
     }
