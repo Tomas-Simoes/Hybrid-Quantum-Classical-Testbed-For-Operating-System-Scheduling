@@ -8,13 +8,24 @@ const PUBLIC_MAX_QUBITS = Number(import.meta.env.VITE_PUBLIC_MAX_QUBITS ?? 8)
 const PUBLIC_MAX_QAOA_LAYERS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS ?? 1)
 const PUBLIC_MAX_QAOA_STEPS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS ?? 25)
 const PUBLIC_MAX_TOP_K = Number(import.meta.env.VITE_PUBLIC_MAX_TOP_K ?? 20)
-const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING', 'CORE_BALANCE']
+const PUBLIC_MAX_QUEUE_SIZE = Number(import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE ?? 25)
+const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING']
 const TUNING_TIPS = [
   ['Conflicts or empty assignments?', 'Raise top K or steps first. With the X mixer, a stronger penalty can also push conflicts out of the best states.'],
   ['Feasible but not optimal?', 'Increase QAOA steps before adding layers. If the curve still stalls, retune initial gamma and beta.'],
   ['Direct run got worse?', 'A larger qubit max can make the full QUBO harder to optimize. Compare it against smaller decomposed runs.'],
   ['Run feels too heavy?', 'Lower processes, steps, layers, or top K while tuning. Increase one setting at a time once the behavior is clear.'],
 ]
+const TERMINAL_RUN_STATUSES = new Set(['done', 'failed', 'error'])
+const STATUS_COPY = {
+  standby: 'Ready to submit a workload.',
+  submitting: 'Submitting the configuration to the backend.',
+  queued: 'Backend accepted the job and is waiting for a worker slot.',
+  running: 'Backend worker is solving the scheduling instance.',
+  done: 'Run completed and results are ready.',
+  failed: 'Backend reported that the run failed.',
+  error: 'Backend status check failed.',
+}
 const CHAMBER_PRESETS = [
   {
     id: 'effective-n8',
@@ -221,6 +232,35 @@ function numberOrNull(value) {
   return value === '' ? null : Number(value)
 }
 
+function queueLabel(job) {
+  const position = Number(job?.queue_position)
+  const capacity = Number(job?.queue_capacity) || PUBLIC_MAX_QUEUE_SIZE
+  if (!Number.isFinite(position) || position < 1) return 'Queued'
+  return `Queued ${position}/${capacity}`
+}
+
+function runStatusMessage(status, job) {
+  if (status !== 'queued') return STATUS_COPY[status] || STATUS_COPY.standby
+
+  const position = Number(job?.queue_position)
+  const capacity = Number(job?.queue_capacity) || PUBLIC_MAX_QUEUE_SIZE
+  const runningCount = Number(job?.queue_running_count) || 0
+
+  if (!Number.isFinite(position) || position < 1) {
+    return `Queued. Backend capacity is ${capacity} pending jobs.`
+  }
+
+  if (position === 1 && runningCount > 0) {
+    return `Queued ${position}/${capacity}. A backend run is executing; yours starts next.`
+  }
+
+  if (position === 1) {
+    return `Queued ${position}/${capacity}. Waiting for a backend worker to pick it up.`
+  }
+
+  return `Queued ${position}/${capacity}. ${position - 1} queued jobs are ahead of this run.`
+}
+
 function NumberField({ id, label, min, max, step = 'any', value, onChange }) {
   return (
     <label htmlFor={id}>
@@ -250,6 +290,7 @@ export function RunConsole({ runState, onRunStateChange }) {
   const isRunning = runState.status === 'queued' || runState.status === 'running'
   const isRunLocked = isSubmitting || isRunning
   const displayedStatus = isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
+  const statusMessage = runStatusMessage(displayedStatus, runState.job)
   const selectedPreset = CHAMBER_PRESETS.find((preset) => preset.id === selectedPresetId) ?? CHAMBER_PRESETS[0]
 
   const pipelineLimits = useMemo(
@@ -351,22 +392,64 @@ export function RunConsole({ runState, onRunStateChange }) {
     }
   }
 
-  async function poll(jobId) {
-    const job = await getRun(jobId)
-    onRunStateChange((current) => ({
-      ...current,
-      status: job.status,
-      job,
-      effectiveConfig: job.effective_config || current.effectiveConfig,
-    }))
+  function stopPolling() {
+    if (pollRef.current) window.clearInterval(pollRef.current)
+    pollRef.current = null
+  }
 
-    if (job.status === 'done' || job.status === 'failed' || job.status === 'error') {
-      if (pollRef.current) window.clearInterval(pollRef.current)
-      pollRef.current = null
-      if (job.status !== 'done') {
-        setError(job.error?.message || 'Run failed. Reduce N or retry after the current queue clears.')
+  function backendFailureMessage(job) {
+    const backendMessage = job?.error?.message
+    return backendMessage
+      ? `Backend failed while running the job: ${backendMessage}`
+      : 'Backend failed while running the job. Reduce workload size or retry shortly.'
+  }
+
+  async function poll(jobId) {
+    try {
+      const job = await getRun(jobId)
+      onRunStateChange((current) => ({
+        ...current,
+        status: job.status,
+        job,
+        effectiveConfig: job.effective_config || current.effectiveConfig,
+      }))
+
+      if (TERMINAL_RUN_STATUSES.has(job.status)) {
+        stopPolling()
+        if (job.status !== 'done') {
+          setError(backendFailureMessage(job))
+        }
       }
+      return job.status
+    } catch (pollError) {
+      stopPolling()
+      const message =
+        pollError.status === 404
+          ? 'Backend lost the job record before it completed. Submit the run again.'
+          : `Backend status check failed: ${pollError.message}`
+      setError(message)
+      onRunStateChange((current) => ({
+        ...current,
+        status: 'error',
+        job: current.job
+          ? {
+              ...current.job,
+              status: 'error',
+              error: { type: 'BackendStatusError', message },
+            }
+          : {
+              job_id: jobId,
+              status: 'error',
+              error: { type: 'BackendStatusError', message },
+          },
+      }))
+      return 'error'
     }
+  }
+
+  function startPolling(jobId) {
+    stopPolling()
+    pollRef.current = window.setInterval(() => poll(jobId), POLL_MS)
   }
 
   async function handleSubmit(event) {
@@ -375,29 +458,55 @@ export function RunConsole({ runState, onRunStateChange }) {
     submitLockedRef.current = true
     setIsSubmitting(true)
     setError(null)
-    if (pollRef.current) window.clearInterval(pollRef.current)
+    stopPolling()
 
     try {
       setConfig((current) => clampConfigToPublicLimits(current))
       const created = await createRun(buildPayload())
+      if (!created?.job_id || !created?.status) {
+        throw new Error('Backend accepted the request but did not return a job id.')
+      }
       onRunStateChange({
         status: created.status,
         jobId: created.job_id,
-        job: null,
+        job: {
+          job_id: created.job_id,
+          status: created.status,
+          queue_position: created.queue_position,
+          queue_capacity: created.queue_capacity,
+          queue_running_count: created.queue_running_count,
+          effective_config: created.effective_config,
+          result: null,
+          error: null,
+        },
         effectiveConfig: created.effective_config,
       })
       setIsSubmitting(false)
-      await poll(created.job_id)
-      pollRef.current = window.setInterval(() => poll(created.job_id), POLL_MS)
+      const firstStatus = await poll(created.job_id)
+      if (!TERMINAL_RUN_STATUSES.has(firstStatus)) {
+        startPolling(created.job_id)
+      }
     } catch (runError) {
       const message =
         runError.status === 429
-          ? 'Run rejected: too many clicks in a short window. Wait a moment, then submit once.'
+          ? 'Submit rejected: too many clicks in a short window. Wait a moment, then submit once.'
           : runError.status === 503
-            ? 'Run rejected: the queue is full. Wait for the current run to finish, then try again.'
-            : `Run rejected: ${runError.message}`
+            ? 'Submit rejected: the backend queue is full. Wait for the current run to finish, then try again.'
+            : runError.status === 0
+              ? `Submit failed: backend did not respond. ${runError.message}`
+              : `Submit failed: ${runError.message}`
       setError(message)
-      onRunStateChange((current) => ({ ...current, status: 'idle' }))
+      onRunStateChange((current) => ({
+        ...current,
+        status: 'error',
+        job: current.job
+          ? {
+              ...current.job,
+              status: 'error',
+              error: { type: 'SubmitError', message },
+            }
+          : null,
+      }))
       setIsSubmitting(false)
     } finally {
       submitLockedRef.current = false
@@ -552,13 +661,14 @@ export function RunConsole({ runState, onRunStateChange }) {
 
           <div className="run-action-row">
             <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
-              {isSubmitting ? 'Submitting' : isRunning ? 'Running' : 'Run scheduler'}
+              {isSubmitting ? 'Submitting' : runState.status === 'queued' ? queueLabel(runState.job) : runState.status === 'running' ? 'Running' : 'Run scheduler'}
             </button>
             <div className={`status-badge status-${displayedStatus}`} aria-label={`Run status: ${displayedStatus}`}>
               <span className="status-dot" aria-hidden="true" />
               <strong className="mono">{displayedStatus}</strong>
             </div>
           </div>
+          <p className="run-status-note mono">{statusMessage}</p>
         </form>
 
         <div className="telemetry-surface">

@@ -1787,16 +1787,23 @@ button:disabled {
 }
 
 .status-submitting,
-.status-queued,
 .status-running {
   border-color: rgba(201, 162, 75, 0.5);
   background: rgba(201, 162, 75, 0.08);
 }
 
 .status-submitting .status-dot,
-.status-queued .status-dot,
 .status-running .status-dot {
   background: var(--gold);
+}
+
+.status-queued {
+  border-color: rgba(88, 199, 182, 0.45);
+  background: rgba(88, 199, 182, 0.08);
+}
+
+.status-queued .status-dot {
+  background: #58C7B6;
 }
 
 .status-done {
@@ -2050,6 +2057,13 @@ button:disabled {
   color: #D8A27D;
   font-size: 12px;
   line-height: 1.5;
+}
+
+.run-status-note {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .results-grid {
