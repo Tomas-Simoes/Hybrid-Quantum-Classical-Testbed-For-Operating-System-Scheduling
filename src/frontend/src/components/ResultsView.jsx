@@ -9,7 +9,6 @@ import {
   YAxis,
 } from 'recharts'
 import {
-  balanceComparisonRows,
   balanceReferenceSummary,
   compactNumber,
   coreAssignmentGroups,
@@ -27,7 +26,6 @@ export function ResultsView({ job }) {
 
   const groups = coreAssignmentGroups(job)
   const coreComparisons = coreLoadComparisonRows(job)
-  const balanceRows = balanceComparisonRows(job)
   const reference = balanceReferenceSummary(job)
   const summary = resultSummary(job)
   const outcomeClass = summary.optimal === true ? 'optimal' : summary.feasible ? 'feasible' : summary.feasible === false ? 'failed' : 'pending'
@@ -41,14 +39,14 @@ export function ResultsView({ job }) {
       </div>
 
       <div className="results-grid">
-        <div className="assignment-panel glass-surface">
+        <div className="result-summary-panel glass-surface">
           <div className="metric-strip">
             <Metric label="norm. imbalance" value={formatPercent(summary.normalizedLoadImbalance)} featured />
-            <Metric label="regret" value={compactNumber(summary.objectiveRegret, 6)} />
+            <Metric label="opt. gap" value={compactNumber(summary.optimalityGap, 4)} />
+            <Metric label="load range" value={compactNumber(summary.loadImbalance, 4)} />
+            <Metric label="target/core" value={compactNumber(summary.averageCoreLoad, 4)} />
             <Metric label="optimal" value={statusText(summary.optimal)} />
             <Metric label="feasible" value={statusText(summary.feasible)} />
-            <Metric label="objective" value={compactNumber(summary.balanceObjective, 6)} />
-            <Metric label="reference obj." value={compactNumber(summary.classicalBalanceObjective, 6)} />
             <Metric label="energy" value={compactNumber(summary.energy, 6)} />
             <Metric label="global best" value={compactNumber(summary.globalEnergy, 6)} />
             <Metric label="variables" value={summary.variables ?? 'pending'} />
@@ -61,31 +59,42 @@ export function ResultsView({ job }) {
             <span className="mono">{outcomeLabel(summary)}</span>
             <p>{optimalityText(summary)}</p>
           </div>
+        </div>
 
-          <div className="core-assignment-map" aria-label="Core assignments">
-            {groups.map((group) => (
-              <article className="result-core-lane" key={group.core}>
-                <div className="result-core-header">
-                  <span className="mono">
-                    core<sub>{group.core}</sub>
-                  </span>
-                  <strong className="mono">{compactNumber(group.load, 4)}</strong>
-                </div>
-                <div className="result-load-track" aria-label={`Core ${group.core} load ${compactNumber(group.load, 4)}`}>
-                  <i style={{ width: `${maxLoad ? (group.load / maxLoad) * 100 : 0}%` }} />
-                  <b style={{ left: `${maxLoad ? (group.targetLoad / maxLoad) * 100 : 0}%` }} />
-                </div>
-                <div className="result-process-vector">
-                  {group.processes.map((process) => (
-                    <span className="result-process-chip" key={process.entity}>
-                      <strong className="mono">{process.label}</strong>
-                      <em className="mono">{compactNumber(process.weight, 3)}</em>
+        <div className="assignment-panel glass-surface">
+          <article className="result-chart-card result-assignment-card">
+            <div className="chart-heading result-chart-heading">
+              <div>
+                <span>Core assignment</span>
+                <p>Decoded process placement per core.</p>
+              </div>
+              <strong className="mono">{groups.length} cores</strong>
+            </div>
+            <div className="core-assignment-map" aria-label="Core assignments">
+              {groups.map((group) => (
+                <article className="result-core-lane" key={group.core}>
+                  <div className="result-core-header">
+                    <span className="mono">
+                      core<sub>{group.core}</sub>
                     </span>
-                  ))}
-                </div>
-              </article>
-            ))}
-          </div>
+                    <strong className="mono">{compactNumber(group.load, 4)}</strong>
+                  </div>
+                  <div className="result-load-track" aria-label={`Core ${group.core} load ${compactNumber(group.load, 4)}`}>
+                    <i style={{ width: `${maxLoad ? (group.load / maxLoad) * 100 : 0}%` }} />
+                    <b style={{ left: `${maxLoad ? (group.targetLoad / maxLoad) * 100 : 0}%` }} />
+                  </div>
+                  <div className="result-process-vector">
+                    {group.processes.map((process) => (
+                      <span className="result-process-chip" key={process.entity}>
+                        <strong className="mono">{process.label}</strong>
+                        <em className="mono">{compactNumber(process.weight, 3)}</em>
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </article>
         </div>
 
         <div className="chart-panel glass-surface result-chart-panel">
@@ -116,47 +125,6 @@ export function ResultsView({ job }) {
               <span className="key-average">Average target</span>
             </div>
           </article>
-
-          <div className="result-chart-split">
-            <article className="result-chart-card">
-              <div className="chart-heading result-chart-heading compact">
-                <div>
-                  <span>Balance quality</span>
-                  <p>Lower is better. These are the report metrics computed from core totals.</p>
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height={178}>
-                <BarChart data={balanceRows} layout="vertical" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid stroke="rgba(237,230,217,0.08)" vertical={false} />
-                  <XAxis type="number" stroke="#8A8072" tickLine={false} axisLine={false} />
-                  <YAxis dataKey="metric" type="category" stroke="#8A8072" tickLine={false} axisLine={false} width={104} />
-                  {!isMobile && <Tooltip content={<ComparisonTooltip />} />}
-                  {reference.hasClassical && <Bar dataKey="classical" name="classical optimum" fill="#58C7B6" radius={[0, 2, 2, 0]} isAnimationActive={!isMobile} />}
-                  <Bar dataKey="current" name="decoded schedule" fill="#C9A24B" radius={[0, 2, 2, 0]} isAnimationActive={!isMobile} />
-                </BarChart>
-              </ResponsiveContainer>
-            </article>
-
-            <article className="result-chart-card result-reference-card">
-              <div className="chart-heading result-chart-heading compact">
-                <div>
-                  <span>Reference check</span>
-                  <p>{reference.hasClassical ? 'Difference from the certified brute-force result.' : 'No brute-force reference was returned for this size.'}</p>
-                </div>
-              </div>
-              <div className="result-reference-grid">
-                <ReferenceMetric label="decoded imbalance" value={formatPercent(summary.normalizedLoadImbalance)} />
-                <ReferenceMetric label="reference imbalance" value={formatPercent(summary.classicalNormalizedLoadImbalance)} />
-                <ReferenceMetric label="objective regret" value={compactNumber(summary.objectiveRegret, 6)} />
-                <ReferenceMetric label="excess imbalance" value={formatPercent(summary.excessNormalizedLoadImbalance)} />
-              </div>
-              <p className="result-reference-note">
-                {reference.hasClassical
-                  ? 'Zero regret means the decoded assignment matches the reference balance objective.'
-                  : 'For larger runs, this panel will still show decoded balance but cannot certify optimality.'}
-              </p>
-            </article>
-          </div>
         </div>
       </div>
     </section>
@@ -183,15 +151,6 @@ function outcomeLabel(summary) {
   if (summary.feasible === true) return 'Feasible result'
   if (summary.feasible === false) return 'Validation failed'
   return 'Pending validation'
-}
-
-function ReferenceMetric({ label, value }) {
-  return (
-    <div>
-      <span>{label}</span>
-      <strong className="mono">{value}</strong>
-    </div>
-  )
 }
 
 function ComparisonTooltip({ active, payload, label, average }) {

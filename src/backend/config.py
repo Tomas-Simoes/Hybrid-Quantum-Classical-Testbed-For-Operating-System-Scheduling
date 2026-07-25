@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 
@@ -14,8 +14,9 @@ ABSOLUTE_PUBLIC_MAX_QAOA_STEPS = 50
 ABSOLUTE_PUBLIC_MAX_TOP_K = 32
 ABSOLUTE_PUBLIC_MAX_QUBITS = 16
 ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE = 25
-ABSOLUTE_PUBLIC_MAX_JOBS_PER_IP = 2
 ABSOLUTE_PUBLIC_MAX_ACTIVE_JOBS = ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE + 1
+DEFAULT_PUBLIC_MAX_JOBS_PER_IP = 5
+ABSOLUTE_PUBLIC_MAX_JOBS_PER_IP = ABSOLUTE_PUBLIC_MAX_ACTIVE_JOBS
 ABSOLUTE_PUBLIC_MAX_JOB_TIMEOUT_SECONDS = 300
 
 
@@ -132,10 +133,12 @@ class AdapterSettings:
         25,
         maximum=ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE,
     )
-    public_max_jobs_per_ip: int = _int_env(
-        "PUBLIC_MAX_JOBS_PER_IP",
-        2,
-        maximum=ABSOLUTE_PUBLIC_MAX_JOBS_PER_IP,
+    public_max_jobs_per_ip: int = field(
+        default_factory=lambda: _int_env(
+            "PUBLIC_MAX_JOBS_PER_IP",
+            DEFAULT_PUBLIC_MAX_JOBS_PER_IP,
+            maximum=ABSOLUTE_PUBLIC_MAX_JOBS_PER_IP,
+        )
     )
     public_max_active_jobs: int = _int_env(
         "PUBLIC_MAX_ACTIVE_JOBS",

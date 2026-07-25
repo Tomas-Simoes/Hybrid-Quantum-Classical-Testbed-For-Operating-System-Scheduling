@@ -103,6 +103,33 @@ class BackendSecurityFixTests(unittest.TestCase):
         with SettingsPatch(public_max_jobs_per_ip=1):
             asyncio.run(scenario())
 
+    def test_enqueue_allows_multiple_queued_jobs_from_same_client(self) -> None:
+        async def scenario() -> None:
+            config = RunConfig(num_processes=1, num_cores=1, weights=[1.0])
+            first = await job_queue.enqueue_run(config, {"client_host": "203.0.113.10"})
+            second = await job_queue.enqueue_run(config, {"client_host": "203.0.113.10"})
+            third = await job_queue.enqueue_run(config, {"client_host": "203.0.113.10"})
+
+            counts = await job_store.active_counts("203.0.113.10")
+            self.assertEqual(counts["client_active"], 3)
+            self.assertEqual(counts["client_queued"], 3)
+            self.assertEqual(
+                [
+                    first["queue_position"],
+                    second["queue_position"],
+                    third["queue_position"],
+                ],
+                [1, 2, 3],
+            )
+
+        with SettingsPatch(
+            public_max_queue_size=5,
+            public_max_active_jobs=6,
+            public_max_jobs_per_ip=5,
+        ):
+            job_queue._queue = None
+            asyncio.run(scenario())
+
     def test_enqueue_rejects_full_queue_without_extra_job_record(self) -> None:
         async def scenario() -> None:
             config = RunConfig(num_processes=1, num_cores=1, weights=[1.0])

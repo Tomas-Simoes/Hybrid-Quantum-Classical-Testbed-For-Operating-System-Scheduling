@@ -204,7 +204,6 @@ function balanceStats(groups) {
       min: null,
       imbalance: null,
       normalizedImbalance: null,
-      objective: null,
     }
   }
 
@@ -213,7 +212,6 @@ function balanceStats(groups) {
   const max = Math.max(...loads)
   const min = Math.min(...loads)
   const imbalance = max - min
-  const objective = loads.reduce((sum, load) => sum + (load - average) ** 2, 0)
 
   return {
     average,
@@ -221,7 +219,6 @@ function balanceStats(groups) {
     min,
     imbalance,
     normalizedImbalance: average ? imbalance / average : 0,
-    objective,
   }
 }
 
@@ -229,37 +226,13 @@ export function balanceReferenceSummary(job) {
   const current = balanceStats(coreAssignmentGroups(job))
   const classicalAssignments = extractClassicalAssignments(job)
   const classical = classicalAssignments ? balanceStats(coreAssignmentGroupsFor(job, classicalAssignments)) : null
-  const objectiveRegret = classical
-    ? Math.max(0, Number(current.objective || 0) - Number(classical.objective || 0))
-    : null
-  const excessNormalizedLoadImbalance = classical
-    ? Math.max(0, Number(current.normalizedImbalance || 0) - Number(classical.normalizedImbalance || 0))
-    : null
 
   return {
     hasClassical: Boolean(classical),
     current,
     classical,
     average: current.average,
-    objectiveRegret,
-    excessNormalizedLoadImbalance,
   }
-}
-
-export function balanceComparisonRows(job) {
-  const reference = balanceReferenceSummary(job)
-  return [
-    {
-      metric: 'norm. imbalance',
-      current: reference.current.normalizedImbalance,
-      classical: reference.classical?.normalizedImbalance ?? null,
-    },
-    {
-      metric: 'balance objective',
-      current: reference.current.objective,
-      classical: reference.classical?.objective ?? null,
-    },
-  ]
 }
 
 export function resultSummary(job) {
@@ -279,12 +252,7 @@ export function resultSummary(job) {
     durationMs: extractDurationMs(job),
     loadImbalance,
     normalizedLoadImbalance: reference.current.normalizedImbalance,
-    balanceObjective: reference.current.objective,
-    classicalLoadImbalance: reference.classical?.imbalance ?? null,
-    classicalNormalizedLoadImbalance: reference.classical?.normalizedImbalance ?? null,
-    classicalBalanceObjective: reference.classical?.objective ?? null,
-    objectiveRegret: reference.objectiveRegret,
-    excessNormalizedLoadImbalance: reference.excessNormalizedLoadImbalance,
+    averageCoreLoad: reference.current.average,
   }
 }
 

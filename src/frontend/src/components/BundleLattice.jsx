@@ -57,14 +57,14 @@ function rotatePoint(x, y, angle) {
   }
 }
 
-function drawSoftDisc(ctx, x, y, radius, color, alpha, blur) {
+function drawSoftDisc(ctx, x, y, radius, color, alpha) {
   ctx.save()
   ctx.globalAlpha = alpha
-  ctx.filter = `blur(${blur}px)`
 
   const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius)
   gradient.addColorStop(0, color)
-  gradient.addColorStop(0.45, 'rgba(201, 162, 75, 0.36)')
+  gradient.addColorStop(0.38, 'rgba(201, 162, 75, 0.28)')
+  gradient.addColorStop(0.74, 'rgba(201, 162, 75, 0.08)')
   gradient.addColorStop(1, 'rgba(201, 162, 75, 0)')
 
   ctx.fillStyle = gradient
@@ -188,17 +188,17 @@ function drawHoneycomb(ctx, cx, cy, radius, time, options = {}) {
 function drawScene(ctx, width, height, time, active) {
   ctx.clearRect(0, 0, width, height)
 
-  const scale = Math.min(width / 900, height / 430)
+  const scale = Math.min(width / 900, height / 430, 0.96)
   const cx = width / 2
-  const cy = height * 0.43
+  const cy = height * 0.6
   const breath = 0.5 + Math.sin(time * 0.00058) * 0.5
   const runLift = active ? 1.12 : 1
   const clusterRotation = time * 0.000032 * runLift
   const underRotation = -time * 0.000021 * runLift
   const pulseScale = 1 + breath * 0.055
 
-  drawSoftDisc(ctx, cx, cy, 238 * scale * pulseScale, 'rgba(201, 162, 75, 0.34)', 0.22 + breath * 0.1, 38 * scale)
-  drawSoftDisc(ctx, cx, cy + 42 * scale, 172 * scale, 'rgba(201, 162, 75, 0.22)', 0.09 + breath * 0.04, 44 * scale)
+  drawSoftDisc(ctx, cx, cy, 238 * scale * pulseScale, 'rgba(201, 162, 75, 0.34)', 0.22 + breath * 0.1)
+  drawSoftDisc(ctx, cx, cy + 42 * scale, 172 * scale, 'rgba(201, 162, 75, 0.22)', 0.09 + breath * 0.04)
   drawAmbientArcs(ctx, cx, cy, scale, time, 1)
   drawDust(ctx, cx, cy, scale, time)
 

@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createRun, getRun } from '../api/client.js'
 
 const POLL_MS = 1500
-const PUBLIC_MAX_N = Number(import.meta.env.VITE_PUBLIC_MAX_N ?? 6)
+const PUBLIC_MAX_N = Number(import.meta.env.VITE_PUBLIC_MAX_N ?? 50)
 const PUBLIC_MAX_CORES = Number(import.meta.env.VITE_PUBLIC_MAX_CORES ?? 4)
-const PUBLIC_MAX_QUBITS = Number(import.meta.env.VITE_PUBLIC_MAX_QUBITS ?? 8)
-const PUBLIC_MAX_QAOA_LAYERS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS ?? 1)
-const PUBLIC_MAX_QAOA_STEPS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS ?? 25)
-const PUBLIC_MAX_TOP_K = Number(import.meta.env.VITE_PUBLIC_MAX_TOP_K ?? 20)
+const PUBLIC_MAX_QUBITS = Number(import.meta.env.VITE_PUBLIC_MAX_QUBITS ?? 16)
+const PUBLIC_MAX_QAOA_LAYERS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS ?? 3)
+const PUBLIC_MAX_QAOA_STEPS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS ?? 50)
+const PUBLIC_MAX_TOP_K = Number(import.meta.env.VITE_PUBLIC_MAX_TOP_K ?? 32)
 const PUBLIC_MAX_QUEUE_SIZE = Number(import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE ?? 25)
 const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING']
 const TUNING_TIPS = [
@@ -17,6 +17,9 @@ const TUNING_TIPS = [
   ['Run feels too heavy?', 'Lower processes, steps, layers, or top K while tuning. Increase one setting at a time once the behavior is clear.'],
 ]
 const TERMINAL_RUN_STATUSES = new Set(['done', 'failed', 'error'])
+const ACTIVE_RUN_STATUSES = new Set(['queued', 'running'])
+const RECENT_TERMINAL_RUN_LIMIT = 5
+const WEIGHT_PRECISION = 6
 const STATUS_COPY = {
   standby: 'Ready to submit a workload.',
   submitting: 'Submitting the configuration to the backend.',
@@ -26,6 +29,23 @@ const STATUS_COPY = {
   failed: 'Backend reported that the run failed.',
   error: 'Backend status check failed.',
 }
+
+function createNormalizedDescendingWeights(count) {
+  const boundedCount = Math.max(1, Number(count) || 1)
+  const rawWeights = Array.from({ length: boundedCount }, (_, index) => boundedCount - index)
+  const rawTotal = rawWeights.reduce((sum, weight) => sum + weight, 0)
+  const weights = rawWeights.map((weight) => Number((weight / rawTotal).toFixed(WEIGHT_PRECISION)))
+  const roundedTotal = weights.reduce((sum, weight) => sum + weight, 0)
+  const drift = Number((1 - roundedTotal).toFixed(WEIGHT_PRECISION))
+  weights[weights.length - 1] = Math.max(0, Number((weights[weights.length - 1] + drift).toFixed(WEIGHT_PRECISION)))
+  return weights.map((weight) => weight.toFixed(WEIGHT_PRECISION))
+}
+
+function sumWeights(weights) {
+  return weights.reduce((sum, weight) => sum + Number(weight), 0)
+}
+
+const MAX_PUBLIC_WEIGHTS = createNormalizedDescendingWeights(PUBLIC_MAX_N)
 const CHAMBER_PRESETS = [
   {
     id: 'effective-n8',
@@ -150,22 +170,22 @@ const CHAMBER_PRESETS = [
   {
     id: 'max-public',
     label: 'Max public',
-    evidence: 'Largest Render-free workload exposed by the public controls.',
+    evidence: 'Largest workload exposed by the active public controls.',
     config: {
-      num_processes: '6',
+      num_processes: String(PUBLIC_MAX_N),
       num_cores: '2',
-      weights: ['0.26', '0.21', '0.17', '0.14', '0.12', '0.10'],
-      total_weight: '1.0',
+      weights: MAX_PUBLIC_WEIGHTS,
+      total_weight: String(Number(sumWeights(MAX_PUBLIC_WEIGHTS).toFixed(WEIGHT_PRECISION))),
       penalty: '5.0',
       target_load: '',
-      layers: '1',
-      steps: '25',
+      layers: String(PUBLIC_MAX_QAOA_LAYERS),
+      steps: String(PUBLIC_MAX_QAOA_STEPS),
       learning_rate: '0.05',
-      top_k: '20',
+      top_k: String(PUBLIC_MAX_TOP_K),
       mixer_type: 'xy',
       init_gamma: '0.5',
       init_beta: '0.5',
-      qubit_max: '8',
+      qubit_max: String(PUBLIC_MAX_QUBITS),
       io_alpha: '0.5',
       affinity_alpha: '0.8',
       homogeneity_threshold: '0.3',
@@ -177,14 +197,14 @@ const CHAMBER_PRESETS = [
       num_samples: '3',
     },
     rows: [
-      ['scope', 'N = 6'],
+      ['scope', `N = ${PUBLIC_MAX_N}`],
       ['cores', '2'],
       ['mixer', 'xy'],
       ['penalty', '5.0'],
-      ['layers', '1'],
-      ['steps', '25'],
-      ['top K', '20'],
-      ['qubit max', '8'],
+      ['layers', String(PUBLIC_MAX_QAOA_LAYERS)],
+      ['steps', String(PUBLIC_MAX_QAOA_STEPS)],
+      ['top K', String(PUBLIC_MAX_TOP_K)],
+      ['qubit max', String(PUBLIC_MAX_QUBITS)],
     ],
   },
 ]
@@ -232,13 +252,6 @@ function numberOrNull(value) {
   return value === '' ? null : Number(value)
 }
 
-function queueLabel(job) {
-  const position = Number(job?.queue_position)
-  const capacity = Number(job?.queue_capacity) || PUBLIC_MAX_QUEUE_SIZE
-  if (!Number.isFinite(position) || position < 1) return 'Queued'
-  return `Queued ${position}/${capacity}`
-}
-
 function runStatusMessage(status, job) {
   if (status !== 'queued') return STATUS_COPY[status] || STATUS_COPY.standby
 
@@ -259,6 +272,10 @@ function runStatusMessage(status, job) {
   }
 
   return `Queued ${position}/${capacity}. ${position - 1} queued jobs are ahead of this run.`
+}
+
+function mergeJobDetails(existing, job) {
+  return existing?.job_id === job.job_id ? { ...existing, ...job } : job
 }
 
 function NumberField({ id, label, min, max, step = 'any', value, onChange }) {
@@ -283,15 +300,18 @@ export function RunConsole({ runState, onRunStateChange }) {
   const [selectedPresetId, setSelectedPresetId] = useState('effective-n8')
   const [error, setError] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const pollRef = useRef(null)
+  const [trackedJobs, setTrackedJobs] = useState(() => (runState.job ? [runState.job] : []))
+  const pollRefs = useRef(new Map())
   const submitLockedRef = useRef(false)
+  const selectedJobIdRef = useRef(runState.jobId)
 
   const processCount = Math.min(Math.max(Number(config.num_processes) || 1, 1), PUBLIC_MAX_N)
-  const isRunning = runState.status === 'queued' || runState.status === 'running'
-  const isRunLocked = isSubmitting || isRunning
+  const activeRunCount = trackedJobs.filter((job) => ACTIVE_RUN_STATUSES.has(job.status)).length
+  const isRunLocked = isSubmitting
   const displayedStatus = isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
   const statusMessage = runStatusMessage(displayedStatus, runState.job)
   const selectedPreset = CHAMBER_PRESETS.find((preset) => preset.id === selectedPresetId) ?? CHAMBER_PRESETS[0]
+  const submitLabel = activeRunCount > 0 ? 'Queue another run' : 'Run scheduler'
 
   const pipelineLimits = useMemo(
     () =>
@@ -308,10 +328,17 @@ export function RunConsole({ runState, onRunStateChange }) {
 
   useEffect(
     () => () => {
-      if (pollRef.current) window.clearInterval(pollRef.current)
+      for (const intervalId of pollRefs.current.values()) {
+        window.clearInterval(intervalId)
+      }
+      pollRefs.current.clear()
     },
     [],
   )
+
+  useEffect(() => {
+    selectedJobIdRef.current = runState.jobId
+  }, [runState.jobId])
 
   function updateConfig(name, value) {
     setConfig((current) => {
@@ -392,9 +419,49 @@ export function RunConsole({ runState, onRunStateChange }) {
     }
   }
 
-  function stopPolling() {
-    if (pollRef.current) window.clearInterval(pollRef.current)
-    pollRef.current = null
+  function stopJobPolling(jobId) {
+    const intervalId = pollRefs.current.get(jobId)
+    if (intervalId) window.clearInterval(intervalId)
+    pollRefs.current.delete(jobId)
+  }
+
+  function upsertTrackedJob(job) {
+    setTrackedJobs((current) => {
+      const updated = current.some((item) => item.job_id === job.job_id)
+        ? current.map((item) => mergeJobDetails(item, job))
+        : [job, ...current]
+      const activeJobs = updated.filter((item) => ACTIVE_RUN_STATUSES.has(item.status))
+      const terminalJobs = updated.filter((item) => !ACTIVE_RUN_STATUSES.has(item.status))
+      return [...activeJobs, ...terminalJobs.slice(0, RECENT_TERMINAL_RUN_LIMIT)]
+    })
+  }
+
+  function jobToRunState(job, current) {
+    return {
+      ...current,
+      status: job.status,
+      jobId: job.job_id,
+      job,
+      effectiveConfig: job.effective_config || current.effectiveConfig,
+    }
+  }
+
+  function publishJob(job, { select = false } = {}) {
+    upsertTrackedJob(job)
+    if (select) {
+      selectedJobIdRef.current = job.job_id
+      setError(job.status === 'failed' || job.status === 'error' ? jobFailureMessage(job) : null)
+    }
+
+    onRunStateChange((current) => {
+      if (!select && current.jobId && current.jobId !== job.job_id) return current
+      return jobToRunState(mergeJobDetails(current.job, job), current)
+    })
+  }
+
+  function jobFailureMessage(job) {
+    if (job?.status === 'error') return job?.error?.message || 'Backend status check failed.'
+    return backendFailureMessage(job)
   }
 
   function backendFailureMessage(job) {
@@ -407,49 +474,38 @@ export function RunConsole({ runState, onRunStateChange }) {
   async function poll(jobId) {
     try {
       const job = await getRun(jobId)
-      onRunStateChange((current) => ({
-        ...current,
-        status: job.status,
-        job,
-        effectiveConfig: job.effective_config || current.effectiveConfig,
-      }))
+      publishJob(job)
+      if (selectedJobIdRef.current === jobId && job.status !== 'failed') {
+        setError(null)
+      }
 
       if (TERMINAL_RUN_STATUSES.has(job.status)) {
-        stopPolling()
-        if (job.status !== 'done') {
+        stopJobPolling(jobId)
+        if (job.status !== 'done' && selectedJobIdRef.current === jobId) {
           setError(backendFailureMessage(job))
         }
       }
       return job.status
     } catch (pollError) {
-      stopPolling()
+      stopJobPolling(jobId)
       const message =
         pollError.status === 404
           ? 'Backend lost the job record before it completed. Submit the run again.'
           : `Backend status check failed: ${pollError.message}`
-      setError(message)
-      onRunStateChange((current) => ({
-        ...current,
+      const errorJob = {
+        job_id: jobId,
         status: 'error',
-        job: current.job
-          ? {
-              ...current.job,
-              status: 'error',
-              error: { type: 'BackendStatusError', message },
-            }
-          : {
-              job_id: jobId,
-              status: 'error',
-              error: { type: 'BackendStatusError', message },
-          },
-      }))
+        error: { type: 'BackendStatusError', message },
+      }
+      publishJob(errorJob)
+      if (selectedJobIdRef.current === jobId) setError(message)
       return 'error'
     }
   }
 
   function startPolling(jobId) {
-    stopPolling()
-    pollRef.current = window.setInterval(() => poll(jobId), POLL_MS)
+    stopJobPolling(jobId)
+    pollRefs.current.set(jobId, window.setInterval(() => poll(jobId), POLL_MS))
   }
 
   async function handleSubmit(event) {
@@ -458,7 +514,6 @@ export function RunConsole({ runState, onRunStateChange }) {
     submitLockedRef.current = true
     setIsSubmitting(true)
     setError(null)
-    stopPolling()
 
     try {
       setConfig((current) => clampConfigToPublicLimits(current))
@@ -466,21 +521,17 @@ export function RunConsole({ runState, onRunStateChange }) {
       if (!created?.job_id || !created?.status) {
         throw new Error('Backend accepted the request but did not return a job id.')
       }
-      onRunStateChange({
+      const createdJob = {
+        job_id: created.job_id,
         status: created.status,
-        jobId: created.job_id,
-        job: {
-          job_id: created.job_id,
-          status: created.status,
-          queue_position: created.queue_position,
-          queue_capacity: created.queue_capacity,
-          queue_running_count: created.queue_running_count,
-          effective_config: created.effective_config,
-          result: null,
-          error: null,
-        },
-        effectiveConfig: created.effective_config,
-      })
+        queue_position: created.queue_position,
+        queue_capacity: created.queue_capacity,
+        queue_running_count: created.queue_running_count,
+        effective_config: created.effective_config,
+        result: null,
+        error: null,
+      }
+      publishJob(createdJob, { select: true })
       setIsSubmitting(false)
       const firstStatus = await poll(created.job_id)
       if (!TERMINAL_RUN_STATUSES.has(firstStatus)) {
@@ -489,24 +540,13 @@ export function RunConsole({ runState, onRunStateChange }) {
     } catch (runError) {
       const message =
         runError.status === 429
-          ? 'Submit rejected: too many clicks in a short window. Wait a moment, then submit once.'
+          ? `Submit rejected: ${runError.message}`
           : runError.status === 503
-            ? 'Submit rejected: the backend queue is full. Wait for the current run to finish, then try again.'
+            ? `Submit rejected: ${runError.message}`
             : runError.status === 0
               ? `Submit failed: backend did not respond. ${runError.message}`
               : `Submit failed: ${runError.message}`
       setError(message)
-      onRunStateChange((current) => ({
-        ...current,
-        status: 'error',
-        job: current.job
-          ? {
-              ...current.job,
-              status: 'error',
-              error: { type: 'SubmitError', message },
-            }
-          : null,
-      }))
       setIsSubmitting(false)
     } finally {
       submitLockedRef.current = false
@@ -660,8 +700,8 @@ export function RunConsole({ runState, onRunStateChange }) {
           </details>
 
           <div className="run-action-row">
-            <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
-              {isSubmitting ? 'Submitting' : runState.status === 'queued' ? queueLabel(runState.job) : runState.status === 'running' ? 'Running' : 'Run scheduler'}
+            <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isSubmitting}>
+              {isSubmitting ? 'Submitting' : submitLabel}
             </button>
             <div className={`status-badge status-${displayedStatus}`} aria-label={`Run status: ${displayedStatus}`}>
               <span className="status-dot" aria-hidden="true" />

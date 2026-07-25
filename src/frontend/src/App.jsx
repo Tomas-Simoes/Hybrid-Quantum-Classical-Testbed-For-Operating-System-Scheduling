@@ -237,7 +237,7 @@ function App() {
   )
 
   return (
-    <div className={`app-shell page-${page} ${pageTransition ? `transition-${pageTransition}` : ''}`}>
+    <div className={`app-shell page-${page} nav-target-${activeTarget} ${pageTransition ? `transition-${pageTransition}` : ''}`}>
       <Nav activeTarget={activeTarget} onNavigate={navigate} />
       <main className={page === 'chamber' ? 'chamber-main' : undefined}>
         {page === 'home' ? (
