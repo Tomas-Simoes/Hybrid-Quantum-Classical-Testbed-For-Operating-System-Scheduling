@@ -8,7 +8,7 @@ import { Nav } from './components/Nav.jsx'
 import { ResearchResultsSection } from './components/ResearchResultsSection.jsx'
 import { ResultsView } from './components/ResultsView.jsx'
 import { RunConsole } from './components/RunConsole.jsx'
-import { extractAssignments, extractConvergence, extractEnergy } from './lib/results.js'
+import { extractAssignments, extractConvergence } from './lib/results.js'
 import { useSectionReveal } from './lib/useSectionReveal.js'
 
 const HOME_TARGETS = new Set(['top', 'tutorial', 'results', 'contacts'])
@@ -68,7 +68,6 @@ function App() {
 
   const assignments = useMemo(() => extractAssignments(runState.job), [runState.job])
   const convergence = useMemo(() => extractConvergence(runState.job), [runState.job])
-  const energy = useMemo(() => extractEnergy(runState.job), [runState.job])
 
   useEffect(() => {
     pageRef.current = page

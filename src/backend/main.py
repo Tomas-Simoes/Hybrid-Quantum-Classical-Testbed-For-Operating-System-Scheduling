@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -13,6 +12,7 @@ from slowapi import _rate_limit_exceeded_handler
 from .config import settings
 from .queue import start_worker, stop_worker
 from .ratelimit import limiter
+from .request_limits import RequestBodyLimitMiddleware
 from .routes import admin_logs, feedback, health, run, scalability
 
 
@@ -34,6 +34,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
+app.add_middleware(RequestBodyLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,
@@ -41,23 +42,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"],
 )
-
-
-@app.middleware("http")
-async def enforce_request_size(request: Request, call_next):
-    if request.method in {"POST", "PUT", "PATCH"}:
-        content_length = request.headers.get("content-length")
-        if content_length is not None:
-            try:
-                request_size = int(content_length)
-            except ValueError:
-                request_size = settings.public_max_request_bytes + 1
-            if request_size > settings.public_max_request_bytes:
-                return JSONResponse(
-                    status_code=413,
-                    content={"detail": "Request body is too large."},
-                )
-    return await call_next(request)
 
 
 @app.middleware("http")

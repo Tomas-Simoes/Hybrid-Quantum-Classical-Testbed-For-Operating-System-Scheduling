@@ -126,6 +126,60 @@ class BackendSecurityFixTests(unittest.TestCase):
 
         self.assertEqual(context.exception.status_code, 401)
 
+    def test_request_body_limit_rejects_stream_without_content_length(self) -> None:
+        async def scenario() -> tuple[int, bytes, dict[bytes, bytes]]:
+            scope = {
+                "type": "http",
+                "asgi": {"version": "3.0", "spec_version": "2.3"},
+                "http_version": "1.1",
+                "method": "POST",
+                "scheme": "http",
+                "path": "/api/bug-report",
+                "raw_path": b"/api/bug-report",
+                "query_string": b"",
+                "root_path": "",
+                "headers": [
+                    (b"host", b"testserver"),
+                    (b"content-type", b"application/json"),
+                    (b"origin", b"http://localhost:5173"),
+                ],
+                "client": ("testclient", 50000),
+                "server": ("testserver", 80),
+            }
+            request_messages = [
+                {"type": "http.request", "body": b"12345", "more_body": True},
+                {"type": "http.request", "body": b"678901", "more_body": False},
+            ]
+            sent_messages = []
+
+            async def receive() -> dict:
+                if request_messages:
+                    return request_messages.pop(0)
+                return {"type": "http.request", "body": b"", "more_body": False}
+
+            async def send(message: dict) -> None:
+                sent_messages.append(message)
+
+            await app(scope, receive, send)
+            response_start = next(
+                message for message in sent_messages if message["type"] == "http.response.start"
+            )
+            response_body = b"".join(
+                message.get("body", b"")
+                for message in sent_messages
+                if message["type"] == "http.response.body"
+            )
+            headers = {name.lower(): value for name, value in response_start["headers"]}
+            return response_start["status"], response_body, headers
+
+        with SettingsPatch(public_max_request_bytes=10):
+            status_code, body, headers = asyncio.run(scenario())
+
+        self.assertEqual(status_code, 413)
+        self.assertIn(b"Request body is too large", body)
+        self.assertEqual(headers[b"access-control-allow-origin"], b"http://localhost:5173")
+        self.assertEqual(headers[b"x-content-type-options"], b"nosniff")
+
     def test_enqueue_rejects_per_ip_active_job_limit(self) -> None:
         async def scenario() -> None:
             config = RunConfig(num_processes=1, num_cores=1, weights=[1.0])
