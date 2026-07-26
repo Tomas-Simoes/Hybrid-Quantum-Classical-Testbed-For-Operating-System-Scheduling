@@ -13,7 +13,7 @@ from slowapi import _rate_limit_exceeded_handler
 from .config import settings
 from .queue import start_worker, stop_worker
 from .ratelimit import limiter
-from .routes import feedback, health, run, scalability
+from .routes import admin_logs, feedback, health, run, scalability
 
 
 @asynccontextmanager
@@ -75,3 +75,4 @@ app.include_router(health.router, prefix="/api")
 app.include_router(run.router, prefix="/api")
 app.include_router(scalability.router, prefix="/api")
 app.include_router(feedback.router, prefix="/api")
+app.include_router(admin_logs.router, prefix="/api")

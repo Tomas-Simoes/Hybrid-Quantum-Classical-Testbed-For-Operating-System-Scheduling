@@ -177,7 +177,7 @@ const tutorialSteps = [
     number: '02',
     label: 'Objective',
     title: 'Minimize core imbalance',
-    copy: 'The objective penalizes uneven core loads so the solver prefers assignments near the average per-core load.',
+    copy: 'The objective function penalizes uneven core loads so the solver prefers assignments near the average per-core load.',
     visual: <BalanceSketch />,
   },
   {

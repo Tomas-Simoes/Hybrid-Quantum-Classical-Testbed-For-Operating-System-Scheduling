@@ -5,6 +5,7 @@ import time
 import unittest
 from unittest.mock import patch
 
+from fastapi import HTTPException
 from pydantic import ValidationError
 
 from src.backend import job_store
@@ -17,6 +18,7 @@ from src.backend.config import (
     settings,
 )
 from src.backend.main import app
+from src.backend.routes import admin_logs
 from src.backend.validation import RunConfig
 
 
@@ -25,9 +27,9 @@ def _sleeping_pipeline_child(config_data: dict, result_path: str) -> None:
 
 
 class SettingsPatch:
-    def __init__(self, **values: int) -> None:
+    def __init__(self, **values: object) -> None:
         self.values = values
-        self.originals: dict[str, int] = {}
+        self.originals: dict[str, object] = {}
 
     def __enter__(self) -> SettingsPatch:
         for name, value in self.values.items():
@@ -88,6 +90,41 @@ class BackendSecurityFixTests(unittest.TestCase):
         self.assertIsNone(app.docs_url)
         self.assertIsNone(app.redoc_url)
         self.assertIsNone(app.openapi_url)
+
+    def test_admin_log_routes_are_hidden_from_openapi(self) -> None:
+        admin_paths = {
+            "/admin/execution-logs",
+            "/admin/execution-logs.txt",
+            "/admin/bug-logs",
+            "/admin/bug-logs.txt",
+        }
+        matching_routes = list(admin_logs.router.routes)
+
+        self.assertEqual({route.path for route in matching_routes}, admin_paths)
+        self.assertTrue(all(route.include_in_schema is False for route in matching_routes))
+
+    def test_admin_log_auth_fails_closed_when_not_configured(self) -> None:
+        with SettingsPatch(admin_log_token=""):
+            with self.assertRaises(HTTPException) as context:
+                admin_logs.authorize_admin_log_access(None)
+
+        self.assertEqual(context.exception.status_code, 404)
+
+    def test_admin_log_auth_rejects_unsafe_short_token(self) -> None:
+        with SettingsPatch(admin_log_token="short"):
+            with self.assertRaises(HTTPException) as context:
+                admin_logs.authorize_admin_log_access("Bearer short")
+
+        self.assertEqual(context.exception.status_code, 503)
+
+    def test_admin_log_auth_requires_exact_bearer_token(self) -> None:
+        token = "a" * 32
+        with SettingsPatch(admin_log_token=token):
+            with self.assertRaises(HTTPException) as context:
+                admin_logs.authorize_admin_log_access(f"Bearer {token[:-1]}b")
+            admin_logs.authorize_admin_log_access(f"Bearer {token}")
+
+        self.assertEqual(context.exception.status_code, 401)
 
     def test_enqueue_rejects_per_ip_active_job_limit(self) -> None:
         async def scenario() -> None:

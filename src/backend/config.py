@@ -216,6 +216,7 @@ class AdapterSettings:
         6,
         minimum=1,
     )
+    admin_log_token: str = os.getenv("ADMIN_LOG_TOKEN", "")
     allowed_origins: list[str] = None
     allowed_hosts: list[str] = None
 

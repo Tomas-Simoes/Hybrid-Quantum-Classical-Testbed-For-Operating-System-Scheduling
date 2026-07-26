@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import json
 import re
@@ -7,6 +8,7 @@ import smtplib
 import ssl
 import threading
 import time
+from collections import deque
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from typing import Literal
@@ -22,6 +24,7 @@ _EMAIL_RE = re.compile(r"^[^\s@<>]{1,64}@[^\s@<>]{1,253}\.[^\s@<>]{2,}$")
 _LINK_RE = re.compile(r"https?://|www\.", re.IGNORECASE)
 _recent_report_fingerprints: dict[str, float] = {}
 _fingerprint_lock = threading.Lock()
+_bug_log_read_lock = asyncio.Lock()
 
 
 class BugReport(BaseModel):
@@ -204,6 +207,54 @@ def write_bug_report_log(
     with settings.bug_report_log_path.open("a", encoding="utf-8") as handle:
         json.dump(record, handle, ensure_ascii=True)
         handle.write("\n")
+
+
+def _read_recent_bug_report_records(limit: int) -> list[dict]:
+    records: deque[dict] = deque(maxlen=limit)
+    path = settings.bug_report_log_path
+    if not path.exists() or not path.is_file():
+        return []
+
+    with path.open("r", encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            try:
+                records.append(json.loads(stripped))
+            except json.JSONDecodeError:
+                records.append(
+                    {
+                        "event": "bug_report_log.invalid_line",
+                        "line_number": line_number,
+                        "raw": stripped,
+                    }
+                )
+    return list(records)
+
+
+async def read_recent_bug_report_records(limit: int | None = None) -> list[dict]:
+    requested_limit = limit or settings.execution_log_max_read
+    bounded_limit = max(1, min(int(requested_limit), settings.execution_log_max_read))
+    async with _bug_log_read_lock:
+        return await asyncio.to_thread(_read_recent_bug_report_records, bounded_limit)
+
+
+def _read_bug_report_text_tail(max_chars: int) -> str:
+    path = settings.bug_report_log_path
+    if not path.exists() or not path.is_file():
+        return ""
+
+    text = path.read_text(encoding="utf-8")
+    if len(text) <= max_chars:
+        return text
+    return text[-max_chars:]
+
+
+async def read_recent_bug_report_text(max_chars: int = 50_000) -> str:
+    bounded_max_chars = max(1_000, min(int(max_chars), 200_000))
+    async with _bug_log_read_lock:
+        return await asyncio.to_thread(_read_bug_report_text_tail, bounded_max_chars)
 
 
 def _report_fingerprint(report: BugReport) -> str:

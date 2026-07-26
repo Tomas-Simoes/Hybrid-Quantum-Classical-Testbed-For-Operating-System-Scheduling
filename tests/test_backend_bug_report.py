@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import tempfile
 import unittest
@@ -13,6 +14,8 @@ from src.backend.feedback import (
     bug_report_rejection_reason,
     clear_recent_report_fingerprints,
     mark_duplicate_bug_report,
+    read_recent_bug_report_records,
+    read_recent_bug_report_text,
     smtp_is_configured,
     write_bug_report_log,
 )
@@ -145,3 +148,18 @@ class BackendBugReportTests(unittest.TestCase):
         self.assertEqual(record["metadata"]["client_host"], "203.0.113.10")
         self.assertEqual(record["report"]["subject"], "Broken result chart")
         self.assertNotIn("website", record["report"])
+
+    def test_report_log_can_be_read_as_recent_records_and_text(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            log_path = Path(directory) / "bug_reports.jsonl"
+            with SettingsPatch(bug_report_log_path=log_path, execution_log_max_read=50):
+                write_bug_report_log(make_report(subject="First broken chart"), {}, "logged")
+                write_bug_report_log(make_report(subject="Second broken chart"), {}, "logged")
+
+                records = asyncio.run(read_recent_bug_report_records(limit=1))
+                text = asyncio.run(read_recent_bug_report_text(max_chars=1_000))
+
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0]["report"]["subject"], "Second broken chart")
+        self.assertIn("First broken chart", text)
+        self.assertIn("Second broken chart", text)
