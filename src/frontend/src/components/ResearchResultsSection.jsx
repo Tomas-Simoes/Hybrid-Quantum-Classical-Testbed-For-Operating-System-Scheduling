@@ -159,7 +159,7 @@ export function ResearchResultsSection() {
               <span className="mono">Scalability sweep</span>
               <h3>N=10 to N=1000</h3>
             </div>
-            <p>Lower imbalance is better; the classical reference is small but nonzero, and the right axis compares QAOA time with classical time.</p>
+            <p>Lower imbalance is better; right axis compares QAOA time with classical time.</p>
           </div>
 
           <div className="scalability-chart-frame">
@@ -267,7 +267,7 @@ export function ResearchResultsSection() {
               <span className="mono">Validated base case</span>
               <h3>Small instances hit the exact optimum</h3>
             </div>
-            <p>N=2 to N=10 stayed feasible and optimal in the report validation sweep.</p>
+            <p>N=2 to N=10 stayed feasible and optimal in the pipeline validation sweep.</p>
           </div>
 
           <ResponsiveContainer width="100%" height={270}>
