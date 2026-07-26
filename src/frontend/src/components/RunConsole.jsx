@@ -9,19 +9,39 @@ const DEFAULT_PUBLIC_MAX_QAOA_LAYERS = 3
 const DEFAULT_PUBLIC_MAX_QAOA_STEPS = 50
 const DEFAULT_PUBLIC_MAX_TOP_K = 32
 const DEFAULT_PUBLIC_MAX_QUEUE_SIZE = 25
-const PUBLIC_MAX_N = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_N, DEFAULT_PUBLIC_MAX_N)
-const PUBLIC_MAX_CORES = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_CORES, DEFAULT_PUBLIC_MAX_CORES)
+const ABSOLUTE_PUBLIC_MAX_N = 50
+const ABSOLUTE_PUBLIC_MAX_CORES = 4
+const ABSOLUTE_PUBLIC_MAX_QUBITS = 16
+const ABSOLUTE_PUBLIC_MAX_QAOA_LAYERS = 3
+const ABSOLUTE_PUBLIC_MAX_QAOA_STEPS = 50
+const ABSOLUTE_PUBLIC_MAX_TOP_K = 32
+const ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE = 25
+const PUBLIC_MAX_N = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_N, DEFAULT_PUBLIC_MAX_N, ABSOLUTE_PUBLIC_MAX_N)
+const PUBLIC_MAX_CORES = publicIntegerEnv(
+  import.meta.env.VITE_PUBLIC_MAX_CORES,
+  DEFAULT_PUBLIC_MAX_CORES,
+  ABSOLUTE_PUBLIC_MAX_CORES,
+)
 const PUBLIC_MAX_QUBITS = Math.max(
   PUBLIC_MAX_CORES,
-  publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QUBITS, DEFAULT_PUBLIC_MAX_QUBITS),
+  publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QUBITS, DEFAULT_PUBLIC_MAX_QUBITS, ABSOLUTE_PUBLIC_MAX_QUBITS),
 )
 const PUBLIC_MAX_QAOA_LAYERS = publicIntegerEnv(
   import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS,
   DEFAULT_PUBLIC_MAX_QAOA_LAYERS,
+  ABSOLUTE_PUBLIC_MAX_QAOA_LAYERS,
 )
-const PUBLIC_MAX_QAOA_STEPS = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS, DEFAULT_PUBLIC_MAX_QAOA_STEPS)
-const PUBLIC_MAX_TOP_K = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_TOP_K, DEFAULT_PUBLIC_MAX_TOP_K)
-const PUBLIC_MAX_QUEUE_SIZE = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE, DEFAULT_PUBLIC_MAX_QUEUE_SIZE)
+const PUBLIC_MAX_QAOA_STEPS = publicIntegerEnv(
+  import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS,
+  DEFAULT_PUBLIC_MAX_QAOA_STEPS,
+  ABSOLUTE_PUBLIC_MAX_QAOA_STEPS,
+)
+const PUBLIC_MAX_TOP_K = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_TOP_K, DEFAULT_PUBLIC_MAX_TOP_K, ABSOLUTE_PUBLIC_MAX_TOP_K)
+const PUBLIC_MAX_QUEUE_SIZE = publicIntegerEnv(
+  import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE,
+  DEFAULT_PUBLIC_MAX_QUEUE_SIZE,
+  ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE,
+)
 const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING']
 const TUNING_TIPS = [
   ['Conflicts or empty assignments?', 'Raise top K or steps first. With the X mixer, a stronger penalty can also push conflicts out of the best states.'],
@@ -32,7 +52,9 @@ const TUNING_TIPS = [
 const TERMINAL_RUN_STATUSES = new Set(['done', 'failed', 'error'])
 const ACTIVE_RUN_STATUSES = new Set(['queued', 'running'])
 const RECENT_TERMINAL_RUN_LIMIT = 5
-const WEIGHT_PRECISION = 6
+const WEIGHT_PRECISION = 3
+const WEIGHT_SCALE = 10 ** WEIGHT_PRECISION
+const WEIGHT_INPUT_STEP = String(1 / WEIGHT_SCALE)
 const STATUS_COPY = {
   standby: 'Ready to submit a workload.',
   submitting: 'Submitting the configuration to the backend.',
@@ -43,21 +65,28 @@ const STATUS_COPY = {
   error: 'Backend status check failed.',
 }
 
-function publicIntegerEnv(value, fallback) {
+function publicIntegerEnv(value, fallback, maximum = Number.POSITIVE_INFINITY) {
   const numeric = Number(value)
   if (!Number.isFinite(numeric) || numeric < 1) return fallback
-  return Math.floor(numeric)
+  return Math.min(Math.floor(numeric), maximum)
 }
 
 function createNormalizedDescendingWeights(count) {
   const boundedCount = Math.max(1, Number(count) || 1)
   const rawWeights = Array.from({ length: boundedCount }, (_, index) => boundedCount - index)
   const rawTotal = rawWeights.reduce((sum, weight) => sum + weight, 0)
-  const weights = rawWeights.map((weight) => Number((weight / rawTotal).toFixed(WEIGHT_PRECISION)))
-  const roundedTotal = weights.reduce((sum, weight) => sum + weight, 0)
-  const drift = Number((1 - roundedTotal).toFixed(WEIGHT_PRECISION))
-  weights[weights.length - 1] = Math.max(0, Number((weights[weights.length - 1] + drift).toFixed(WEIGHT_PRECISION)))
-  return weights.map((weight) => weight.toFixed(WEIGHT_PRECISION))
+  const exactUnits = rawWeights.map((weight) => (weight / rawTotal) * WEIGHT_SCALE)
+  const weightUnits = exactUnits.map((weight) => Math.floor(weight))
+  const fractionalOrder = exactUnits
+    .map((weight, index) => ({ index, fraction: weight - Math.floor(weight) }))
+    .sort((left, right) => right.fraction - left.fraction)
+  let remainder = WEIGHT_SCALE - weightUnits.reduce((sum, weight) => sum + weight, 0)
+
+  for (let index = 0; remainder > 0; index += 1, remainder -= 1) {
+    weightUnits[fractionalOrder[index % fractionalOrder.length].index] += 1
+  }
+
+  return weightUnits.map((weight) => (weight / WEIGHT_SCALE).toFixed(WEIGHT_PRECISION))
 }
 
 function sumWeights(weights) {
@@ -615,7 +644,7 @@ export function RunConsole({ runState, onRunStateChange }) {
                       id={`weight-${index}`}
                       type="number"
                       min="0"
-                      step="0.001"
+                      step={WEIGHT_INPUT_STEP}
                       value={weight}
                       onChange={(event) => updateWeight(index, event.target.value)}
                     />
