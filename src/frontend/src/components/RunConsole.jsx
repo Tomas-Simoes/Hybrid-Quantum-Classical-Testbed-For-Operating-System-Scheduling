@@ -2,13 +2,26 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createRun, getRun } from '../api/client.js'
 
 const POLL_MS = 1500
-const PUBLIC_MAX_N = Number(import.meta.env.VITE_PUBLIC_MAX_N ?? 50)
-const PUBLIC_MAX_CORES = Number(import.meta.env.VITE_PUBLIC_MAX_CORES ?? 4)
-const PUBLIC_MAX_QUBITS = Number(import.meta.env.VITE_PUBLIC_MAX_QUBITS ?? 16)
-const PUBLIC_MAX_QAOA_LAYERS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS ?? 3)
-const PUBLIC_MAX_QAOA_STEPS = Number(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS ?? 50)
-const PUBLIC_MAX_TOP_K = Number(import.meta.env.VITE_PUBLIC_MAX_TOP_K ?? 32)
-const PUBLIC_MAX_QUEUE_SIZE = Number(import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE ?? 25)
+const DEFAULT_PUBLIC_MAX_N = 6
+const DEFAULT_PUBLIC_MAX_CORES = 4
+const DEFAULT_PUBLIC_MAX_QUBITS = 16
+const DEFAULT_PUBLIC_MAX_QAOA_LAYERS = 3
+const DEFAULT_PUBLIC_MAX_QAOA_STEPS = 50
+const DEFAULT_PUBLIC_MAX_TOP_K = 32
+const DEFAULT_PUBLIC_MAX_QUEUE_SIZE = 25
+const PUBLIC_MAX_N = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_N, DEFAULT_PUBLIC_MAX_N)
+const PUBLIC_MAX_CORES = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_CORES, DEFAULT_PUBLIC_MAX_CORES)
+const PUBLIC_MAX_QUBITS = Math.max(
+  PUBLIC_MAX_CORES,
+  publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QUBITS, DEFAULT_PUBLIC_MAX_QUBITS),
+)
+const PUBLIC_MAX_QAOA_LAYERS = publicIntegerEnv(
+  import.meta.env.VITE_PUBLIC_MAX_QAOA_LAYERS,
+  DEFAULT_PUBLIC_MAX_QAOA_LAYERS,
+)
+const PUBLIC_MAX_QAOA_STEPS = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QAOA_STEPS, DEFAULT_PUBLIC_MAX_QAOA_STEPS)
+const PUBLIC_MAX_TOP_K = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_TOP_K, DEFAULT_PUBLIC_MAX_TOP_K)
+const PUBLIC_MAX_QUEUE_SIZE = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_QUEUE_SIZE, DEFAULT_PUBLIC_MAX_QUEUE_SIZE)
 const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING']
 const TUNING_TIPS = [
   ['Conflicts or empty assignments?', 'Raise top K or steps first. With the X mixer, a stronger penalty can also push conflicts out of the best states.'],
@@ -28,6 +41,12 @@ const STATUS_COPY = {
   done: 'Run completed and results are ready.',
   failed: 'Backend reported that the run failed.',
   error: 'Backend status check failed.',
+}
+
+function publicIntegerEnv(value, fallback) {
+  const numeric = Number(value)
+  if (!Number.isFinite(numeric) || numeric < 1) return fallback
+  return Math.floor(numeric)
 }
 
 function createNormalizedDescendingWeights(count) {
