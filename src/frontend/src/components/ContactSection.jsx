@@ -99,11 +99,7 @@ export function ContactSection() {
 
         <div className="contacts-content">
           <p className="eyebrow mono">CONTACTS</p>
-          <h2 id="contacts-title">Reach the builder</h2>
-          <p>
-            This project is a dissertation artifact for hybrid quantum-classical operating-system
-            scheduling. These are the cleanest places to inspect the work or get in touch.
-          </p>
+          <h2 id="contacts-title">Reach the developer</h2>
 
           <div className="contact-links">
             {contacts.map((contact) => (
