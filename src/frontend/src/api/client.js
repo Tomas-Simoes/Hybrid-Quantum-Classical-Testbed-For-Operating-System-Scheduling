@@ -21,9 +21,12 @@ async function request(path, options = {}) {
     if (error.name === 'AbortError') {
       const timeoutError = new Error(`Request timed out after ${Math.round(timeoutMs / 1000)}s`)
       timeoutError.status = 0
+      timeoutError.code = 'REQUEST_TIMEOUT'
+      timeoutError.isTimeout = true
       throw timeoutError
     }
     error.status = error.status ?? 0
+    error.code = error.code || 'NETWORK_ERROR'
     throw error
   } finally {
     window.clearTimeout(timeout)
@@ -50,8 +53,8 @@ async function request(path, options = {}) {
   return body
 }
 
-export function getHealth() {
-  return request('/api/health')
+export function getHealth(options = {}) {
+  return request('/api/health', options)
 }
 
 export function createRun(payload) {

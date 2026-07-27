@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createRun, getRun } from '../api/client.js'
+import { createRun, getHealth, getRun } from '../api/client.js'
 
 const POLL_MS = 1500
+const BACKEND_BOOT_POLL_MS = 2500
+const BACKEND_HEALTH_TIMEOUT_MS = 5000
+const BACKEND_PREFLIGHT_HEALTH_TIMEOUT_MS = 4000
 const DEFAULT_PUBLIC_MAX_N = 6
 const DEFAULT_PUBLIC_MAX_CORES = 4
 const DEFAULT_PUBLIC_MAX_QUBITS = 16
@@ -9,6 +12,7 @@ const DEFAULT_PUBLIC_MAX_QAOA_LAYERS = 3
 const DEFAULT_PUBLIC_MAX_QAOA_STEPS = 50
 const DEFAULT_PUBLIC_MAX_TOP_K = 32
 const DEFAULT_PUBLIC_MAX_QUEUE_SIZE = 25
+const DEFAULT_BACKEND_BOOT_TIMEOUT_SECONDS = 75
 const ABSOLUTE_PUBLIC_MAX_N = 50
 const ABSOLUTE_PUBLIC_MAX_CORES = 4
 const ABSOLUTE_PUBLIC_MAX_QUBITS = 16
@@ -16,6 +20,7 @@ const ABSOLUTE_PUBLIC_MAX_QAOA_LAYERS = 3
 const ABSOLUTE_PUBLIC_MAX_QAOA_STEPS = 50
 const ABSOLUTE_PUBLIC_MAX_TOP_K = 32
 const ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE = 25
+const ABSOLUTE_BACKEND_BOOT_TIMEOUT_SECONDS = 180
 const PUBLIC_MAX_N = publicIntegerEnv(import.meta.env.VITE_PUBLIC_MAX_N, DEFAULT_PUBLIC_MAX_N, ABSOLUTE_PUBLIC_MAX_N)
 const PUBLIC_MAX_CORES = publicIntegerEnv(
   import.meta.env.VITE_PUBLIC_MAX_CORES,
@@ -42,6 +47,12 @@ const PUBLIC_MAX_QUEUE_SIZE = publicIntegerEnv(
   DEFAULT_PUBLIC_MAX_QUEUE_SIZE,
   ABSOLUTE_PUBLIC_MAX_QUEUE_SIZE,
 )
+const BACKEND_BOOT_TIMEOUT_SECONDS = publicIntegerEnv(
+  import.meta.env.VITE_BACKEND_BOOT_TIMEOUT_SECONDS,
+  DEFAULT_BACKEND_BOOT_TIMEOUT_SECONDS,
+  ABSOLUTE_BACKEND_BOOT_TIMEOUT_SECONDS,
+)
+const BACKEND_BOOT_TIMEOUT_MS = BACKEND_BOOT_TIMEOUT_SECONDS * 1000
 const SORTING_STRATEGIES = ['WEIGHT_DESCENDING', 'COUPLING_DESCENDING']
 const TUNING_TIPS = [
   ['Conflicts or empty assignments?', 'Raise top K or steps first. With the X mixer, a stronger penalty can also push conflicts out of the best states.'],
@@ -57,6 +68,7 @@ const WEIGHT_SCALE = 10 ** WEIGHT_PRECISION
 const WEIGHT_INPUT_STEP = String(1 / WEIGHT_SCALE)
 const STATUS_COPY = {
   standby: 'Ready to submit a workload.',
+  booting: 'Backend is not answering yet; checking whether it is waking up.',
   submitting: 'Submitting the configuration to the backend.',
   queued: 'Backend accepted the job and is waiting for a worker slot.',
   running: 'Backend worker is solving the scheduling instance.',
@@ -300,6 +312,16 @@ function numberOrNull(value) {
   return value === '' ? null : Number(value)
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
+
+function isBackendReachabilityError(error) {
+  return error?.status === 0 || error?.isTimeout || error?.code === 'REQUEST_TIMEOUT'
+}
+
 function runStatusMessage(status, job) {
   if (status !== 'queued') return STATUS_COPY[status] || STATUS_COPY.standby
 
@@ -348,6 +370,7 @@ export function RunConsole({ runState, onRunStateChange }) {
   const [selectedPresetId, setSelectedPresetId] = useState('effective-n8')
   const [error, setError] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [backendBoot, setBackendBoot] = useState({ active: false, message: null })
   const [trackedJobs, setTrackedJobs] = useState(() => (runState.job ? [runState.job] : []))
   const pollRefs = useRef(new Map())
   const submitLockedRef = useRef(false)
@@ -355,11 +378,12 @@ export function RunConsole({ runState, onRunStateChange }) {
 
   const processCount = Math.min(Math.max(Number(config.num_processes) || 1, 1), PUBLIC_MAX_N)
   const activeRunCount = trackedJobs.filter((job) => ACTIVE_RUN_STATUSES.has(job.status)).length
-  const isRunLocked = isSubmitting
-  const displayedStatus = isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
-  const statusMessage = runStatusMessage(displayedStatus, runState.job)
+  const isBackendBooting = backendBoot.active
+  const isRunLocked = isSubmitting || isBackendBooting
+  const displayedStatus = isBackendBooting ? 'booting' : isSubmitting ? 'submitting' : runState.status === 'idle' ? 'standby' : runState.status
+  const statusMessage = isBackendBooting && backendBoot.message ? backendBoot.message : runStatusMessage(displayedStatus, runState.job)
   const selectedPreset = CHAMBER_PRESETS.find((preset) => preset.id === selectedPresetId) ?? CHAMBER_PRESETS[0]
-  const submitLabel = activeRunCount > 0 ? 'Queue another run' : 'Run scheduler'
+  const submitLabel = isBackendBooting ? 'Waking backend' : activeRunCount > 0 ? 'Queue another run' : 'Run scheduler'
 
   const pipelineLimits = useMemo(
     () =>
@@ -519,6 +543,93 @@ export function RunConsole({ runState, onRunStateChange }) {
       : 'Backend failed while running the job. Reduce workload size or retry shortly.'
   }
 
+  async function waitForBackendWake() {
+    const deadline = Date.now() + BACKEND_BOOT_TIMEOUT_MS
+    let lastWakeError = null
+
+    while (Date.now() < deadline) {
+      const remainingSeconds = Math.max(1, Math.ceil((deadline - Date.now()) / 1000))
+      setBackendBoot({
+        active: true,
+        message: `Backend is waking up. Checking health for up to ${remainingSeconds}s before calling this a real timeout.`,
+      })
+
+      try {
+        await getHealth({
+          timeoutMs: Math.min(BACKEND_HEALTH_TIMEOUT_MS, Math.max(1000, deadline - Date.now())),
+        })
+        return { ok: true }
+      } catch (wakeError) {
+        lastWakeError = wakeError
+
+        if (!isBackendReachabilityError(wakeError)) {
+          return { ok: true }
+        }
+
+        const delayMs = Math.min(BACKEND_BOOT_POLL_MS, Math.max(0, deadline - Date.now()))
+        if (delayMs > 0) await sleep(delayMs)
+      }
+    }
+
+    return { ok: false, error: lastWakeError }
+  }
+
+  async function ensureBackendReadyForSubmit() {
+    try {
+      await getHealth({ timeoutMs: BACKEND_PREFLIGHT_HEALTH_TIMEOUT_MS })
+      return true
+    } catch (healthError) {
+      if (!isBackendReachabilityError(healthError)) return true
+
+      setIsSubmitting(false)
+      const wakeResult = await waitForBackendWake()
+      setBackendBoot({ active: false, message: null })
+
+      if (wakeResult.ok) return true
+
+      setError(submitFailureMessage(healthError, { wakeTimedOut: true }))
+      return false
+    }
+  }
+
+  async function submitRunPayload() {
+    setConfig((current) => clampConfigToPublicLimits(current))
+    const created = await createRun(buildPayload())
+    if (!created?.job_id || !created?.status) {
+      throw new Error('Backend accepted the request but did not return a job id.')
+    }
+    const createdJob = {
+      job_id: created.job_id,
+      status: created.status,
+      queue_position: created.queue_position,
+      queue_capacity: created.queue_capacity,
+      queue_running_count: created.queue_running_count,
+      effective_config: created.effective_config,
+      result: null,
+      error: null,
+    }
+    publishJob(createdJob, { select: true })
+    const firstStatus = await poll(created.job_id)
+    if (!TERMINAL_RUN_STATUSES.has(firstStatus)) {
+      startPolling(created.job_id)
+    }
+  }
+
+  function submitFailureMessage(runError, { afterHealthCheck = false, wakeTimedOut = false } = {}) {
+    if (runError.status === 429) return `Submit rejected: ${runError.message}`
+    if (runError.status === 503) return `Submit rejected: ${runError.message}`
+    if (wakeTimedOut) {
+      return `Submit failed: backend did not respond after ${BACKEND_BOOT_TIMEOUT_SECONDS}s. It may be offline or still starting.`
+    }
+    if (afterHealthCheck && isBackendReachabilityError(runError)) {
+      return `Submit timed out after the backend health check passed. The server is awake, but the run endpoint did not respond: ${runError.message}`
+    }
+    if (isBackendReachabilityError(runError)) {
+      return `Submit failed: backend did not respond. ${runError.message}`
+    }
+    return `Submit failed: ${runError.message}`
+  }
+
   async function poll(jobId) {
     try {
       const job = await getRun(jobId)
@@ -562,41 +673,18 @@ export function RunConsole({ runState, onRunStateChange }) {
     submitLockedRef.current = true
     setIsSubmitting(true)
     setError(null)
+    setBackendBoot({ active: false, message: null })
 
     try {
-      setConfig((current) => clampConfigToPublicLimits(current))
-      const created = await createRun(buildPayload())
-      if (!created?.job_id || !created?.status) {
-        throw new Error('Backend accepted the request but did not return a job id.')
-      }
-      const createdJob = {
-        job_id: created.job_id,
-        status: created.status,
-        queue_position: created.queue_position,
-        queue_capacity: created.queue_capacity,
-        queue_running_count: created.queue_running_count,
-        effective_config: created.effective_config,
-        result: null,
-        error: null,
-      }
-      publishJob(createdJob, { select: true })
-      setIsSubmitting(false)
-      const firstStatus = await poll(created.job_id)
-      if (!TERMINAL_RUN_STATUSES.has(firstStatus)) {
-        startPolling(created.job_id)
-      }
+      const backendReady = await ensureBackendReadyForSubmit()
+      if (!backendReady) return
+      setIsSubmitting(true)
+      await submitRunPayload()
     } catch (runError) {
-      const message =
-        runError.status === 429
-          ? `Submit rejected: ${runError.message}`
-          : runError.status === 503
-            ? `Submit rejected: ${runError.message}`
-            : runError.status === 0
-              ? `Submit failed: backend did not respond. ${runError.message}`
-              : `Submit failed: ${runError.message}`
-      setError(message)
-      setIsSubmitting(false)
+      setError(submitFailureMessage(runError, { afterHealthCheck: true }))
     } finally {
+      setIsSubmitting(false)
+      setBackendBoot({ active: false, message: null })
       submitLockedRef.current = false
     }
   }
@@ -748,7 +836,7 @@ export function RunConsole({ runState, onRunStateChange }) {
           </details>
 
           <div className="run-action-row">
-            <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isSubmitting}>
+            <button className="run-button" type="submit" disabled={isRunLocked} aria-busy={isRunLocked}>
               {isSubmitting ? 'Submitting' : submitLabel}
             </button>
             <div className={`status-badge status-${displayedStatus}`} aria-label={`Run status: ${displayedStatus}`}>

@@ -1997,12 +1997,14 @@ button:disabled {
   background: var(--muted);
 }
 
+.status-booting,
 .status-submitting,
 .status-running {
   border-color: rgba(201, 162, 75, 0.5);
   background: rgba(201, 162, 75, 0.08);
 }
 
+.status-booting .status-dot,
 .status-submitting .status-dot,
 .status-running .status-dot {
   background: var(--gold);
