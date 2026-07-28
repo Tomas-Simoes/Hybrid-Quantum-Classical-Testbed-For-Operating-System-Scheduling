@@ -551,7 +551,7 @@ export function RunConsole({ runState, onRunStateChange }) {
       const remainingSeconds = Math.max(1, Math.ceil((deadline - Date.now()) / 1000))
       setBackendBoot({
         active: true,
-        message: `Backend is waking up. Checking health for up to ${remainingSeconds}s before calling this a real timeout.`,
+        message: `Backend is waking up.`,
       })
 
       try {
